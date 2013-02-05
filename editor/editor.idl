@@ -1,0 +1,212 @@
+/*
+This file is part of jN, a plugin for Notepad++
+Copyright (C)2013 Eugen Kremer <eugen DOT kremer AT gmail DOT com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+[
+	uuid(1358E572-3208-4A69-9F66-6D4B8B841EE1),
+	version(1.0),
+	helpstring("jN is a Notepad++ plugin. It helps you to script your favorite Text editor with your favorite programming language!")
+]
+library jN
+{
+    importlib("stdole32.tlb");
+    importlib("stdole.tlb"); 
+
+
+	#include "..\common\common.idl"
+
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC900),
+		oleautomation, 
+		helpstring("Represents line of View")
+	] 
+	interface IViewLine : IDispatch
+	{
+		[propget, helpstring("Line number")]
+		HRESULT number([out,retval] int* value);
+
+		[propget, helpstring("Character position of line beginning in document")]
+		HRESULT start([out,retval] int* value);
+
+		[propget, helpstring("Character position of line end in document")]
+		HRESULT end([out,retval] int* value);
+
+		[propget, helpstring("Byte position of line beginning. Faster than 'start' property.")]
+		HRESULT byteStart([out,retval] int* value);
+
+		[propget, helpstring("Byte position of line end including any line end characters. Faster than 'end' property.")]
+		HRESULT byteEnd([out,retval] int* value);
+	
+		[helpstring("Line text including any line end characters. The setting of line text changes the text selection.")]
+		[propget]	HRESULT text([out,retval] BSTR* result);
+		[propput]	HRESULT text([in] BSTR* value);
+	}
+
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC901),
+		oleautomation, 
+		helpstring("Represents lines of View")
+	] 
+	interface IViewLines : IDispatch
+	{
+		[helpstring("Returns the line object with specified number.")]
+		HRESULT get([in]int line, [out,retval] IViewLine** result);
+
+		[propget,helpstring("The count of lines.")]
+		HRESULT count([out, retval] int* result);
+
+		[helpstring("The current line of view.")]
+		[propget]	HRESULT current([out, retval] int* result);
+		[propput]	HRESULT current([in] int value);
+	}
+
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC902),
+		oleautomation , 
+		helpstring("Represents an editor view.")
+	] 
+	interface IView : IDispatch
+	{
+		[propget, helpstring("The text of view.")]
+					HRESULT text([out,retval] BSTR* result);
+		[propput]	HRESULT text([in] BSTR* value);
+
+		[propget, helpstring("Array of the file names opened in the view.")]	
+					HRESULT files([out,retval] IDispatch** array);
+
+		[propget, helpstring("Current file in the view.")]
+					HRESULT file([out,retval] int* value);
+		[propput]	HRESULT file([in] int value);
+
+		[propget, helpstring("Selected text in the view.")]	
+					HRESULT selection([out,retval] BSTR* value);
+		[propput]	HRESULT selection([in] BSTR* value);
+
+		[propget, helpstring("Code page of current file.")]	
+					HRESULT codepage([out,retval] int* value);
+		[propput]	HRESULT codepage([in] int value);
+
+		[propget, helpstring("Language of the currently active document. It is an index in Editor.langs")]	
+					HRESULT lang([out, retval] int* result);
+		[propput]	HRESULT lang([in] int value);
+
+		[propget, helpstring("The current line of view.")]
+					HRESULT line([out, retval] int* result);
+		[propput]	HRESULT line([in] int value);
+
+		[propget, helpstring("Lines object of view.")]
+					HRESULT lines([out, retval] IViewLines** result);
+
+		[propget, helpstring("Character position in document.")]
+					HRESULT pos([out, retval] int* result);
+		[propput]	HRESULT pos([in] int value);
+
+		[propget, helpstring("Byte position in document.")]
+					HRESULT bytePos([out, retval] int* result);
+		[propput]	HRESULT bytePos([in] int value);
+
+		[propget, helpstring("Column position.")]
+					HRESULT column([out, retval] int* result);
+
+		[propget, helpstring("Character position of anchor.")]
+					HRESULT anchor([out, retval] int* result);
+		[propput]	HRESULT anchor([in] int value);
+
+		[propget, helpstring("Byte position of anchor.")]
+					HRESULT byteAnchor([out, retval] int* result);
+		[propput]	HRESULT byteAnchor([in] int value);
+
+		[propget, helpstring("Value indicating whether the navigation bar is visible.")]
+					HRESULT navBarHidden([out,retval] VARIANT_BOOL* result);
+		[propput]	HRESULT navBarHidden([in] VARIANT_BOOL  value);
+
+		[propget, helpstring("Window handle of view.")]
+					HRESULT handle([out,retval] int* result);
+
+	}; 
+
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC906), 
+		oleautomation, 
+		helpstring("Represents the Notepad++. Methods of this interface are globally available. It means "
+				   "you can omit keyword 'Editor' to access to its methods.") 
+	] 
+	interface IEditor : IDispatch 
+	{
+		[propget, helpstring("The always visible view of editor. It is the left view.")]
+					HRESULT firstView([out,retval] IView** result);
+
+		[propget, helpstring("The view with currently active document.")]
+					HRESULT currentView([out,retval] IView** result);
+
+		[propget, helpstring("The right view of editor.")]
+					HRESULT secondView([out,retval] IView** result);
+
+		[helpstring("Displays a dialog box containing an application-defined message.")]
+					HRESULT alert([in] BSTR* value);
+
+		[helpstring("Saves all the opened files.")]
+					HRESULT saveAll();
+
+		[propget, helpstring("Array of languages source code can be written in.")]
+					HRESULT langs([out,retval] IDispatch** result);
+
+		[propget, helpstring("Plugin directory of Notepad++.")]
+					HRESULT pluginConfigDir([out,retval] BSTR* result);
+
+		[propget, helpstring("Directory of Notepad++.")]
+					HRESULT nppDir([out,retval] BSTR* result);
+
+		[propget, helpstring("Value indicating whether the tab bar is hidden.")]
+					HRESULT tabBarHidden([out,retval] VARIANT_BOOL * result);
+		[propput]	HRESULT tabBarHidden([in] VARIANT_BOOL value);
+
+		[propget, helpstring("Value indicating whether the tool bar is hidden.")]
+					HRESULT toolBarHidden([out,retval] VARIANT_BOOL* result);
+		[propput]	HRESULT toolBarHidden([in] VARIANT_BOOL value);
+
+		[propget, helpstring("Value indicating whether the main menu is hidden.")]
+					HRESULT menuHidden([out,retval] VARIANT_BOOL* result);
+		[propput]	HRESULT menuHidden([in] VARIANT_BOOL  value);
+
+		[propget, helpstring("Value indicating whether the status bar is hidden.")]
+					HRESULT statusBarHidden([out,retval] VARIANT_BOOL* result);
+		[propput]	HRESULT statusBarHidden([in] VARIANT_BOOL  value);
+
+		[helpstring("Opens the file specified by the given file path.")]
+					HRESULT open([in] BSTR* filePath);
+		
+		[helpstring("Appends new menu to the main window. Returns object representing the new menu. See IMenu.addMenu about cfg.")]
+					HRESULT addMenu([in]VARIANT cfg, [out, retval]IMenu** result);// no cmd, text only
+
+		[helpstring("Runs a specified build-in menu command of Notepad++.")]
+					HRESULT runMenuCmd([in]int cmd);
+
+		[helpstring("Sets new listener object with a lot of callback functions representing event handler. See start.js")]
+					HRESULT setListener([in]IDispatch* cfg);
+
+		[helpstring("Creates new dockable window described by cfg object. cfg = {name:'Tab name', docking:'(top|bottom|left|right|floating)', onbeforeclose:function(){return true; // or false for cancel (does not work yet) }, onclose:function(){}}.")]
+					HRESULT createDockable([in]IDispatch* cfg, [out, retval]IDialog** result);
+
+		[propget, helpstring("Window handle of Editor.")]
+					HRESULT handle([out,retval] int* result);
+
+		[helpstring("Adds new application wide hot key combination. For cfg see addSystemHotKey method.")]
+					HRESULT addHotKey([in]IDispatch* cfg);
+	};
+
+};
