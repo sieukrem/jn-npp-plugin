@@ -1,0 +1,26 @@
+#summary Describes creating of submenus and menu items
+
+= Introduction =
+jN allows as to create submenus of main menu of notepad++ at run time.
+For better user experience we can enable and disable them depending on some states, if functionality not available at the moment.
+
+= Create submenu =
+{{{
+var cfg = { text: "My Menu" };
+var myMenu = Editor.addMenu(cfg);
+}}}
+
+= Create menu entry = 
+TODO: shortcuts
+TODO: Image
+
+= Create separator = 
+{{{
+myMenu.addMenuItem({text:"First command..."});
+myMenu.addSeparator();
+myMenu.addMenuItem({text:"Second command..."});
+}}}
+
+TODO: Image
+
+= Best way to disable whole submenu or single menu entry = 
