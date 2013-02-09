@@ -242,19 +242,29 @@ LRESULT CALLBACK Dialog::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 	}
 }
 
+bool Dialog::IsClosingAllowed(){
+	// give a chance to cancel the close operation
+	VARIANT beforeCloseRes;
+
+	// not defined onbeforeclose
+	if (!MyActiveSite::callMethod(TEXT("onbeforeclose"), m_Cfg, NULL, 0, &beforeCloseRes))
+		return true;
+
+	// invalid value, expect boolean
+	if (beforeCloseRes.vt != VT_BOOL)
+		return true;
+
+	return beforeCloseRes.boolVal;
+}
+
 LRESULT CALLBACK Dialog::MessageProc(UINT message, WPARAM wParam, LPARAM lParam){
 	switch (message){
 		case WM_CLOSE :
 			if (!isCreated())
 				return TRUE;
 
-
-			// give a chance to cancel the close operation
-			VARIANT beforeCloseRes;
-			if (MyActiveSite::callMethod(TEXT("onbeforeclose"), m_Cfg, NULL, 0, &beforeCloseRes)){
-				if (beforeCloseRes.vt == VT_BOOL && !beforeCloseRes.boolVal)
-					return FALSE;
-			}				
+			if (!IsClosingAllowed())
+				return FALSE; // cancel close operation
 			
 			MyActiveSite::callMethod(TEXT("onclose"), m_Cfg);
 

@@ -68,6 +68,8 @@ protected :
 
 	void create();
 
+	bool IsClosingAllowed();
+
 
 	static LRESULT CALLBACK dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 

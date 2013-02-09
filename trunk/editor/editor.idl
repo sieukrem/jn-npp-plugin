@@ -199,7 +199,7 @@ library jN
 		[helpstring("Sets new listener object with a lot of callback functions representing event handler. See start.js")]
 					HRESULT setListener([in]IDispatch* cfg);
 
-		[helpstring("Creates new dockable window described by cfg object. cfg = {name:'Tab name', docking:'(top|bottom|left|right|floating)', onbeforeclose:function(){return true; // or false for cancel (does not work yet) }, onclose:function(){}}.")]
+		[helpstring("Creates new dockable window described by cfg object. cfg = {name:'Tab name', docking:'(top|bottom|left|right|floating)', onbeforeclose:function(){return true; // false - hides the window, but avoids its destroing }, onclose:function(){}}.")]
 					HRESULT createDockable([in]IDispatch* cfg, [out, retval]IDialog** result);
 
 		[propget, helpstring("Window handle of Editor.")]
