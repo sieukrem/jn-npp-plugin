@@ -1,4 +1,5 @@
 #summary Describes creating of submenus and menu items
+#labels Featured
 
 = Introduction =
 jN allows as to create submenus of main menu of notepad++ at run time.
@@ -42,6 +43,24 @@ myMenu.addItem({text:"After separator"});
 http://jn-npp-plugin.googlecode.com/svn/wiki/MenuSeparator.png
 
 = Combine menu entry with shortcut =
+To improve user experience we can add shortcuts to our menu entries. It is possible to implement different action code for menu item and shortcut, but we combine them together. We do that by using the same configuration object ~actionCfg~ by adding menu item and shortcut. The action code ~cmd~ will be called during both shortcut and menu item click handling. 
+
+{{{
+var actionCfg = {
+  text: "Shortcut item\tCtrl+U", // relevant only for menu item
+  cmd: function(m){ // m is valid only during menu item click
+    alert(this.text + " handler");
+  },
+  
+  // only shortcut relevant
+  shift: true,
+  ctrl: true,
+  key:"u"
+}
+myMenu.addItem(actionCfg);
+addHotKey(actionCfg);
+}}}
+
 
 
 = Best way to disable whole submenu or single menu entry = 
