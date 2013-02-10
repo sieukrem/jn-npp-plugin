@@ -42,6 +42,6 @@ myMenu.addSeparator();
 myMenu.addItem({text:"After separator"});
 }}}
 
-TODO: Image
+http://jn-npp-plugin.googlecode.com/svn/wiki/MenuSeparator.png
 
 = Best way to disable whole submenu or single menu entry = 
