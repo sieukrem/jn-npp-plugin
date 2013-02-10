@@ -61,8 +61,6 @@ myMenu.addItem(actionCfg);
 addHotKey(actionCfg);
 }}}
 
-
-
 http://jn-npp-plugin.googlecode.com/svn/wiki/MenuShortcut.png
 
 == Best way to disable whole submenu or single menu entry == 
