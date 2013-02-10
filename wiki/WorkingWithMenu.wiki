@@ -1,17 +1,17 @@
 #summary Describes creating of submenus and menu items
 #labels Featured
 
-= Introduction =
+= Working with menu =
 jN allows as to create submenus of main menu of notepad++ at run time.
 For better user experience we can enable and disable them depending on some states, if functionality not available at the moment.
 
-= Creating a submenu =
+== Creating a submenu ==
 {{{
 var cfg = { text: "My Menu" };
 var myMenu = Editor.addMenu(cfg);
 }}}
 
-= Creating a menu entry = 
+== Creating a menu entry == 
 {{{
 var myCmd = myMenu.addItem({
   // your own properties
@@ -34,7 +34,7 @@ In example above we add new menu entry "My command" with action code showing cou
 
 http://jn-npp-plugin.googlecode.com/svn/wiki/MenuItem.png
 
-= Creating separator = 
+== Creating separator == 
 {{{
 myMenu.addSeparator();
 myMenu.addItem({text:"After separator"});
@@ -42,7 +42,7 @@ myMenu.addItem({text:"After separator"});
 
 http://jn-npp-plugin.googlecode.com/svn/wiki/MenuSeparator.png
 
-= Combine menu entry with shortcut =
+== Combine menu entry with shortcut ==
 To improve user experience we can add shortcuts to our menu entries. It is possible to implement different action code for menu item and shortcut, but we combine them together. We do that by using the same configuration object ~actionCfg~ by adding menu item and shortcut. The action code ~cmd~ will be called during both shortcut and menu item click handling. 
 
 {{{
@@ -63,4 +63,4 @@ addHotKey(actionCfg);
 
 
 
-= Best way to disable whole submenu or single menu entry = 
+== Best way to disable whole submenu or single menu entry == 
