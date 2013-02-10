@@ -19,9 +19,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 
 #include "AcceleratorHook.h"
+#include "MessageOnlyWindow.h"
 
-class CAcceleratorTable: public AcceleratorHook::AcceleratorHandler{
+class CAcceleratorTable: public AcceleratorHook::AcceleratorHandler, private MessageOnlyWindow{
+	LRESULT MessageProc(UINT message, WPARAM wp, LPARAM lp) override{
+		switch(message){
+			case WM_HOTKEY:
+				break;
+			case WM_COMMAND:{
+				CallHandler(LOWORD(wp));
+			}
+		}
+
+		return MessageOnlyWindow::MessageProc(message, wp, lp);
+	}
+
 public:
+
 
 	class Accelerator{
 	public:
@@ -30,8 +44,6 @@ public:
 		}	
 	};
 
-	WORD m_StartId;
-	
 	typedef std::vector<ACCEL> ACCELS;
 	ACCELS m_HotKeyArray;
 
@@ -41,8 +53,7 @@ public:
 	HACCEL m_HotKeyTable;
 	HWND m_Window;
 
-	CAcceleratorTable(WORD startId, HWND window){
-		m_StartId = startId;
+	CAcceleratorTable(HWND window){
 		m_HotKeyTable = NULL;
 		m_Window = window;
 	}
@@ -62,15 +73,19 @@ public:
 		}
 	}
 
-	void add(ACCEL accel, Accelerator* handler){
-		int c = m_HotKeyArray.size();
+	void add(BYTE modifier, WORD key, Accelerator* handler){
 		
+		ACCEL accel;
+		accel.cmd   = m_HotKeyArray.size();
+		accel.fVirt = modifier;
+		accel.key   = key;
+
 		m_HotKeyArray.push_back(accel);
 		m_Accelerators.push_back(handler);
 
 		destroyTable();
 
-		m_HotKeyTable = CreateAcceleratorTable(&m_HotKeyArray[0], c);
+		m_HotKeyTable = CreateAcceleratorTable(&m_HotKeyArray[0], m_HotKeyArray.size());
 	}
 
 	int execute(MSG* msg){
@@ -81,19 +96,15 @@ public:
 		if (!m_HotKeyTable)
 			return 0;
 
-		return TranslateAccelerator(m_Window, m_HotKeyTable, msg);
+		return TranslateAccelerator(handle(), m_HotKeyTable, msg);
 	}
 
 	// returns 0 if no handler called
 	int CallHandler(WORD command){
-		//WORD lw = LOWORD(msg->wParam);
-
-		int cmdId = command - m_StartId;
-
-		if (cmdId < 0 || cmdId >= (int)m_Accelerators.size())
+		if (command >= (int)m_Accelerators.size())
 			return 0;
 			
-		int result = m_Accelerators[cmdId]->execute();
+		int result = m_Accelerators[command]->execute();
 
 		return result;
 	}

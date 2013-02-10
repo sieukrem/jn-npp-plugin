@@ -21,8 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define SUBCLASSING TEXT("jN.Npp.Subclassing")
 
-#define START_ACCEL (MAXWORD - 1000)
-
 CEditor::~CEditor(void){
 
 	// Release Views
@@ -78,8 +76,8 @@ LRESULT CALLBACK CEditor::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM
 		}
 	} else if (message == WM_COMMAND){
 		
-			WORD command = LOWORD(wParam);
-			editor->m_Accelerators.CallHandler(command);
+			//WORD command = LOWORD(wParam);
+			//editor->m_Accelerators.CallHandler(command);
 	}
 	
 
@@ -87,7 +85,7 @@ LRESULT CALLBACK CEditor::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
 }
 
-CEditor::CEditor(HWND nppHandle):CComDispatch(),m_Accelerators(START_ACCEL,nppHandle){
+CEditor::CEditor(HWND nppHandle):CComDispatch(),m_Accelerators(nppHandle){
 	AcceleratorHook::getInstance()->add(&m_Accelerators);
 
 	// 3.) set our wndproc to have WM_MENUCOMMAND instead WM_COMMAND
@@ -458,14 +456,7 @@ HRESULT STDMETHODCALLTYPE CEditor::addHotKey(IDispatch* cfg){
 
 	int modifier = System::getAcceleratorModifier(cfgEx);
 	
-	ACCEL acc;
-	acc.fVirt = modifier|FVIRTKEY;
-	acc.key = keyCode;
-	acc.cmd = m_Accelerators.m_HotKeyArray.size() + START_ACCEL;
-
-	AcceleratorHandler* ach = new AcceleratorHandler(cfgEx);
-
-	m_Accelerators.add(acc, ach);
+	m_Accelerators.add(modifier|FVIRTKEY, keyCode, new AcceleratorHandler(cfgEx));
 
 	return S_OK;
 }
