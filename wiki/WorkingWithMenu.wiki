@@ -31,8 +31,10 @@ var myCmd = myMenu.addItem({
 
 In example above we add new menu entry "My command" with action code showing count of clicks we have done. We disable this menu entry if count of clicks exceeds 3.
 
+[MenuItem.png]
+
 TODO: shortcuts
-TODO: Image
+
 
 = Create separator = 
 {{{
