@@ -13,6 +13,8 @@ var myMenu = Editor.addMenu(cfg);
 = Create menu entry = 
 {{{
 var myCmd = myMenu.addItem({
+  // your own properties
+  count: 0,
   // necessary properties
   text: "My command",
   cmd: function(m){
@@ -23,9 +25,7 @@ var myCmd = myMenu.addItem({
     // to menu entry object
     if (this.count == 3)
        m.disabled = true;
-  },
-  // your own properties
-  count: 0
+  }
 });
 }}}
 
