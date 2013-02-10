@@ -43,7 +43,7 @@ myMenu.addItem({text:"After separator"});
 http://jn-npp-plugin.googlecode.com/svn/wiki/MenuSeparator.png
 
 == Combine menu entry with shortcut ==
-To improve user experience we can add shortcuts to our menu entries. It is possible to implement different action code for menu item and shortcut, but we combine them together. We do that by using the same configuration object ~actionCfg~ by adding menu item and shortcut. The action code ~cmd~ will be called during both shortcut and menu item click handling. 
+To improve user experience we can add shortcuts to our menu entries. It is possible to implement different action code for menu item and shortcut, but we combine them together. We do that by using the same configuration object _actionCfg_ by adding menu item and shortcut. The action code _cmd_ will be called during both shortcut and menu item click handling. 
 
 {{{
 var actionCfg = {
