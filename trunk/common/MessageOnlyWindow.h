@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #pragma once
 
+#include "Dialog\WindowClass.h"
+
 class MessageOnlyWindow{
 private:
 	HWND m_Hwnd;
