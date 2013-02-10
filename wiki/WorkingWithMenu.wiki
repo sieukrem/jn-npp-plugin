@@ -63,5 +63,7 @@ addHotKey(actionCfg);
 
 http://jn-npp-plugin.googlecode.com/svn/wiki/menushortcut.png
 
+We use *\t* to stretch place between menu item name and shortcut.
+
 == Best way to disable whole submenu or single menu entry == 
 TODO
