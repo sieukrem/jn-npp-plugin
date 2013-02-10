@@ -32,7 +32,7 @@ var myCmd = myMenu.addItem({
 
 In example above we add new menu entry "My command" with action code showing count of clicks we have done. We disable this menu entry if count of clicks exceeds 3.
 
-http://jn-npp-plugin.googlecode.com/svn/wiki/MenuItem.png
+[http://jn-npp-plugin.googlecode.com/svn/wiki/MenuItem.png]
 
 == Creating separator == 
 {{{
