@@ -11,14 +11,33 @@ var myMenu = Editor.addMenu(cfg);
 }}}
 
 = Create menu entry = 
+{{{
+var myCmd = myMenu.addItem({
+  // necessary properties
+  text: "My command",
+  cmd: function(m){
+    this.count++; // access to your own properties
+    alert(this.count);
+
+    // Use myCmd variable or m to access
+    // to menu entry object
+    if (this.count == 3)
+       m.disabled = true;
+  },
+  // your own properties
+  count: 0
+});
+}}}
+
+In example above we add new menu entry "My command" with action code showing count of clicks we have done. We disable this menu entry if count of clicks exceeds 3.
+
 TODO: shortcuts
 TODO: Image
 
 = Create separator = 
 {{{
-myMenu.addMenuItem({text:"First command..."});
 myMenu.addSeparator();
-myMenu.addMenuItem({text:"Second command..."});
+myMenu.addItem({text:"After separator"});
 }}}
 
 TODO: Image
