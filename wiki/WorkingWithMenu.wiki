@@ -4,13 +4,13 @@
 jN allows as to create submenus of main menu of notepad++ at run time.
 For better user experience we can enable and disable them depending on some states, if functionality not available at the moment.
 
-= Create submenu =
+= Creating a submenu =
 {{{
 var cfg = { text: "My Menu" };
 var myMenu = Editor.addMenu(cfg);
 }}}
 
-= Create menu entry = 
+= Creating a menu entry = 
 {{{
 var myCmd = myMenu.addItem({
   // your own properties
@@ -33,15 +33,15 @@ In example above we add new menu entry "My command" with action code showing cou
 
 http://jn-npp-plugin.googlecode.com/svn/wiki/MenuItem.png
 
-TODO: shortcuts
-
-
-= Create separator = 
+= Creating separator = 
 {{{
 myMenu.addSeparator();
 myMenu.addItem({text:"After separator"});
 }}}
 
 http://jn-npp-plugin.googlecode.com/svn/wiki/MenuSeparator.png
+
+= Combine menu entry with shortcut =
+
 
 = Best way to disable whole submenu or single menu entry = 
