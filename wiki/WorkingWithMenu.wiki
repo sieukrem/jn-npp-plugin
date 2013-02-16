@@ -78,3 +78,4 @@ cfg.oninitpopup = function(){
 }}}
 
 Every time we open "My Menu" _disabled_ property of new item will toggle and it's name shows updated count value.
+http://jn-npp-plugin.googlecode.com/svn/wiki/menuoninitpopup.png
