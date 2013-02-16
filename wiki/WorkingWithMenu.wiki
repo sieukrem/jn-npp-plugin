@@ -66,7 +66,7 @@ http://jn-npp-plugin.googlecode.com/svn/wiki/menushortcut.png
 We use *\t* to stretch place between menu item name and shortcut.
 
 == Best way to disable whole submenu or single menu entry == 
-Some times it is better way to not implement code enabling or disabling menu items as action on some state change. We want save CPU power and avaluate a collection of states only if menu item is going to get visible. For this purpose we extend our cfg object by adding oninitpopup function. We place in this function our evaluating code.
+Some times it is better way to not implement code enabling or disabling menu items as action on some state change. We want save CPU power and avaluate a collection of states only if menu item is going to get visible. For this purpose we extend our cfg object by adding oninitpopup function and place there our evaluating code.
 {{{
 var toggleMenu = myMenu.addItem({text:""});
 cfg.count= 0;
