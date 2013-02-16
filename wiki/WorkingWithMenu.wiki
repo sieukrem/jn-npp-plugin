@@ -5,6 +5,8 @@
 jN allows as to create submenus of main menu of notepad++ at run time.
 For better user experience we can enable and disable them depending on some states, if functionality not available at the moment.
 
+<wiki:toc max_depth="2" />
+
 == Creating a submenu ==
 {{{
 var cfg = { text: "My Menu" };
