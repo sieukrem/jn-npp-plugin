@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "EditorView.h"
 #include "ViewLines.h"
 
+#pragma warning (disable : 4355)
 CEditorView::CEditorView(int id):CComDispatch(),m_IndPanel(this), SCIView((((id-1)==0)? nppData._scintillaMainHandle : nppData._scintillaSecondHandle)){
 	m_Id = id;
 

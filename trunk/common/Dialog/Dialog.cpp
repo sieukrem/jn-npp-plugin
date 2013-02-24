@@ -254,7 +254,7 @@ bool Dialog::IsClosingAllowed(){
 	if (beforeCloseRes.vt != VT_BOOL)
 		return true;
 
-	return beforeCloseRes.boolVal;
+	return beforeCloseRes.boolVal == TRUE;
 }
 
 LRESULT CALLBACK Dialog::MessageProc(UINT message, WPARAM wParam, LPARAM lParam){
