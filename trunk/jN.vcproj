@@ -213,6 +213,14 @@
 			<File
 				RelativePath=".\VersionInfo.h"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="VersionInfo_tmpl.h"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\VersionInfo_tmpl.h"
