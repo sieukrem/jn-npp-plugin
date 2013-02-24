@@ -353,15 +353,15 @@ HRESULT __stdcall MyActiveSite::OnScriptError(IActiveScriptError *pscriptError)
   EXCEPINFO ei;
   HRESULT hr = pscriptError->GetExceptionInfo(&ei);
   if (hr == S_OK){
-	  ULONG ln;
+	  ULONG line;
 	  LONG cp;
 	  DWORD co;
-	  hr = pscriptError->GetSourcePosition(&co, &ln, &cp);
+	  hr = pscriptError->GetSourcePosition(&co, &line, &cp);
 
 	  TCHAR buf[1024];
 	  TCHAR* msg = ei.bstrDescription;
 	  if (SysStringLen(ei.bstrDescription) < (1024 - 13 - 10 - 10)){
-		wsprintf(buf, TEXT("%s\nline: %d, pos: %d"), ei.bstrDescription, ln+1, cp+1);
+		StringCbPrintf(buf, sizeof(buf) , TEXT("%s\nline: %d, pos: %d"), ei.bstrDescription, line+1, cp+1);
 		msg = buf;
 	  }
 
