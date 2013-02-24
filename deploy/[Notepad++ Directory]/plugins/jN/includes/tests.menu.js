@@ -182,8 +182,14 @@ var hmenu = testMenu.addItem({
 testMenu.addItem({
 	text:"Show Dockable",
 	cmd:function(){
-		var d = Editor.createDockable({onbeforeclose:function(){ alert ("bc")}});
-		var d = d.document;
+		var w = Editor.createDockable({onbeforeclose:function(){ 
+				alert ("before close"); 
+				return false;
+			},
+			onclose:function(){
+				alert("on close")
+			}});
+		var d = w.document;
 		
 		d.write("<html><head></head><body></body></html>");
 		d.close();
