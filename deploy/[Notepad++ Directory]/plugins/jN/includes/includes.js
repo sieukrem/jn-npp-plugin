@@ -11,7 +11,7 @@
 		var filesEnum = new Enumerator(incDirObj.files);
 		for (; !filesEnum.atEnd(); filesEnum.moveNext()){
 			var file = filesEnum.item().Path;
-			if (/\.js/i.test(file)){
+			if (/\.js$/i.test(file)){
 				incMenu.addItem({
 					path:file,
 					text:filesEnum.item().Name,
