@@ -1,0 +1,224 @@
+/*
+This file is part of jN, a plugin for Notepad++
+Copyright (C)2013 Eugen Kremer <eugen DOT kremer AT gmail DOT com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC903), 
+		oleautomation, 
+		helpstring("Represents a menu item with command.") 
+	] 
+	interface IMenuItem : IDispatch 
+	{
+
+		[propget, helpstring("Text of menu item")]
+					HRESULT text([out,retval] BSTR* result);
+		[propput]	HRESULT text([in] BSTR* value);
+
+		[propget, helpstring("Value indicating whether a check mark appears next to the text of the menu item.")]
+					HRESULT checked([out,retval] VARIANT_BOOL* result);
+		[propput]	HRESULT checked([in] VARIANT_BOOL  value);
+
+		[propget, helpstring("Value indicating whether the menu item can respond to user interaction.")]
+					HRESULT disabled([out,retval] VARIANT_BOOL* result);
+		[propput]	HRESULT disabled([in] VARIANT_BOOL value);
+
+		[helpstring("Removes the menu item from it's parent.")]
+					HRESULT remove();
+	};
+
+
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC904), 
+		oleautomation, 
+		helpstring("Represents a submenu.") 
+	] 
+	interface IMenu : IMenuItem 
+	{
+		//[helpstring("Appends a new menu and returns its.")]
+		//HRESULT addMenu([in]BSTR* text, [out, retval]IMenu** result);// no cmd, text only
+
+		[helpstring("Appends a new menu and returns its. cfg = {text:'my menu', oninitpopup:function(){}}")]
+		HRESULT addMenu([in]VARIANT cfg, [out, retval]IMenu** result);// no cmd, text only
+
+		[helpstring("Appends a new menu item to the menu. Returns new menu item object. cfg = {text:'My Menu', cmd:function(){}}")]
+		HRESULT addItem([in]IDispatch* cfg, [out, retval]IMenuItem** result); // {text:"",cmd:function(){}}
+
+		[helpstring("Appends a separator to the menu.")]
+		HRESULT addSeparator();
+		
+	};
+
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC905), 
+		oleautomation, 
+		helpstring("Represents a HTML based dialog window.") 
+	] 
+	interface IDialog : IDispatch 
+	{
+		[propget, helpstring("Value indicating whether the dialog is visible.")]
+					HRESULT visible([out,retval] VARIANT_BOOL * result);
+		[propput]	HRESULT visible([in] VARIANT_BOOL  value);
+		
+		[propget, helpstring("Height of dialog window.")]
+					HRESULT height([out,retval] int* result);
+		[propput]	HRESULT height([in] int value);
+
+		[propget, helpstring("Width of dialog window.")]
+					HRESULT width([out,retval] int* result);
+		[propput]	HRESULT width([in] int value);
+
+		[propget, helpstring("Height of client area of dialog window.")]	
+					HRESULT clientHeight([out,retval] int* result);
+		[propput]	HRESULT clientHeight([in] int value);
+
+		[propget, helpstring("Width of client area of dialog window.")]
+					HRESULT clientWidth([out,retval] int* result);
+		[propput]	HRESULT clientWidth([in] int value);
+
+		[propget, helpstring("Distance, in pixels, between the top edge of the dialog window and the top edge of screen.")]
+					HRESULT top([out,retval] int* result);
+		[propput]	HRESULT top([in] int value);
+
+		[propget, helpstring("Distance, in pixels, between the left edge of the dialog window and the left edge of screen.")]
+					HRESULT left([out,retval] int* result);
+		[propput]	HRESULT left([in] int value);
+
+		[propget, helpstring("Title of the dialog window.")]
+					HRESULT title([out,retval] BSTR* result);
+		[propput]	HRESULT title([in] BSTR* value);
+
+		[propget, helpstring("DOM Document that is the representation of client area of dialog window.")]
+					HRESULT document([out,retval] IDispatch** result);
+
+		[helpstring("Hides and prepares the dialog window to be destroyed.")]
+					HRESULT close();
+
+		[propget, helpstring("Window handle of dialog.")]
+					HRESULT handle([out,retval] int* result);
+
+		[helpstring("Sets window into the foreground and activates it.")]
+					HRESULT foreground();
+	};
+
+
+
+
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC907), 
+		oleautomation, 
+		helpstring("Collection of methods to make calls of exported functions of specified"
+					" dynamic-link library.") 
+	] 
+	interface ILibrary : IDispatch 
+	{
+		[helpstring("Allocates specified number of bytes.")]
+					HRESULT alloc([in]unsigned int number, [out,retval]BSTR* dest);
+
+
+		[helpstring("Calls specified function.")]
+					HRESULT call([in]BSTR functionName,[in]BSTR params, [out, retval]int* result);
+
+		[helpstring("Writes BYTE from value to dest beginning at pos.")]
+					HRESULT writeByte([in]BSTR dest, [in]unsigned int pos, [in]VARIANT value);
+
+		[helpstring("Writes WORD from value to dest beginning at pos.")]
+					HRESULT writeWord([in]BSTR dest, [in]unsigned int pos, [in]VARIANT value);
+
+		[helpstring("Writes DWORD from value to dest beginning at pos.")]
+					HRESULT writeDWord([in]BSTR dest, [in]unsigned int pos, [in]VARIANT value);
+
+		[helpstring("Writes INT64 from value to dest beginning at pos.")]
+					HRESULT writeInt64([in]BSTR dest, [in]unsigned int pos, [in]VARIANT value);
+
+		[helpstring("Reads BYTE from value to src beginning at pos.")]
+					HRESULT readByte([in]BSTR src, [in]unsigned int pos, [out, retval]VARIANT* result);
+
+		[helpstring("Reads WORD from value to src beginning at pos.")]
+					HRESULT readWord([in]BSTR src, [in]unsigned int pos, [out, retval]VARIANT* result);
+
+		[helpstring("Reads DWORD from value to src beginning at pos.")]
+					HRESULT readDWord([in]BSTR src, [in]unsigned int pos, [out, retval]VARIANT* result);
+
+		[helpstring("Reads INT64 from value to src beginning at pos.")]
+					HRESULT readInt64([in]BSTR src, [in]unsigned int pos, [out, retval]VARIANT* result);
+
+		[helpstring("Reads (4 Bytes) from value to src beginning at pos and interprets it as BSTR.")]
+					HRESULT readBSTR([in]BSTR src, [in]unsigned int pos, [out, retval]BSTR* result);
+
+
+		[helpstring("Copies bytes from src to dest beginning at pos.")]
+					HRESULT copy([in]BSTR dest, [in]unsigned int destPos, [in]BSTR src, [in]unsigned int srcPos, [in]unsigned int size);
+
+	};
+
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC908), 
+		oleautomation, 
+		helpstring("Represents one of 12 possible callback functions") 
+	] 
+	interface ICallBack : IDispatch 
+	{
+	}
+
+
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC909), 
+		oleautomation, 
+		helpstring("Collection of system functions. Methods of this interface are globally available. It means "
+				   "you can omit keyword 'System' to access to its methods.") 
+	] 
+	interface ISystem : IDispatch 
+	{
+		[helpstring("Decodes source string encoded by codepage.")]
+					HRESULT decodeFrom([in]int codepage, [in]BSTR* src, [out,retval]BSTR* dest);
+
+		[helpstring("Encodes source string by codepage.")]
+					HRESULT encodeTo([in]int codepage, [in]BSTR* src, [out,retval]BSTR* result);
+
+		[helpstring("Adds new system wide hot key combination. cfg = {ctrl:true, shift:false, alt:true, key:'a', cmd: function(){}}. "
+					"The cfg.key property can be a character or number. You find valid numbers (virtual-key codes) on"
+					" <a href='http://goo.gl/XTFsh'>MSDN</a>")]
+					HRESULT addSystemHotKey([in]IDispatch* cfg);
+
+		[helpstring("Creates new dialog window described by cfg object. cfg = {onbeforeclose:function(){return true; // or false for cancel }, onclose:function(){}}. See dialog.js for example.")]
+					HRESULT createDialog([in]IDispatch* cfg, [out, retval]IDialog** result);
+
+		[helpstring("Adds new idle handler. The cmd callback function of cfg will be called once if the application has nothing to do. Be aware, what you do in a handle, it can lead to a deadlock.")]
+					HRESULT addIdleHandler([in]IDispatch* cfg);
+
+		[helpstring("Runs the given javascript expression. Prefer this function to javascript's eval. "
+					"It allows you to get the script position in case of errors.")]
+					HRESULT addScript( [in]BSTR* value);
+
+		[helpstring("Appends a new timer to the queue. cfg = {millis:1234, cmd:function(){}}")]
+					HRESULT setTimeout([in]IDispatch* cfg);
+
+		[propget, helpstring("Text data on the Clipboard.")]
+					HRESULT clipBoard([out,retval] BSTR* result);
+		[propput]	HRESULT clipBoard([in] BSTR* value);
+
+		[helpstring("Loads given dll.")]
+					HRESULT loadLibrary([in]BSTR* libraryPath, [out, retval]ILibrary** result);
+
+		[helpstring("Registers cfg = {cmd:function(stackbuffer){}} as next callback function."
+					"It is possible to register only 12 callback functions at the same time.")]
+					HRESULT registerCallBack([in]IDispatch* cfg, [in]unsigned int stacksize, [out, retval]ICallBack** result);
+		
+		[propget, helpstring("Full path of start script file.")]
+					HRESULT scriptFullName([out,retval] BSTR* result);
+	};
+
