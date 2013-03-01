@@ -1,0 +1,51 @@
+html{
+	font-family: verdana;
+	font-size: 8pt;
+}
+table{
+	width:97%;
+	border: 1px solid #DDDDDD;
+	font-size: 100%;
+	margin: 5px 10px 5px 5px;
+	border-collapse: collapse;
+}
+
+td{
+	border: 1px solid #D5D5D3;
+	padding: .5em;
+}
+
+th{
+	background-color: #DDDDDD;
+	color: #006;
+	padding: .6em;
+	text-shadow:1px 1px 0 #EEEEEE;
+}
+
+span.img{
+	background-image: url(typelib2xml.16.png);
+	background-repeat: no-repeat;
+	height: 16px;
+	width: 16px;
+	display:block;
+}
+
+.func{
+	background-position: -32px 0;
+}
+
+.propertyget, .propertyput{
+	background-position: -48px 0;
+}
+.documentation, .implements{
+	margin: 1.5em 0;
+}
+.type{
+	margin: 3em 0;
+}
+.empty{
+	height: 1.2em;
+}
+.input{
+	margin-left:1em;
+}
