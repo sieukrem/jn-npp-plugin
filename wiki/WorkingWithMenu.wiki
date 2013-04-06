@@ -2,7 +2,7 @@
 #labels Featured
 
 = Working with menu =
-jN allows as to create submenus of main menu of notepad++ at run time.
+jN allows us to create submenus of main menu of notepad++ at run time.
 For better user experience we can enable and disable them depending on some states, if functionality not available at the moment.
 
 <wiki:toc max_depth="2" />
