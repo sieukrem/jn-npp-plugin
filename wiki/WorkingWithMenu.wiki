@@ -8,7 +8,7 @@ For better user experience we can enable and disable them depending on some stat
 <wiki:toc max_depth="2" />
 
 == Video ==
-<wiki:video width="700" url="http://www.youtube.com/watch?v=7OJPQ6fma1s"/>
+<wiki:video width="500" height="400" url="http://www.youtube.com/watch?v=7OJPQ6fma1s"/>
 
 == Creating a submenu ==
 {{{
