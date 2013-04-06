@@ -7,6 +7,9 @@ For better user experience we can enable and disable them depending on some stat
 
 <wiki:toc max_depth="2" />
 
+== Video ==
+<wiki:video width="780" height="400" url="http://www.youtube.com/watch?v=3r3Bq_ceEQA"/>
+
 == Creating a submenu ==
 {{{
 var cfg = { text: "My Menu" };
