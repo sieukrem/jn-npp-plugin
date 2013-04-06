@@ -1,0 +1,32 @@
+#summary Describes how to call Win32 API functions from JavaScript
+#labels Featured
+
+= Calling of Win32 API functions =
+jN provides very powerful API working with Notepad++ and its views. But some times it is necessary to use Win32 API directly to get more inside or outside of Notepad++.
+
+== The simplest call ==
+We begin with the simplest call. It is [http://msdn.microsoft.com/en-us/library/windows/desktop/ms645505.aspx MessageBoxW] defined in user32.dll
+
+{{{
+function MessageBox(caption, text){
+  var lib = System.loadLibrary("user32.dll");
+  var paramBuf = lib.alloc( 4 * 4);
+
+  lib.writeDWord(paramBuf, 0,  0);
+  lib.writeDWord(paramBuf, 4,  text);
+  lib.writeDWord(paramBuf, 8,  caption);
+  lib.writeDWord(paramBuf, 12, 0);
+
+  lib.call("MessageBoxW", paramBuf);
+}
+}}}
+Now we can call our native MessageBox as follows 
+{{{
+MessageBox("Title of Box", "My important message");
+}}}
+
+== Using of callback functions ==
+TODO
+
+== Some thoughts about memory usage ==
+TODO
