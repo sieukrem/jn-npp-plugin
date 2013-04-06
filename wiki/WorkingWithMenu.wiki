@@ -52,7 +52,7 @@ To improve user experience we can add shortcuts to our menu entries. It is possi
 
 {{{
 var actionCfg = {
-  text: "Shortcut item\tCtrl+U", // relevant only for menu item
+  text: "Shortcut item\tCtrl+Shift+U", // relevant only for menu item
   cmd: function(m){ // m is valid only during menu item click
     alert(this.text + " handler");
   },
