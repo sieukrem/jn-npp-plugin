@@ -24,6 +24,7 @@ Now we can call our native MessageBox as follows
 {{{
 MessageBox("Title of Box", "My important message");
 }}}
+What is happened? First of all we load user32.dll. Then we allocate buffer for all parameters of function to be called. In our case MessageBox has 4 "Int32" parameters. We put parameter values into buffer. At the end we use call method of library instance to call MessageBoxW. It is unicode version of MessageBox. Call method looks for  pointer to MessageBoxW in user32.dll, copies paramBuf on stack and then calls pointed function. 
 
 == Using of callback functions ==
 TODO
