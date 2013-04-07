@@ -27,6 +27,32 @@ MessageBox("Title of Box", "My important message");
 What is happened? First of all we load user32.dll. Then we allocate buffer for all parameters of function to be called. In our case MessageBox has 4 "Int32" parameters. We put parameter values into buffer. At the end we use call method of library instance to call MessageBoxW. It is unicode version of MessageBox. Call method looks for  pointer to MessageBoxW in user32.dll, copies paramBuf on stack and then calls pointed function. 
 
 == Using of callback functions ==
+{{{
+function EnumWindows(){
+  var EnumWindowsProcCfg = {
+    handles:[],
+    cmd:function(hwnd, lParam){
+		this.handles.push(hwnd);
+		return true; // continue enumeration
+	}
+  };
+  
+  var EnumWindowsProc = System.registerCallback(EnumWindowsProcCfg, 2 * 4);
+  
+  var lib = System.loadLibrary("user32.dll");
+  var paramBuf = lib.alloc(2 * 4);
+  
+  lib.writeDWord(paramBuf, 0, EnumWindowsProc);
+  lib.writeDWord(paramBuf, 4, 0);
+  
+  lib.call("EnumWindows", paramBuf);
+ 
+  return EnumWindowsProcCfg.handles;
+};
+
+alert(EnumWindows().length);
+
+}}}
 TODO
 
 == Some thoughts about memory usage ==
