@@ -114,8 +114,6 @@ CEditor::CEditor(HWND nppHandle):CComDispatch(),m_Accelerators(nppHandle){
 	// create views
 	for(int i=0; i<m_ViewsNumber; i++){
 		m_Views[i] = new CEditorView(i+1);
-		// avoid destroing of views after first using
-		m_Views[i]->AddRef();
 	}
 
 	
@@ -125,8 +123,6 @@ CEditor::CEditor(HWND nppHandle):CComDispatch(),m_Accelerators(nppHandle){
 	mi.fMask = MIM_STYLE | MIM_APPLYTOSUBMENUS;
 	mi.dwStyle = MNS_NOTIFYBYPOS;
 	BOOL res = SetMenuInfo( m_mainMenu, &mi);	
-
-	AddRef();
 }
 
 void CEditor::getViewAndPosFrom(SCNotification* eventArgs, int* view, int* pos){

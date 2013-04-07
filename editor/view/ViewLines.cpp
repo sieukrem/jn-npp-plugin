@@ -32,7 +32,6 @@ ViewLines::ViewLines(CEditorView* v):CComDispatch(){
 
 HRESULT STDMETHODCALLTYPE ViewLines::get( int line, IViewLine **result){
 	*result = new ViewLine(line, m_View);
-	(*result)->AddRef(); 
 
 	return S_OK;
 }
