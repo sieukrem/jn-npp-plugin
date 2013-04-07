@@ -77,7 +77,7 @@ void MyActiveSite::CloseScript(){
 void MyActiveSite::ReleaseScriptElement(IDispatchEx** elem){
 	SCRIPTSTATE scrstate;
 	HRESULT res = m_ActiveScript->GetScriptState(&scrstate);
-	if (res==S_OK && scrstate==SCRIPTSTATE_STARTED && elem != NULL && *elem!=NULL){
+	if (res==S_OK && (scrstate & (SCRIPTSTATE_STARTED|SCRIPTSTATE_INITIALIZED))!=0 && elem != NULL && *elem!=NULL){
 		(*elem)->Release();
 	}
 	*elem = NULL;
@@ -174,7 +174,6 @@ IDispatchEx* MyActiveSite::createObj(TCHAR* ctorName){
 	dexActiveScript->Release();
 
 	IDispatchEx* result = this->queryDispatchEx(var.pdispVal); 
-	//hr = var.pdispVal->QueryInterface(IID_IDispatchEx,(void**) &result);
 	VariantClear(&var);
 
 	return result;
@@ -182,9 +181,8 @@ IDispatchEx* MyActiveSite::createObj(TCHAR* ctorName){
 
 DISPID* MyActiveSite::getDISPID(TCHAR* name, IDispatchEx* obj){
 	DISPID dispid;
-	BSTR mod = SysAllocString((const OLECHAR*)name);
+	SysStr mod(name);
 	HRESULT hr = obj->GetDispID(mod, 0, &dispid);
-	SysFreeString(mod);
 	return (hr == S_OK)?new DISPID(dispid):NULL;		
 }
 
@@ -213,22 +211,26 @@ VARIANT* MyActiveSite::getProperty(TCHAR* name, IDispatchEx* obj, int as){
 
 BOOL MyActiveSite::callMethod(TCHAR* method, IDispatchEx* obj){
 	DISPID* dispid = getDISPID(method, obj);
-	if (dispid){
-		// Invoke method with "this" pointer
-		VARIANTARG var[1];
-		var[0].vt = VT_DISPATCH;
-		var[0].pdispVal = obj;
+	if (!dispid)
+		return false;
+	
+	// Invoke method with "this" pointer
+	VARIANTARG var[1];
+	var[0].vt = VT_DISPATCH;
+	var[0].pdispVal = obj;
 
-		DISPID putid = DISPID_THIS;
-		DISPPARAMS dispparams;
-		dispparams.rgvarg = var;
-		dispparams.rgdispidNamedArgs = &putid;
-		dispparams.cArgs = 1;
-		dispparams.cNamedArgs = 1;
-		HRESULT res = obj->InvokeEx(*dispid, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &dispparams, NULL, NULL, NULL);
-		delete dispid;
-	}
-	return dispid != NULL;
+	DISPID putid = DISPID_THIS;
+	DISPPARAMS dispparams;
+	dispparams.rgvarg = var;
+	dispparams.rgdispidNamedArgs = &putid;
+	dispparams.cArgs = 1;
+	dispparams.cNamedArgs = 1;
+
+	HRESULT res = obj->InvokeEx(*dispid, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &dispparams, NULL, NULL, NULL);
+	
+	delete dispid;
+
+	return true;
 }
 
 BOOL MyActiveSite::callMethod(TCHAR* method, IDispatchEx* obj, int value){

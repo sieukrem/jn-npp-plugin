@@ -35,8 +35,6 @@ CallBack::CallBack(unsigned int stacksize, IDispatchEx* cfg, unsigned int num):C
 	cfg->AddRef();
 	m_Num = num;
 	*CallBack::GetCallBack(num) = this;
-
-	AddRef();
 }
 
 DWORD CallBack::Call(void* ebp){

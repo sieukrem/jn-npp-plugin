@@ -144,19 +144,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		[helpstring("Writes INT64 from value to dest beginning at pos.")]
 					HRESULT writeInt64([in]BSTR dest, [in]unsigned int pos, [in]VARIANT value);
 
-		[helpstring("Reads BYTE from value to src beginning at pos.")]
+		[helpstring("Reads BYTE from src beginning at pos.")]
 					HRESULT readByte([in]BSTR src, [in]unsigned int pos, [out, retval]VARIANT* result);
 
-		[helpstring("Reads WORD from value to src beginning at pos.")]
+		[helpstring("Reads WORD from src beginning at pos.")]
 					HRESULT readWord([in]BSTR src, [in]unsigned int pos, [out, retval]VARIANT* result);
 
-		[helpstring("Reads DWORD from value to src beginning at pos.")]
+		[helpstring("Reads DWORD from src beginning at pos.")]
 					HRESULT readDWord([in]BSTR src, [in]unsigned int pos, [out, retval]VARIANT* result);
 
-		[helpstring("Reads INT64 from value to src beginning at pos.")]
+		[helpstring("Reads INT64 from src beginning at pos.")]
 					HRESULT readInt64([in]BSTR src, [in]unsigned int pos, [out, retval]VARIANT* result);
 
-		[helpstring("Reads (4 Bytes) from value to src beginning at pos and interprets it as BSTR.")]
+		[helpstring("Reads (4 Bytes) from src beginning at pos and interprets it as BSTR.")]
 					HRESULT readBSTR([in]BSTR src, [in]unsigned int pos, [out, retval]BSTR* result);
 
 

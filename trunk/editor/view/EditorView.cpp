@@ -321,10 +321,7 @@ HRESULT STDMETHODCALLTYPE CEditorView::get_lineCount(int* line){
 }
 
 HRESULT STDMETHODCALLTYPE CEditorView::get_lines(IViewLines** result){
-	ViewLines* vl = new ViewLines(this);
-	vl->AddRef();
-
-	*result = vl;
+	*result = new ViewLines(this);
 
 	return S_OK;
 }

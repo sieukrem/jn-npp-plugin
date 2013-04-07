@@ -27,8 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Library::Library(BSTR* path):CComDispatch()
 {
 	m_Handle = LoadLibrary(*path);
-
-	AddRef();
 }
 
 HMODULE Library::handle(){
