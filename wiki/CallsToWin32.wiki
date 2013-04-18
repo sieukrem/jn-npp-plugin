@@ -32,8 +32,8 @@ Some of Win32 API functions use callback function mechanism to provide informati
 function EnumWindows(){
   var EnumWindowsProcCfg = {
     handles:[],
-    cmd:function(hwnd, lParam){
-           this.handles.push(hwnd);
+    cmd:function(buf){
+           this.handles.push(buf);
            return true; // continue enumeration
 	}
   };
