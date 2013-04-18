@@ -48,6 +48,9 @@ DWORD CallBack::Call(void* ebp){
 
 	MyActiveSite::callMethod(TEXT("cmd"), m_Cfg, var, 1, &result);
 
+	VARTYPE type = VT_UI4;
+	HRESULT hr = VariantChangeType(&result, &result, 0, type);
+	
 	DWORD dwResult = 0;
 	dwResult = result.uintVal;
 
