@@ -27,7 +27,7 @@ MessageBox("Title of Box", "My important message");
 What happened? First of all we load user32.dll into the address space of Notepad++. Then we allocate buffer for all parameters of function to be called. In our case MessageBox has 4 "Int32" parameters. We put parameter values into buffer. At the end we use call method of library instance to call MessageBoxW. It is unicode version of MessageBox. Call method retrieves address of MessageBoxW from user32.dll, places paramBuf on stack and then calls addressed function. 
 
 == Using of callback functions ==
-Some of Win32 API functions use callback function mechanism to provide informations to us. I think it makes some algorithms more performant and reduces memory consumption. Our next candidate is [http://msdn.microsoft.com/en-us/library/windows/desktop/ms633497.aspx EnumWindows]. This function uses a callback function to provide HWND of next window to calling program.
+Some of Win32 API functions use callback function mechanism to provide informations to us. I think it makes some algorithms more performant and reduces memory consumption. Our next candidate is [http://msdn.microsoft.com/en-us/library/windows/desktop/ms633497.aspx EnumWindows]. This function enumerates all top-level windows and uses a callback function to provide HWND of next window to calling program.
 {{{
 function EnumWindows(){
   var EnumWindowsProcCfg = {
@@ -54,7 +54,8 @@ function EnumWindows(){
 alert(EnumWindows().length);
 
 }}}
-TODO
+
+It is not possible to get an address of an JavaScript function and use it like Win32 function. Hence it was necessary to create native wrapper function that is able to call specified JavaScript function. To make this object oriented way we use an Object with required member function named _cmd_ instead of naked function. System.registerCallback function takes our _Cfg_ object and number of bytes necessary for parameters of callback and returns us a wraper object we can use like a pointer to a native callback function.
 
 == Some thoughts about memory usage and GC ==
 TODO
