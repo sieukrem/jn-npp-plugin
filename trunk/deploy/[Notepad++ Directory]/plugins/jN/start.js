@@ -170,19 +170,30 @@ function Listener(eventNames){
 		}
 	};
 };
+
 /**
-	Is an Interface for Setting and Reading of Settings
-	get(name);
-	set(name,valueStr);
+	Define global JSON object if native one is not 
+	available. Native JSON object has more stable 
+	implementation.
 */
-function Settings(file){
-	var settings = null;
-	var reg = /\"/g;
-	var direct = function(v){return v;};
-	var conv = {
+(function(){
+	if (typeof(JSON) != "undefined")
+		return;
+		
+	var rexQuote = /\"/g;
+	var rexSlash = /\\/g;
+	
+	function direct(v){
+		return v;
+	};
+	function unk2str(unk){
+		var type = typeof(unk);
+		return conv[(type == "object" && unk.join) ?"array":type](unk);
+	};
+	var	conv = {
 		"boolean"	: direct,
-		"string"	: function(str){	return  '"'+str.replace(reg, '\\"')+'"';},
-		"number" 	:direct,
+		"string"	: function(str){	return  '"'+str.replace(rexSlash, '\\\\').replace(rexQuote, '\\"')+'"';},
+		"number" 	: direct,
 		"object" 	:function(obj){
 						var r = "", comma = "";
 						for(var el in obj){
@@ -202,18 +213,33 @@ function Settings(file){
 		"undefined"	:direct,
 		"function"	:direct
 	};
-	var unk2str = function(unk){
-		var type = typeof(unk);
-		return conv[(type == "object" && unk.join) ?"array":type](unk);
-	};
 	
+	JSON = {
+		stringify : function(value){
+			return unk2str(value);
+		},
+		parse : function(str){
+			return eval("(" + str + ")");
+		}
+	};
+})();
+	
+
+
+/**
+	Is an Interface for Setting and Reading of Settings
+	get(name);
+	set(name,valueStr);
+*/
+function Settings(file){
+	var settings = null;
 	
 	var save = function(){
 		var fso = new ActiveXObject("Scripting.FileSystemObject");
 		var f,e;
 		try{
 			f = fso.OpenTextFile(file,2, true,-1); // for writing ASCII
-			f.Write(unk2str(settings));
+			f.Write(JSON.stringify(settings));
 		}catch(e){
 			debug(e);
 		}
@@ -233,7 +259,7 @@ function Settings(file){
 						if (scr && scr.length>0){
 								if (scr.charCodeAt(0)==65279) 	// is UTF-8 with BOM
 									scr[0] = ' ';				// replace BOM with space symbol
-								settings = eval("("+scr+")");
+								settings = JSON.parse(scr);
 						}
 					}catch(e){
 						debug(e);
