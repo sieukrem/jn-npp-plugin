@@ -68,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="shlwapi.lib"
+				AdditionalDependencies="$(InputDir)Common\Scripting\ad1.lib shlwapi.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="0"
 				GenerateDebugInformation="true"
@@ -155,9 +155,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="shlwapi.lib"
+				AdditionalOptions="/FORCE:MULTIPLE"
+				AdditionalDependencies="uuid.lib $(InputDir)Common\Scripting\ad1.lib shlwapi.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="0"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"

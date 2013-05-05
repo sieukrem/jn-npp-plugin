@@ -32,6 +32,25 @@ MyActiveSite::MyActiveSite(){
 		(void **)&m_ActiveScript
 	);
 
+	CoCreateInstance(
+			CLSID_ProcessDebugManager, NULL,
+			CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER,
+            IID_IProcessDebugManager, (void **)&m_Pdm
+	);
+
+	if (m_Pdm){
+		m_Pdm->GetDefaultApplication(&m_App);
+		if (m_App){
+			// m_App->SetName(TEXT("jN for Notepad++"));
+
+			m_Pdm->CreateDebugDocumentHelper(NULL, &m_Doc);
+			if (m_Doc){
+				m_Doc->Init(m_App, TEXT("Start"), TEXT("Start"), TEXT_DOC_ATTR_READONLY);
+				m_Doc->Attach(NULL);
+			}
+		}
+	}
+
 	res = m_ActiveScript->QueryInterface(IID_IActiveScriptParse, (void **)&m_ActiveScriptParse);
 
 	// set newest language feature set 2 == (5.8)
@@ -290,8 +309,27 @@ void MyActiveSite::Connect(){
 }
 
 void MyActiveSite::runScript(BSTR script){
+	IDebugDocumentHelper* parent = m_Doc;
+
+	if (m_App){
+		// m_App->SetName(TEXT("jN for Notepad++"));
+		IDebugDocumentHelper* doc;
+		m_Pdm->CreateDebugDocumentHelper(NULL, &doc);
+		if (doc){
+			HRESULT res = doc->Init(m_App, TEXT("1"), TEXT("2"), TEXT_DOC_ATTR_READONLY);
+			res = doc->Attach(parent);
+			res = doc->AddUnicodeText(script);
+			res = doc->DefineScriptBlock(0, SysStringLen(script), m_ActiveScript, false, NULL);
+			m_Doc.m_Reference = doc;
+		}
+	}
+
    EXCEPINFO ei;
    HRESULT hr = m_ActiveScriptParse->ParseScriptText((LPCOLESTR)script, NULL/*OLESTR("MyObject")*/, NULL, NULL, 0, 0, 0L, NULL, &ei);
+
+   if (m_Doc){
+	   m_Doc.m_Reference = parent;
+   }
 }
 
 // Методы IActiveScriptSite...

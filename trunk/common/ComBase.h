@@ -52,6 +52,10 @@ public:
 		return &(void*)m_Reference;
 	}
 
+	operator bool(){
+		return m_Reference != NULL;
+	}
+
 	operator T*(){
 		return m_Reference; 
 	}
