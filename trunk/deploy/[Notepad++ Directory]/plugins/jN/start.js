@@ -341,7 +341,7 @@ var loadIdleHandler = {
 				try{
 					if (scr.charCodeAt(0)==65279) 	// is UTF-8 with BOM
 						scr[0] = ' ';				// replace BOM with space symbol
-					addScript(scr);//eval(scr);
+					addScript(scr, file);
 				}catch(e){
 					this.errors.push(e);
 				}

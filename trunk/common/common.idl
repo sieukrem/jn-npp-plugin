@@ -202,7 +202,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 		[helpstring("Runs the given javascript expression. Prefer this function to javascript's eval. "
 					"It allows you to get the script position in case of errors.")]
-					HRESULT addScript( [in]BSTR* value);
+					HRESULT addScript( [in]BSTR* value, [in, optional] BSTR* name);
 
 		[helpstring("Appends a new timer to the queue. cfg = {millis:1234, cmd:function(){}}")]
 					HRESULT setTimeout([in]IDispatch* cfg);
