@@ -61,14 +61,14 @@ public:
 		return *this;
 	}
 
-	void Set(TCHAR* value){
+	void Set(const TCHAR* value){
 		Free();
 
 		if (value)
 			m_Str = SysAllocString(value);
 	}
 
-	SysStr(TCHAR* value){
+	SysStr(const TCHAR* value){
 		m_Str = NULL;
 		
 		Set(value);

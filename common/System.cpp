@@ -245,9 +245,9 @@ HRESULT STDMETHODCALLTYPE System::addIdleHandler(IDispatch* cfg){
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE System::addScript(BSTR* value){
+HRESULT STDMETHODCALLTYPE System::addScript(BSTR* value, BSTR* name){
 	if (value != NULL){
-		m_ActiveSite.runScript(*value);
+		m_ActiveSite.runScript(*value, *name);
 	}
 
 	return S_OK;
