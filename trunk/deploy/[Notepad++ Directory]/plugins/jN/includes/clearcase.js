@@ -1,4 +1,4 @@
-﻿(function(){
+(function(){
 	var helperCC = null; 
 	try{
 		helperCC = new ActiveXObject("ClearCase.Application");
@@ -6,130 +6,165 @@
 		// ClearCase is not installed
 	}
 
-	if (helperCC){
-		var ccMenu = Editor.addMenu("ClearCase");
-		var ccObjects = {
-			openVersionTree	: ccMenu.addItem({
-				text:"Open Version Tree",
-				cmd:function(){
-					var fileFullPath = Editor.currentView.files[Editor.currentView.file];
-					var shell = new ActiveXObject("WScript.Shell");
-					if (shell && fileFullPath){
-						shell.run('clearvtree \"'+fileFullPath+'\"');
-					}		
-				}
-			}),
-			openVersionProperties	: ccMenu.addItem({
-				text:"Open Version Properties",
-				cmd:function(){
-					var fileFullPath = Editor.currentView.files[Editor.currentView.file];
-					var shell = new ActiveXObject("WScript.Shell");
-					if (shell && fileFullPath){
-						shell.run('cleardescribe \"'+fileFullPath+'\"');
-					}		
-				}
-			}),
-			openPreviousVersion: ccMenu.addItem({
-				text:"Open Previous Version",
-				cmd:function(){
-					var file = Editor.currentView.files[Editor.currentView.file];
-					var version;
-					try{
-						version = ccObjects.helperCC.Version(file);
-						version = version.Predecessor;
-						open(version.ExtendedPath);
-						MenuCmds.VIEW_GOTO_ANOTHER_VIEW();
-					}catch(e){
-						debug(e);
-					}				
-					
-				}
-			}),
-			sepNull:ccMenu.addSeparator(),
-			runShell:function(cmd){
-				var shell = new ActiveXObject("WScript.Shell");
-				if (shell && cmd)
-					shell.run(cmd);
-			},
-			getFile:function(){
-				return Editor.currentView.files[Editor.currentView.file];
-			},
-			checkOut:ccMenu.addItem({
-				text:"Check Out...",
-				cmd:function(){
-					ccObjects.runShell("cleardlg /window 2808d6 /windowmsg A065 /checkout \""+ccObjects.getFile()+'\"');
-				}
-			}),
-			undoCheckOut:ccMenu.addItem({
-				text:"Undo Checkout...",
-				cmd:function(){
-					ccObjects.runShell("cleardlg /window 2808d6 /windowmsg A065 /uncheckout \""+ccObjects.getFile()+'\"');
-				}
-			}),
-			checkIn:ccMenu.addItem({
-				text:"Check In...",
-				cmd:function(){
-					ccObjects.runShell("cleardlg /window 2808d6 /windowmsg A065 /checkin \""+ccObjects.getFile()+'\"');
-				}
-			}),
-			sepNull:ccMenu.addSeparator(),
-			addToSourceControl	: ccMenu.addItem({
-				text:"Add to Source Control...",
-				cmd:function(){
-					ccObjects.runShell('cleardlg /window 510562 /windowmsg A065 /addtosrc \"'+ccObjects.getFile()+'\"');
-				}
-			}),
-			helperFSO	: new ActiveXObject("Scripting.FileSystemObject"),
-			helperCC	: helperCC,
-			
-			getView	:function(file){
-				try{
-					return this.helperCC.View(file);//e.item().ShareName);
-				}catch(ex){
-					// this.msg(ex.description);
-				}
-				return false;
-			},
-			msgON	: false,// ccSM.checked,
-			msg		: function(msg){
-				if (this.msgON)
-					alert(msg);
-			},
-			// event handler
-			READONLYCHANGED :function(){
-				this.BUFFERACTIVATED(currentView);
-			},
-			BUFFERACTIVATED	:function(v){
-				var file = v.files[v.file];
-				var ccView = this.getView(file);
-				var version = null;
-				var predecessor = null;
-				ccMenu.disabled = !ccView;
-				if(ccView){
-					try{
-						version = this.helperCC.Version(file);
-						predecessor = version.Predecessor;
-					}catch(e){
-						//debug(e);
-					}
+	if (!helperCC)
+		return;
 
-					this.addToSourceControl.disabled = !ccView || (ccView!=null && version!=null);
-					
-					this.undoCheckOut.disabled = (!version || !version.IsCheckedOut);
-					this.checkOut.disabled = (!version || version.IsCheckedOut);
-					this.checkIn.disabled = (!version || !version.IsCheckedOut);
-					
-					this.openVersionTree.disabled = !version;
-					this.openVersionProperties.disabled = !version;
-					this.openPreviousVersion.disabled = !predecessor;
-				}else{
-					return;
-				}
+	var shell = new ActiveXObject("WScript.Shell");
+	if (!shell)
+		return;
+		
+	function getFile(){
+		return Editor.currentView.files[Editor.currentView.file];
+	};
+
+	var updateOnInitPopupFn = [];
+	
+	var ccMenu = Editor.addMenu({
+		text:"ClearCase",
+		get:function(name,file){
+			try{
+				return helperCC[name](file);
+			}catch(ex){
+				//alert(ex.message);
 			}
-		};
-		// do first check
-		ccObjects.BUFFERACTIVATED(Editor.currentView);
+			return null;			
+		},
+		oninitpopup:function(){
+			var fileFullPath = getFile();
+			var version = this.get("Version", fileFullPath);
+			var view =    this.get("View", fileFullPath);
+			//var ccDir  = this.getView(fileFullPath.replace(/\\[^\\]+$/, ""));
+			
+			for(var i=0; i<updateOnInitPopupFn.length; i++){
+				updateOnInitPopupFn[i](fileFullPath, version, view);
+			}
+		}
+	});
 
-		GlobalListener.addListener(ccObjects);
+	
+	var	openVersionTree = ccMenu.addItem({
+		text:"Open Version Tree",
+		cmd:function(){
+			shell.run('clearvtree \"'+getFile()+'\"');
+		}
+	});
+	var	openVersionHistory = ccMenu.addItem({
+		text:"Open Version History",
+		cmd:function(){
+			shell.run('clearhistory \"'+getFile()+'\"');
+		}
+	});
+	var	openVersionProperties = ccMenu.addItem({
+		text:"Open Version Properties",
+		cmd:function(){
+			shell.run('cleardescribe \"'+getFile()+'\"');
+		}
+	});
+
+	ccMenu.addSeparator();
+	
+	var	compareWithPreviousVersion = ccMenu.addItem({
+		text:"Compare with previous Version",
+		cmd:function(){
+			shell.run('cleartool diff -g -pre \"'+getFile()+'\"', 0);
+		}
+	});
+	
+	var	openPreviousVersion = ccMenu.addItem({
+		text:"Open Previous Version",
+		getTempFile:function(file){
+			var m = file.match(/\\([^\\]*)\.(.*)$/);
+			var extension = m[2];
+			var name = m[1];
+			var timestamp = new Date().getTime();
+			var tempFolder = shell.ExpandEnvironmentStrings("%Temp%");
+			var tempFile = tempFolder + '\\'+ name +"_"+ timestamp + '.' + extension;
+			
+			return tempFile;
+		},
+		exists:function(file){
+			var fso = new ActiveXObject("Scripting.FileSystemObject");
+			return fso.FileExists(file);
+		},
+		cmd:function(){
+			var file = Editor.currentView.files[Editor.currentView.file];
+			var	version = helperCC.Version(file);
+			var pred = version.Predecessor.ExtendedPath;
+			if (!this.exists(pred)){
+				var tmp = this.getTempFile(file);
+				shell.run("cleartool get -to \"" + tmp + "\" \"" + pred + "\"", 0, true);
+				pred = tmp;
+			}
+			open(pred);
+			
+			MenuCmds.VIEW_GOTO_ANOTHER_VIEW();
+		}
+	});
+		
+	ccMenu.addSeparator();
+	
+	var	checkOut = ccMenu.addItem({
+		text:"Check Out...",
+		cmd:function(){
+			shell.run("cleardlg /window 2808d6 /windowmsg A065 /checkout \""+getFile()+'\"');
+		}
+	});
+	
+	var	undoCheckOut = ccMenu.addItem({
+		text:"Undo Checkout...",
+		cmd:function(){
+			shell.run("cleardlg /window 2808d6 /windowmsg A065 /uncheckout \""+getFile()+'\"');
+		}
+	});
+	
+	var	checkIn = ccMenu.addItem({
+		text:"Check In...",
+		cmd:function(){
+			shell.run("cleardlg /window 2808d6 /windowmsg A065 /checkin \""+getFile()+'\"');
+		}
+	});
+	
+	var	undoHijack = ccMenu.addItem({
+		text:"Undo Hijack",
+		cmd:function(){
+			shell.run('cleartool update -force -rename \"'+getFile()+'\"', 0);
+		}
+	});
+	
+	ccMenu.addSeparator();
+	var	addToSourceControl = ccMenu.addItem({
+		text:"Add to Source Control...",
+		cmd:function(){
+			shell.run('cleardlg /window 510562 /windowmsg A065 /addtosrc \"'+getFile()+'\"');
+		}
+	});
+	
+	ccMenu.addSeparator();
+	
+	var	findCheckout = ccMenu.addItem({
+		text:"Find checkouts...",
+		cmd:function(){
+			var fileFullPath = getFile();
+			fileFullPath = fileFullPath.substring(0,fileFullPath.lastIndexOf("\\")) // current folder
+			fileFullPath = fileFullPath.substring(0,fileFullPath.lastIndexOf("\\")) // up one level
+			shell.run('clearfindco \"'+fileFullPath+'\"', 0);
+		}
+	});
+
+	function uFn(m, fn){
+		return function(file,version, view){ return fn(m, file, version, view); }
 	}
+	
+	updateOnInitPopupFn.push(uFn(openVersionHistory,  function(m, file,version, view){m.disabled = !version;}));
+	updateOnInitPopupFn.push(uFn(compareWithPreviousVersion,  function(m, file,version, view){m.disabled = !version || !version.Predecessor || version.isHijacked;}));
+	updateOnInitPopupFn.push(uFn(addToSourceControl,  function(m, file,version, view){m.disabled = !view    || !!version;}));
+	updateOnInitPopupFn.push(uFn(checkOut,            function(m, file,version, view){m.disabled = !version || version.IsCheckedOut;}));
+	updateOnInitPopupFn.push(uFn(checkIn,             function(m, file,version, view){m.disabled = !version || !version.IsCheckedOut;}));
+	updateOnInitPopupFn.push(uFn(undoCheckOut,        function(m, file,version, view){m.disabled = !version || !version.IsCheckedOut;}));
+	updateOnInitPopupFn.push(uFn(undoHijack,          function(m, file,version, view){m.disabled = !version || !version.isHijacked;}));
+	updateOnInitPopupFn.push(uFn(openVersionTree,     function(m, file,version, view){m.disabled = !version;}));
+	updateOnInitPopupFn.push(uFn(openVersionProperties, function(m, file,version, view){m.disabled = !version;}));
+	updateOnInitPopupFn.push(uFn(openPreviousVersion, function(m, file,version, view){m.disabled = !version || !version.Predecessor;}));
+	updateOnInitPopupFn.push(uFn(findCheckout,        function(m, file,version, view){m.disabled = !view;}));
+	
 })();
