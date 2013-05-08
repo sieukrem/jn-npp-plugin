@@ -356,7 +356,6 @@ LRESULT CEditorView::OnMessage(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
 				VARIANT var[1];
 				var[0].vt = VT_DISPATCH;
 				var[0].pdispVal = this; 
-				AddRef(); // avoid releasing of view after call is done
 				
 				MyActiveSite::callMethod(TEXT("CLICK"), m_Listener, var, 1);
 			}
