@@ -23,8 +23,6 @@ EXTERN_C const GUID DECLSPEC_SELECTANY CLSID_JSScript = { 0xf414c260, 0x6ac0, 0x
 
 MyActiveSite::MyActiveSite(){
 
-	AddRef();
-
 	HRESULT res = CoCreateInstance(
 		CLSID_JSScript, 
 		NULL, CLSCTX_INPROC_SERVER,
@@ -32,31 +30,19 @@ MyActiveSite::MyActiveSite(){
 		(void **)&m_ActiveScript
 	);
 
-	res = CoCreateInstance(
-		CLSID_ProcessDebugManager, NULL,
-		CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER,
-        IID_IProcessDebugManager, (void **)&m_Pdm
-	);
-
-	if (m_Pdm){
-		m_Pdm->GetDefaultApplication(&m_App);
-		if (m_App){
-			m_App->SetName(TEXT("jN - a Notepad++ plugin"));
-		}
-	}
+	m_Assd.m_Reference = new ActiveScriptSiteDebug(TEXT("jN - a Notepad++ plugin"), m_ActiveScript);
 
 	res = m_ActiveScript->QueryInterface(IID_IActiveScriptParse, (void **)&m_ActiveScriptParse);
 
 	// set newest language feature set 2 == (5.8)
-	IActiveScriptProperty* prop;
-	res = m_ActiveScript->QueryInterface(IID_IActiveScriptProperty, (void **)&prop);
-	if (res == S_OK){
+	LocRef<IActiveScriptProperty> prop;
+	m_ActiveScript->QueryInterface(IID_IActiveScriptProperty, (void**)&prop);
+	if (prop){
 		DWORD _SCRIPTPROP_INVOKEVERSIONING = 0x00004000;
 		VARIANT v;
 		v.intVal = 2;
 		v.vt = VT_I4;
 		res = prop->SetProperty( _SCRIPTPROP_INVOKEVERSIONING, NULL, &v);
-		prop->Release();
 	}
 
 
@@ -97,25 +83,23 @@ void MyActiveSite::ReleaseScriptElement(IDispatchEx** elem){
 }
 
 void MyActiveSite::Throw(TCHAR* errmsg, REFGUID refguid){
-	ICreateErrorInfo *pcerrinfo;
-	IErrorInfo *perrinfo;
+	LocRef<ICreateErrorInfo> pcerrinfo;
+	LocRef<IErrorInfo> perrinfo;
 
 	SysStr errMsg(errmsg);
 
-	HRESULT hr;
-	hr = CreateErrorInfo(&pcerrinfo);
-	if (SUCCEEDED(hr)){
-		pcerrinfo->SetDescription(errMsg);
-		pcerrinfo->SetGUID(refguid);
+	HRESULT hr = CreateErrorInfo(&pcerrinfo);
+	if (FAILED(hr))
+		return;
+	
+	pcerrinfo->SetDescription(errMsg);
+	pcerrinfo->SetGUID(refguid);
 
-		hr = pcerrinfo->QueryInterface(IID_IErrorInfo, (LPVOID FAR*) &perrinfo);
-		if (SUCCEEDED(hr)){
-		  SetErrorInfo(0, perrinfo);
-		  perrinfo->Release();
-		}
-
-		pcerrinfo->Release();
-	}
+	hr = pcerrinfo->QueryInterface(IID_IErrorInfo, (LPVOID FAR*) &perrinfo);
+	if (FAILED(hr))
+		return;
+	
+	SetErrorInfo(0, perrinfo);
 }
 
 MyActiveSite::~MyActiveSite(void){
@@ -128,9 +112,6 @@ MyActiveSite::~MyActiveSite(void){
 	if (m_ActiveScriptParse!=NULL){
 		m_ActiveScriptParse->Release();
 		m_ActiveScriptParse = NULL;
-	}
-	if (m_App){
-		m_App->Close();
 	}
 }
 
@@ -156,6 +137,9 @@ void MyActiveSite::addNamedItem(TCHAR* name, IUnknown* item, bool global){
 	hr = m_ActiveScript->AddNamedItem(name, flags);
 }
 IDispatchEx* MyActiveSite::queryDispatchEx(IDispatch* obj){
+	if (!obj)
+		return NULL;
+
 	IDispatchEx* result;
 	HRESULT hr = obj->QueryInterface(IID_IDispatchEx,(void**) &result);
 	return result;
@@ -167,28 +151,28 @@ IDispatchEx* MyActiveSite::createObj(TCHAR* ctorName){
 	VARIANT var;
 	DISPPARAMS dispparamsNoArgs = {NULL, NULL, 0, 0};
 
-	IDispatch* disActiveScript;
-	hr = m_ActiveScript->GetScriptDispatch(NULL, (IDispatch**) &disActiveScript);
+	LocRef<IDispatch> disActiveScript;
+	hr = m_ActiveScript->GetScriptDispatch(NULL, &disActiveScript);
 
-	IDispatchEx* dexActiveScript = this->queryDispatchEx(disActiveScript);
-	disActiveScript->Release();
+	if(!disActiveScript)
+		return NULL;
+
+	LocRef<IDispatchEx> dexActiveScript(MyActiveSite::queryDispatchEx(disActiveScript));
 	
-	dispid = getDISPID(ctorName, dexActiveScript);
-	if (dispid){
-		hr = dexActiveScript->InvokeEx(
-				*dispid, 
-				LOCALE_USER_DEFAULT, 
-				DISPATCH_CONSTRUCT,
-				&dispparamsNoArgs,
-				&var,
-				NULL,
-				NULL);
-		delete dispid;
-	}
+	dispid = MyActiveSite::getDISPID(ctorName, dexActiveScript);
+	if (!dispid)
+		return NULL;
 
-	dexActiveScript->Release();
+	hr = dexActiveScript->InvokeEx(
+			*dispid, 
+			LOCALE_USER_DEFAULT, 
+			DISPATCH_CONSTRUCT,
+			&dispparamsNoArgs,
+			&var,
+			NULL,
+			NULL);
 
-	IDispatchEx* result = this->queryDispatchEx(var.pdispVal); 
+	IDispatchEx* result = MyActiveSite::queryDispatchEx(var.pdispVal); 
 	VariantClear(&var);
 
 	return result;
@@ -261,38 +245,37 @@ BOOL MyActiveSite::callMethod(TCHAR* method, IDispatchEx* obj, BSTR value){
 	arg.vt		= VT_BSTR;
 	return callMethod(method, obj, &arg,1);
 }
-// cleans arg at the end
+
 BOOL MyActiveSite::callMethod(TCHAR* method, IDispatchEx* obj,VARIANTARG* arg, int count, VARIANT* result){ 
 	DISPID* dispid = getDISPID(method, obj);
-	if (dispid){
+	if (!dispid)
+		return false;	
+	
+	// Invoke method with "this" pointer
+	VARIANTARG* var = new VARIANTARG[1+count];
+	var[0].vt = VT_DISPATCH;
+	var[0].pdispVal = obj;
 
-		// Invoke method with "this" pointer
-		VARIANTARG* var = new VARIANTARG[1+count];
-		var[0].vt = VT_DISPATCH;
-		var[0].pdispVal = obj;
+	// revert positions of args
+	for (int i=1,j=count-1; i <= count; i++, j--)
+		var[i] = arg[j];
 
-		// revert positions of args
-		for (int i=1,j=count-1; i <= count; i++, j--)
-			var[i] = arg[j];
+	DISPID putid = DISPID_THIS;
+	DISPPARAMS dispparams;
+	dispparams.rgvarg = var;
+	dispparams.rgdispidNamedArgs = &putid;
+	dispparams.cArgs = 1 + count;
+	dispparams.cNamedArgs = 1;
+	HRESULT res = obj->InvokeEx(*dispid, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &dispparams, result, NULL, NULL);
 
-		DISPID putid = DISPID_THIS;
-		DISPPARAMS dispparams;
-		dispparams.rgvarg = var;
-		dispparams.rgdispidNamedArgs = &putid;
-		dispparams.cArgs = 1 + count;
-		dispparams.cNamedArgs = 1;
-		HRESULT res = obj->InvokeEx(*dispid, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &dispparams, result, NULL, NULL);
-		delete dispid;
-		delete var;
-	} 
+	delete dispid;
+	delete[] var;
 
-	for(int i=0; i<count; i++)
-		VariantClear(&arg[i]);
-
-	return dispid != NULL;
+	return true;
 }
 void MyActiveSite::pushValueInToArr(IDispatchEx* arr, TCHAR* value){
-	callMethod(TEXT("push"),arr,SysAllocString((const OLECHAR*)value));
+	SysStr str(value);
+	callMethod(TEXT("push"),arr, str);
 }
 
 void MyActiveSite::Connect(){
@@ -305,35 +288,25 @@ void MyActiveSite::Connect(){
 }
 
 void MyActiveSite::runScript(BSTR script, BSTR name){
-	IDebugDocumentHelper* parent = m_Doc;
 
-	if (m_App){
-		IDebugDocumentHelper* doc;
-		m_Pdm->CreateDebugDocumentHelper(NULL, &doc);
+	DWORD ctx = 0;
+	if (m_Assd)
+		ctx = m_Assd->AddScript(script, name);
 
-		if (doc){
-			TCHAR buf[100];
-			if (name == 0){
-				StringCbPrintf(buf, sizeof(buf) , TEXT("local_%d.js"), doc);
-				name = buf;
-			}
+	EXCEPINFO ei;
+	HRESULT hr = m_ActiveScriptParse->ParseScriptText(script, NULL, NULL, NULL, ctx, 0, SCRIPTTEXT_HOSTMANAGESSOURCE, NULL, &ei);
+}
 
-			HRESULT res = doc->Init(m_App, name, name, TEXT_DOC_ATTR_READONLY);
-			res = doc->Attach(parent);
-			res = doc->AddUnicodeText(script);
-			res = doc->DefineScriptBlock(0, SysStringLen(script), m_ActiveScript, false, NULL);
-			if (m_Doc)
-				m_Doc.m_Reference = doc;
-		}
+HRESULT __stdcall MyActiveSite::QueryInterface(REFIID riid, LPVOID *ppv){
+	if (S_OK == CComBase<IActiveScriptSite>::QueryInterface(riid, ppv)){
+		return S_OK;
 	}
 
-   EXCEPINFO ei;
-   HRESULT hr = m_ActiveScriptParse->ParseScriptText((LPCOLESTR)script, NULL/*OLESTR("MyObject")*/, NULL, NULL, 0, 0, 0L, NULL, &ei);
+	if (m_Assd && S_OK == m_Assd->QueryInterface(riid, ppv))
+		return S_OK;
 
-   if (m_Doc){
-	   m_Doc.m_Reference = parent;
-   }
-}
+	return E_NOINTERFACE;
+} 
 
 // Методы IActiveScriptSite...
 HRESULT __stdcall MyActiveSite::GetLCID(LCID *plcid) 

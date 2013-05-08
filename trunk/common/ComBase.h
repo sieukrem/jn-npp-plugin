@@ -41,6 +41,13 @@ public:
 		if (m_Reference)
 			m_Reference->Release();
 	}
+	
+	template<class C>
+	void CopyTo(C p){
+		*p = *static_cast<C>(&m_Reference);
+		if (m_Reference)
+			m_Reference->AddRef();
+	}
 
 	operator void**(){
 		// release existing reference

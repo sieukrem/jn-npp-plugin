@@ -48,6 +48,8 @@ DWORD CallBack::Call(void* ebp){
 
 	MyActiveSite::callMethod(TEXT("cmd"), m_Cfg, var, 1, &result);
 
+	SysFreeString(var[0].bstrVal);
+
 	VARTYPE type = VT_UI4;
 	HRESULT hr = VariantChangeType(&result, &result, 0, type);
 	
@@ -228,7 +230,6 @@ HRESULT STDMETHODCALLTYPE System::createDialog(IDispatch* cfg, IDialog** result)
 	Dialog* d = new Dialog(cfgEx, Statics::instance().hWindow);
 	d->Init();
 
-	d->AddRef();
 	*result = d;
 	return S_OK;
 }
@@ -245,9 +246,13 @@ HRESULT STDMETHODCALLTYPE System::addIdleHandler(IDispatch* cfg){
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE System::addScript(BSTR* value, BSTR* name){
+HRESULT STDMETHODCALLTYPE System::addScript(BSTR* value, VARIANT* name){
 	if (value != NULL){
-		m_ActiveSite.runScript(*value, *name);
+		BSTR name_ = NULL;
+		if (name && name->vt == VT_BSTR)
+			name_ = name->bstrVal;
+
+		m_ActiveSite.runScript(*value, name_);
 	}
 
 	return S_OK;
@@ -320,7 +325,7 @@ HRESULT STDMETHODCALLTYPE System::loadLibrary(BSTR* libraryPath, ILibrary** resu
 
 		LastError err;
 
-		m_ActiveSite.Throw(err.message(), __uuidof(ISystem) );
+		MyActiveSite::Throw(err.message(), __uuidof(ISystem) );
 
 		return E_FAIL;
 	} else {
@@ -333,7 +338,7 @@ HRESULT STDMETHODCALLTYPE System::loadLibrary(BSTR* libraryPath, ILibrary** resu
 HRESULT STDMETHODCALLTYPE System::registerCallBack( IDispatch *cfg, unsigned int stacksize, ICallBack **result){
 	CallBack* cb = CallBack::RegisterCallBack(MyActiveSite::queryDispatchEx(cfg),stacksize);
 	if (cb==NULL){
-		m_ActiveSite.Throw(TEXT("All callbacks are in using."), __uuidof(ISystem) );
+		MyActiveSite::Throw(TEXT("All callbacks are in using."), __uuidof(ISystem) );
 		return E_FAIL;
 	}
 

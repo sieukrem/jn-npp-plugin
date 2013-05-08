@@ -211,7 +211,6 @@ void CEditor::CallListener(TCHAR* method, int view, int file){
 		VARIANT var[2];
 		var[0].vt = VT_DISPATCH;
 		var[0].pdispVal = m_Views[view]; 
-		m_Views[view]->AddRef(); // avoid releasing of view after call is done
 
 		var[1].vt = VT_INT;
 		var[1].intVal = file;

@@ -68,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(InputDir)Common\Scripting\ad1.lib shlwapi.lib"
+				AdditionalDependencies="shlwapi.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="0"
 				GenerateDebugInformation="true"
@@ -155,11 +155,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/FORCE:MULTIPLE"
-				AdditionalDependencies="uuid.lib $(InputDir)Common\Scripting\ad1.lib shlwapi.lib"
+				AdditionalDependencies="shlwapi.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="0"
-				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
@@ -376,6 +374,22 @@
 			>
 			<File
 				RelativePath=".\common\AcceleratorTable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\common\ActiveScriptSiteDebug.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\common\ActiveScriptSiteDebug.h"
 				>
 			</File>
 			<File

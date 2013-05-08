@@ -103,7 +103,7 @@ public:
 
 	HRESULT STDMETHODCALLTYPE createDialog(IDispatch* cfg, IDialog** result);
 	HRESULT STDMETHODCALLTYPE addIdleHandler(IDispatch* cfg);
-	HRESULT STDMETHODCALLTYPE addScript(BSTR* value, BSTR* name);
+	HRESULT STDMETHODCALLTYPE addScript(BSTR* value, VARIANT* name);
 
 	HRESULT STDMETHODCALLTYPE setTimeout(IDispatch* cfg);
 

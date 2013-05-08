@@ -71,7 +71,6 @@ void CMenuItem::call(){
 	VARIANTARG mitem;
 	mitem.vt		= VT_DISPATCH;
 	mitem.pdispVal	= this;
-	AddRef();
 
 	if(! MyActiveSite::callMethod(TEXT("cmd"), m_Config, &mitem, 1) ){
 		MyActiveSite::Throw(TEXT("Method 'cmd' not found"), __uuidof(IMenu));
