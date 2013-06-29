@@ -15,6 +15,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#include <shobjidl.h>
+
 #include "System.h"
 #include "MyActiveSite.h"
 #include "Dialog\Dialog.h"
@@ -223,6 +226,7 @@ HRESULT STDMETHODCALLTYPE System::addSystemHotKey(IDispatch* cfg){
 
 
 HRESULT STDMETHODCALLTYPE System::createDialog(IDispatch* cfg, IDialog** result){
+
 	if (!cfg)
 		return S_OK;
 
@@ -353,6 +357,28 @@ HRESULT STDMETHODCALLTYPE System::get_scriptFullName( BSTR *result){
 	return S_OK;
 }
 
+HRESULT STDMETHODCALLTYPE System::showNotification(IDispatch* cfg){
+	LocRef<IUserNotification> notification;
+	if (FAILED(CoCreateInstance(CLSID_UserNotification, NULL, CLSCTX_INPROC_SERVER, __uuidof(IUserNotification), (void**)&notification)))
+		return E_NOTIMPL;
+
+	class CloseRequest : public CComBase<IQueryContinue>{
+		HRESULT STDMETHODCALLTYPE QueryContinue(VOID){
+			if (false)
+				return S_OK;
+			else
+				return S_FALSE;
+		}
+
+	};
+	LocRef<IQueryContinue> cont = new CloseRequest();
+
+	HRESULT hr = notification->SetBalloonInfo(TEXT("Titel"), TEXT("message"), NIIF_NONE );
+	hr = notification->SetBalloonRetry(0,250,0);
+	hr = notification->Show(cont, 150);
+
+	return S_OK;
+}
 
 int System::getAcceleratorModifier(IDispatchEx* cfgEx){
 	int modifier = 0;

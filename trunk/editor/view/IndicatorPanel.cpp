@@ -33,6 +33,9 @@ IndicatorPanel::IndicatorPanel(SCIView* view ): m_IndicPixelsUp(this), m_IndicLi
 
 IndicatorPanel::~IndicatorPanel(void)
 {
+	ForegroundIdleHook::getInstance()->remove(&m_IndicLinesUp);
+	ForegroundIdleHook::getInstance()->remove(&m_IndicPixelsUp);
+
 	if (pixelIndicators)
 		delete[] pixelIndicators;
 }

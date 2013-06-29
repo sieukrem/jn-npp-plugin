@@ -36,14 +36,13 @@ extern const TCHAR* langs[];
 
 class CEditor;
 
-class CEditorView : public CComDispatch<IView>,public ForegroundIdleHook::IdleHandler, public SCIView
+class CEditorView : public CComDispatch<IView>, public SCIView
 {
 public:
 	IDispatchEx* m_Listener;
 
 	CEditorView(int id);
 	~CEditorView(void){
-	
 	};
 
 	LRESULT OnMessage(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);

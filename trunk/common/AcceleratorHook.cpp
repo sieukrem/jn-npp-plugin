@@ -15,6 +15,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#include <windows.h>
 #include "AcceleratorHook.h"
 
 DWORD CALLBACK AcceleratorHook::Handler( int code,   DWORD wParam,    LONG lParam	){
@@ -23,6 +25,8 @@ DWORD CALLBACK AcceleratorHook::Handler( int code,   DWORD wParam,    LONG lPara
 	MSG* msg = (MSG*)lParam;
 
 	if (msg && code == HC_ACTION){
+		bool q = msg->message == WM_QUIT;
+		
 		AcceleratorHandler* handler = NULL;
 		EnterCriticalSection(&instance->m_CriticalSection);
 		for(Handlers::iterator it=instance->m_Handlers.begin(); it!=instance->m_Handlers.end(); ++it){
@@ -34,6 +38,7 @@ DWORD CALLBACK AcceleratorHook::Handler( int code,   DWORD wParam,    LONG lPara
 		}
 		LeaveCriticalSection(&instance->m_CriticalSection);
 	}
+
 	return CallNextHookEx(instance->m_Hook, code, wParam, lParam); 
 }
 
