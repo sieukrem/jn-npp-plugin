@@ -117,4 +117,6 @@ public:
 
     HRESULT STDMETHODCALLTYPE get_scriptFullName( BSTR *result);
 
+    HRESULT STDMETHODCALLTYPE showNotification(IDispatch* cfg);
+
 };

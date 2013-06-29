@@ -220,5 +220,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		
 		[propget, helpstring("Full path of start script file.")]
 					HRESULT scriptFullName([out,retval] BSTR* result);
+
+					[helpstring("Creates and shows user notification in system tray. cfg = {title='My Title', msg='long message'}")]
+					HRESULT showNotification([in]IDispatch* cfg);
+
 	};
 

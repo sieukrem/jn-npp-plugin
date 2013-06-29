@@ -179,8 +179,6 @@ void CEditor::doOnMessage(SCNotification* eventArgs){
 		}
 		case NPPN_BUFFERACTIVATED:{
 			method2 = TEXT("BUFFERACTIVATED");
-			// give a chance to update a indicatorpanel
-			ForegroundIdleHook::getInstance()->add( m_Views[GetCurrentView()]);
 			break;
 		}
 		case NPPN_FILESAVED:{
