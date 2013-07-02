@@ -1,0 +1,21 @@
+#summary Collection of helpful script snippets
+
+= How to save current document with certain name/path =
+Because of API of Notepad++ do not provide a possibility to save file with certain name, we can try to implement a workaround.
+
+We use the fact that Save As dialog pop ups with activated file name text box. So we can paste our file name in this box and "press" enter. Drawback of this way is, you will see this dialog shortly and you have to care that file does not exist.
+{{{
+function SaveAs(newFileName){
+    // go around the blocking FILE_SAVE
+    System.setTimeout({millis:100,cmd:function(){
+        var shell = new ActiveXObject("WScript.Shell");
+        shell.SendKeys(newFileName);
+        shell.SendKeys("{ENTER}");
+    }});
+
+    // blocks executing of script
+    MenuCmds.FILE_SAVEAS();
+}
+}}}
+
+More information about [http://msdn.microsoft.com/en-us/library/8c6yea83%28v=vs.84%29.aspx WScript.Shell]
