@@ -1,4 +1,5 @@
 #summary Collection of helpful script snippets
+#labels Featured
 
 = How to save current document with certain name/path =
 Because of API of Notepad++ do not provide a possibility to save file with certain name, we can try to implement a workaround.
