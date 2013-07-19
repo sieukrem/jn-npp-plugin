@@ -1,5 +1,5 @@
 ﻿(function(){
-	var gTranslate = Editor.addMenu("gTranslate");
+	var gTranslate = Editor.addMenu("MyMemory");
 
 	var translate = function (){
 		if (Editor.currentView.selection.length > 0){
@@ -8,7 +8,7 @@
 			}
 			var xmlHttp = this.xmlHttp;
 			if (xmlHttp){
-				xmlHttp.open('GET', 'http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q='+encodeURIComponent(Editor.currentView.selection)+'&langpair='+this.langPair, true);
+				xmlHttp.open('GET', 'http://mymemory.translated.net/api/get?q='+encodeURIComponent(Editor.currentView.selection)+'&langpair='+this.langPair, true);
 				xmlHttp.onreadystatechange = function () {
 					if (xmlHttp.readyState == 4 && xmlHttp.responseText) {
 						try{
