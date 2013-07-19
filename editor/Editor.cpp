@@ -161,6 +161,9 @@ void CEditor::doOnMessage(SCNotification* eventArgs){
 		case SCN_DOUBLECLICK:
 			method2 = TEXT("DOUBLECLICK");
 			break;
+		case SCN_MODIFYATTEMPTRO:
+			method2 = TEXT("MODIFYATTEMPTRO");
+			break;
 		case NPPN_SHUTDOWN:{
 			method1 = TEXT("SHUTDOWN");
 			break;
