@@ -167,4 +167,16 @@
 	updateOnInitPopupFn.push(uFn(openPreviousVersion, function(m, file,version, view){m.disabled = !version || !version.Predecessor;}));
 	updateOnInitPopupFn.push(uFn(findCheckout,        function(m, file,version, view){m.disabled = !view;}));
 	
+	// Add handler to catch event if user tries to modify checked in file
+	// and allow him to check out it
+	GlobalListener.addListener({ MODIFYATTEMPTRO:function(v){
+		var file = getFile();
+		var version = helperCC.Version(file);
+		
+		if (version == null || version.IsCheckedOut)// nothing to do from point of view of ClearCase
+			return;
+			
+		shell.run("cleardlg /window 2808d6 /windowmsg A065 /checkout \""+file+'\"');
+	}});
+	
 })();

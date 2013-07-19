@@ -323,7 +323,7 @@ DetectAndMoveSettings();
 LoadSettings();
 
 // initialize Listener with known event names
-GlobalListener = new Listener(['SHUTDOWN','READONLYCHANGED','LANGCHANGED','BUFFERACTIVATED','FILESAVED','FILECLOSED','FILEOPENED','CHARADDED','DOUBLECLICK','CLICK','UPDATEUI']);
+GlobalListener = new Listener(['SHUTDOWN','READONLYCHANGED','LANGCHANGED','BUFFERACTIVATED','FILESAVED','FILECLOSED','FILEOPENED','CHARADDED','DOUBLECLICK','CLICK','UPDATEUI','MODIFYATTEMPTRO']);
 Editor.setListener(GlobalListener);
 
 var loadIdleHandler = {
