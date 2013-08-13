@@ -213,6 +213,52 @@ wmi.addItem({
 	}
 });
 
+(function(){
+	// Power Plans
+	var objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!//./root/cimv2/power");
+	
+	var planItems = {};
+	
+	var onpopupinit = function(){
+		var pp = new Enumerator(objWMIService.ExecQuery("Select * from Win32_PowerPlan where isActive='true'"));
+		var active = pp.item().InstanceID;
+		
+		for(var pi in planItems){
+			planItems[pi].item.checked  = (pi==active);
+			planItems[pi].item.disabled = (pi==active);
+		}
+	};
+	
+	var setActive = function(m){
+		try{
+		var pp = new Enumerator(objWMIService.ExecQuery('Select * from Win32_PowerPlan where ElementName="'+this.text+'"'));
+		pp.item().Activate();
+		}catch(e){alert(e+"\n"+this.InstanceID+"\n"+this.text)}
+	}
+	
+	var ppm = wmi.addMenu({
+		text:"Power Plans",
+		"oninitpopup":onpopupinit
+	});
+
+	try{
+		var pp = new Enumerator(objWMIService.ExecQuery("Select * from Win32_PowerPlan"));
+		while (!pp.atEnd()){
+			var plan = pp.item();
+			planItems[plan.InstanceID] = {
+				text:plan.ElementName,
+				InstanceID:plan.InstanceID,
+				cmd:setActive
+			};
+			
+			planItems[plan.InstanceID].item = ppm.addItem(planItems[plan.InstanceID]);
+			pp.moveNext();
+		}
+	}catch(e){
+		alert(e);
+	}
+})();
+
 /**
 	Position Samples
 */
