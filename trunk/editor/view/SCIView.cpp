@@ -38,6 +38,7 @@ SCIView::SCIView(HWND handle)
 
 SCIView::~SCIView(void)
 {
+	SetProp(m_Handle, TEXT("SCIView Pointer"), (HANDLE)NULL);
 	SetWindowLong(m_Handle, GWL_WNDPROC, (LONG) sciOldWndProc);
 }
 
@@ -55,5 +56,8 @@ LRESULT SCIView::OnMessage(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
 
 LRESULT CALLBACK SCIView::sciPluginMessageProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
 	SCIView* self = (SCIView*)GetProp(hwnd, TEXT("SCIView Pointer"));
+	if (self == NULL)
+		return 0;
+
 	return  self->OnMessage(hwnd, message, wParam, lParam);
 }
