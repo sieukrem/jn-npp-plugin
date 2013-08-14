@@ -171,8 +171,12 @@
 	// and allow him to check out it
 	GlobalListener.addListener({ MODIFYATTEMPTRO:function(v){
 		var file = getFile();
-		var version = helperCC.Version(file);
+		var version = null;
 		
+		try{
+		version = helperCC.Version(file);
+		}catch(e){}
+      
 		if (version == null || version.IsCheckedOut)// nothing to do from point of view of ClearCase
 			return;
 			
