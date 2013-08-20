@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Dialog.h"
 
 
-Dialog::Dialog(IDispatchEx* cfg, HWND parent):CComDispatch(),m_ActiveObject(NULL),m_BrowserObject(NULL), m_WebBrowser2(NULL){
+Dialog::Dialog(ScriptObj* cfg, HWND parent):CComDispatch(),m_ActiveObject(NULL),m_BrowserObject(NULL), m_WebBrowser2(NULL){
 
 
 	m_OleInPlaceFrame.m_Dialog	= this;
@@ -43,7 +43,11 @@ Dialog::Dialog(IDispatchEx* cfg, HWND parent):CComDispatch(),m_ActiveObject(NULL
 
 Dialog::~Dialog(){
 	AcceleratorHook::getInstance()->remove(this);
-	MyActiveSite::getInstance()->ReleaseScriptElement(&m_Cfg);
+
+	if (m_Cfg){
+		delete m_Cfg;
+		m_Cfg = NULL;
+	}
 
 	if (isCreated()) {
 		::SetWindowLongPtr(m_Hwnd, GWLP_USERDATA, (long)NULL);	//Prevent MessageProc from doing anything, since its virtual
@@ -247,7 +251,7 @@ bool Dialog::IsClosingAllowed(){
 	VARIANT beforeCloseRes;
 
 	// not defined onbeforeclose
-	if (!MyActiveSite::callMethod(TEXT("onbeforeclose"), m_Cfg, NULL, 0, &beforeCloseRes))
+	if (!m_Cfg->callMethod(TEXT("onbeforeclose"), NULL, 0, &beforeCloseRes))
 		return true;
 
 	// invalid value, expect boolean
@@ -266,10 +270,12 @@ LRESULT CALLBACK Dialog::MessageProc(UINT message, WPARAM wParam, LPARAM lParam)
 			if (!IsClosingAllowed())
 				return FALSE; // cancel close operation
 			
-			MyActiveSite::callMethod(TEXT("onclose"), m_Cfg);
+			if (m_Cfg){
+				m_Cfg->callMethod(TEXT("onclose"));
 
-			m_Cfg->Release();
-			m_Cfg = NULL;
+				delete m_Cfg;
+				m_Cfg = NULL;
+			}
 
 			ReleaseBrowser();
 			destroy(); // destroys window

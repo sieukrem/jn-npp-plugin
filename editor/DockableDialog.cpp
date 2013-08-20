@@ -60,11 +60,11 @@ StringCache CachedStrings;
 
 #define DD_AFTER_REGISTERASDOCKABLE WM_USER+1 // sent to control after
 
-DockableDialog::DockableDialog(IDispatchEx* cfg, HWND parent): Dialog(cfg, parent),CComDispatch(),m_Modul(TEXT("jN.dll,")), m_Name(TEXT("jN"))
+DockableDialog::DockableDialog(ScriptObj* cfg, HWND parent): Dialog(cfg, parent),CComDispatch(),m_Modul(TEXT("jN.dll,")), m_Name(TEXT("jN"))
 {
 	StringCchCopy(m_Info,sizeof(m_Info), TEXT(""));
 
-	VARIANT* textValue = MyActiveSite::getProperty(TEXT("name"), m_Cfg, VT_BSTR);
+	VARIANT* textValue = m_Cfg->getProperty(TEXT("name"), VT_BSTR);
 	if (textValue != NULL){
 		m_Name.Set(textValue->bstrVal);
 		m_Modul.Append(textValue->bstrVal);
@@ -87,7 +87,7 @@ void DockableDialog::AfterCreate(){
 int DockableDialog::GetDockingFlags(){
 	int result = DWS_DF_CONT_BOTTOM;
 
-	VARIANT* dockingText = MyActiveSite::getProperty(TEXT("docking"), m_Cfg, VT_BSTR);
+	VARIANT* dockingText = m_Cfg->getProperty(TEXT("docking"), VT_BSTR);
 	if (dockingText){
 		if (CSTR_EQUAL == StrCmp(TEXT("top"),dockingText->bstrVal))
 			result = DWS_DF_CONT_TOP;

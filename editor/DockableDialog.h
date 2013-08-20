@@ -41,7 +41,7 @@ private:
 
 	LRESULT CALLBACK MessageProc(UINT message, WPARAM wParam, LPARAM lParam) override;
 public:
-	DockableDialog(IDispatchEx* cfg, HWND parent);
+	DockableDialog(ScriptObj* cfg, HWND parent);
 
 	virtual HRESULT STDMETHODCALLTYPE get_title( BSTR* result) override;
 

@@ -20,9 +20,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <dispex.h>
 #include <map>
 
+#include "MyActiveSite.h"
+
 class Timer{
 private:
-	typedef std::map<UINT_PTR, IDispatchEx*> Handlers;
+	typedef std::map<UINT_PTR, ScriptObj*> Handlers;
 
 	Handlers m_Handlers;
 
@@ -32,7 +34,7 @@ public:
 
 	static  void CALLBACK TimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime);
 
-	bool AddHandler(IDispatchEx* cfg);
+	bool AddHandler(ScriptObj* cfg);
 
 	static Timer* GetInstance();
 };

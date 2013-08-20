@@ -73,7 +73,7 @@ protected :
 
 	static LRESULT CALLBACK dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-	IDispatchEx* m_Cfg;
+	ScriptObj* m_Cfg;
 
 	virtual LRESULT CALLBACK MessageProc(UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -94,7 +94,7 @@ public:
 		return m_Hwnd;
 	}
 
-	Dialog(IDispatchEx* cfg, HWND parent);
+	Dialog(ScriptObj* cfg, HWND parent);
 
 	~Dialog();
 

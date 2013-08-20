@@ -80,7 +80,7 @@ private:
 
 	int m_SystemHotKeysCount;
 	
-	typedef std::vector<IDispatchEx*> HotKeyHandlers;
+	typedef std::vector<ScriptObj*> HotKeyHandlers;
 	
 	HotKeyHandlers m_SystemHotKeysHandler;
 
@@ -89,8 +89,8 @@ public:
 	System(TCHAR* scriptFullName, MyActiveSite& activeSite);
 	virtual ~System(void);
 
-	static WORD getKeyCode(IDispatchEx* cfgEx);
-	static int  getAcceleratorModifier(IDispatchEx* cfgEx);
+	static WORD getKeyCode(ScriptObj* cfgEx);
+	static int  getAcceleratorModifier(ScriptObj* cfgEx);
 
 	LRESULT MessageProc(UINT message, WPARAM wp, LPARAM lp) override;
 

@@ -20,13 +20,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #pragma region CMenuItem
-CMenuItem::CMenuItem(HMENU h, WORD id, IDispatch* config):CAbstractMenuItem(){
+CMenuItem::CMenuItem(HMENU h, WORD id, ScriptObj* config):CAbstractMenuItem(){
 	m_ParentMenuHandle = h;
 	m_Id_Handle =(HMENU)id;
 
-	m_Config = MyActiveSite::queryDispatchEx(config);
+	m_Config = config;
 
-	VARIANT* textValue = MyActiveSite::getProperty(TEXT("text"), m_Config, VT_BSTR);
+	VARIANT* textValue = m_Config->getProperty(TEXT("text"),VT_BSTR);
 	BSTR text = NULL;
 
 	if (textValue != NULL){
@@ -61,7 +61,7 @@ CMenuItem::CMenuItem(HMENU h, WORD id, IDispatch* config):CAbstractMenuItem(){
 	SysFreeString(text);
 }
 CMenuItem::~CMenuItem(){
-	MyActiveSite::getInstance()->ReleaseScriptElement(&m_Config);		
+	delete m_Config;		
 }
 
 void CMenuItem::call(){
@@ -72,7 +72,7 @@ void CMenuItem::call(){
 	mitem.vt		= VT_DISPATCH;
 	mitem.pdispVal	= this;
 
-	if(! MyActiveSite::callMethod(TEXT("cmd"), m_Config, &mitem, 1) ){
+	if(! m_Config->callMethod(TEXT("cmd"), &mitem, 1) ){
 		MyActiveSite::Throw(TEXT("Method 'cmd' not found"), __uuidof(IMenu));
 	}
 }
@@ -105,8 +105,8 @@ CMenu::CMenu(HMENU parent, HWND hwnd):CAbstractMenuItem(){
 
 CMenu::CMenu(HMENU parent, int position, VARIANT cfg, HWND hwnd):CAbstractMenuItem(){
 	if (cfg.vt == VT_DISPATCH){
-		IDispatchEx* dispex = MyActiveSite::queryDispatchEx(cfg.pdispVal);	
-		VARIANT* var = MyActiveSite::getProperty(TEXT("text"), dispex, VT_BSTR);
+		ScriptObj*  dispCfg = MyActiveSite::getInstance()->WrapScriptObj(cfg.pdispVal);	
+		VARIANT* var = dispCfg->getProperty(TEXT("text"), VT_BSTR);
 		if (var){
 			createMenu(parent, position, var->bstrVal);
 			VariantClear(var);
@@ -114,7 +114,7 @@ CMenu::CMenu(HMENU parent, int position, VARIANT cfg, HWND hwnd):CAbstractMenuIt
 		}else
 			createMenu(parent, position, TEXT("text"), hwnd);
 
-		m_Config  = dispex;
+		m_Config  = dispCfg;
 	} else if (cfg.vt == VT_BSTR){
 		createMenu(parent, position, cfg.bstrVal, hwnd );
 	}
@@ -173,7 +173,7 @@ CMenu* CMenu::GetInstance(HMENU hmenu){
 
 void CMenu::oninitpopup(){
 	if (m_Config)
-		MyActiveSite::callMethod(TEXT("oninitpopup"), m_Config);
+		m_Config->callMethod(TEXT("oninitpopup"));
 }
 
 CMenu::~CMenu(void){
@@ -184,8 +184,8 @@ HRESULT STDMETHODCALLTYPE CMenu::addMenu( VARIANT cfg, IMenu **result){
 	CHECK_AND_FAIL;	// menu item is removed!
 
 	if (cfg.vt == VT_DISPATCH){
-		IDispatchEx*  dispCfg = MyActiveSite::queryDispatchEx(cfg.pdispVal);	
-		VARIANT* var = MyActiveSite::getProperty(TEXT("text"), dispCfg, VT_BSTR);
+		ScriptObj*  dispCfg = MyActiveSite::getInstance()->WrapScriptObj(cfg.pdispVal);	
+		VARIANT* var = dispCfg->getProperty(TEXT("text"), VT_BSTR);
 		if (!var)
 			return S_OK;
 
@@ -211,7 +211,7 @@ HRESULT STDMETHODCALLTYPE CMenu::addItem(IDispatch *config, IMenuItem **result){
 	CHECK_AND_FAIL;	// menu item is removed!
 
 	if (config!=NULL){
-		*result = new CMenuItem(m_Id_Handle, m_Items, config);
+		*result = new CMenuItem(m_Id_Handle, m_Items, MyActiveSite::getInstance()->WrapScriptObj(config));
 		(*result)->AddRef();
 		m_Items++;
 	}

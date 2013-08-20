@@ -56,7 +56,7 @@ public:
 			m_Reference = NULL;
 		}
 
-		return &(void*)m_Reference;
+		return (void**)&m_Reference;
 	}
 
 	operator bool(){
