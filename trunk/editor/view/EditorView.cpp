@@ -357,7 +357,7 @@ LRESULT CEditorView::OnMessage(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
 				var[0].vt = VT_DISPATCH;
 				var[0].pdispVal = this; 
 				
-				MyActiveSite::callMethod(TEXT("CLICK"), m_Listener, var, 1);
+				m_Listener->callMethod(TEXT("CLICK"), var, 1);
 			}
 		default:
 			return SCIView::OnMessage(hwnd, message, wParam, lParam);

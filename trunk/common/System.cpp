@@ -107,16 +107,14 @@ System::~System(void)
 		UnregisterHotKey(handle(), keyId);
 		keyId++;
 
-		IDispatchEx* hkh = *it;
-		hkh->Release();
+		delete *it;
 	}
 }
 LRESULT System::MessageProc(UINT message, WPARAM wp, LPARAM lp) {
 	switch(message){
 		case WM_HOTKEY:{
 			if (m_SystemHotKeysHandler.size() > wp){
-				IDispatchEx* hkh = m_SystemHotKeysHandler[wp];
-				MyActiveSite::callMethod(TEXT("cmd"), hkh);
+				m_SystemHotKeysHandler[wp]->callMethod(TEXT("cmd"));
 			}
 
 		}
@@ -181,7 +179,7 @@ var hk = addSystemHotKey({
 */
 HRESULT STDMETHODCALLTYPE System::addSystemHotKey(IDispatch* cfg){
 	if (cfg != NULL){
-		IDispatchEx* cfgEx = MyActiveSite::queryDispatchEx(cfg);
+		ScriptObj* cfgEx = MyActiveSite::getInstance()->WrapScriptObj(cfg);
 		if (cfgEx){
 			int modifier = 0;
 
@@ -190,21 +188,21 @@ HRESULT STDMETHODCALLTYPE System::addSystemHotKey(IDispatch* cfg){
 			if (keyCode == 0)
 				return S_OK;
 
-			VARIANT* modifierBOOL = MyActiveSite::getProperty(TEXT("shift"), cfgEx, VT_BOOL);
+			VARIANT* modifierBOOL = cfgEx->getProperty(TEXT("shift"), VT_BOOL);
 			if (modifierBOOL != NULL){
 				modifier = modifier | (modifierBOOL->boolVal? MOD_SHIFT : 0);
 				VariantClear(modifierBOOL);
 				delete modifierBOOL;
 			}
 
-			modifierBOOL = MyActiveSite::getProperty(TEXT("alt"), cfgEx, VT_BOOL);
+			modifierBOOL = cfgEx->getProperty(TEXT("alt"), VT_BOOL);
 			if (modifierBOOL != NULL){
 				modifier = modifier | ((modifierBOOL->boolVal)? MOD_ALT : 0);
 				VariantClear(modifierBOOL);
 				delete modifierBOOL;
 			}
 
-			modifierBOOL = MyActiveSite::getProperty(TEXT("ctrl"), cfgEx, VT_BOOL);
+			modifierBOOL = cfgEx->getProperty(TEXT("ctrl"), VT_BOOL);
 			if (modifierBOOL != NULL){
 				modifier = modifier | ((modifierBOOL->boolVal)? MOD_CONTROL : 0);
 				VariantClear(modifierBOOL);
@@ -230,8 +228,7 @@ HRESULT STDMETHODCALLTYPE System::createDialog(IDispatch* cfg, IDialog** result)
 	if (!cfg)
 		return S_OK;
 
-	IDispatchEx* cfgEx = MyActiveSite::queryDispatchEx(cfg);
-	Dialog* d = new Dialog(cfgEx, Statics::instance().hWindow);
+	Dialog* d = new Dialog(MyActiveSite::getInstance()->WrapScriptObj(cfg), Statics::instance().hWindow);
 	d->Init();
 
 	*result = d;
@@ -263,7 +260,7 @@ HRESULT STDMETHODCALLTYPE System::addScript(BSTR* value, VARIANT* name){
 }
 
 HRESULT STDMETHODCALLTYPE System::setTimeout(IDispatch* cfg){
-	return Timer::GetInstance()->AddHandler(MyActiveSite::queryDispatchEx(cfg)) ? S_OK : E_FAIL;
+	return Timer::GetInstance()->AddHandler(MyActiveSite::getInstance()->WrapScriptObj(cfg)) ? S_OK : E_FAIL;
 }
 
 HRESULT STDMETHODCALLTYPE System::put_clipBoard( BSTR *value){
@@ -380,24 +377,24 @@ HRESULT STDMETHODCALLTYPE System::showNotification(IDispatch* cfg){
 	return S_OK;
 }
 
-int System::getAcceleratorModifier(IDispatchEx* cfgEx){
+int System::getAcceleratorModifier(ScriptObj* cfgEx){
 	int modifier = 0;
 
-	VARIANT* modifierBOOL = MyActiveSite::getProperty(TEXT("shift"), cfgEx, VT_BOOL);
+	VARIANT* modifierBOOL = cfgEx->getProperty(TEXT("shift"), VT_BOOL);
 	if (modifierBOOL != NULL){
 		modifier = modifier | (modifierBOOL->boolVal)? FSHIFT : 0;
 		VariantClear(modifierBOOL);
 		delete modifierBOOL;
 	}
 
-	modifierBOOL = MyActiveSite::getProperty(TEXT("alt"), cfgEx, VT_BOOL);
+	modifierBOOL = cfgEx->getProperty(TEXT("alt"), VT_BOOL);
 	if (modifierBOOL != NULL){
 		modifier = modifier | ((modifierBOOL->boolVal)? FALT : 0);
 		VariantClear(modifierBOOL);
 		delete modifierBOOL;
 	}
 
-	modifierBOOL = MyActiveSite::getProperty(TEXT("ctrl"), cfgEx, VT_BOOL);
+	modifierBOOL = cfgEx->getProperty(TEXT("ctrl"), VT_BOOL);
 	if (modifierBOOL != NULL){
 		modifier = modifier | ((modifierBOOL->boolVal)? FCONTROL : 0);
 		VariantClear(modifierBOOL);
@@ -407,10 +404,10 @@ int System::getAcceleratorModifier(IDispatchEx* cfgEx){
 	return modifier;
 }
 
-WORD System::getKeyCode(IDispatchEx* cfgEx){
+WORD System::getKeyCode(ScriptObj* cfgEx){
 	WORD keyCode = 0;
 
-	VARIANT* keySTR = MyActiveSite::getProperty(TEXT("key"), cfgEx, -1);
+	VARIANT* keySTR = cfgEx->getProperty(TEXT("key"), -1);
 
 	if (keySTR != NULL){
 		if (keySTR->vt == VT_BSTR && SysStringLen(keySTR->bstrVal) > 0){

@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Timer.h"
 #include "Windows.h"
-#include "MyActiveSite.h"
 #include "..\Interfaces.h"
 
 #include "LastError.h"
@@ -26,9 +25,9 @@ Timer::Timer(void)
 {
 }
 
-bool Timer::AddHandler(IDispatchEx* cfg)
+bool Timer::AddHandler(ScriptObj* cfg)
 {
-	VARIANT* millis = MyActiveSite::getProperty(TEXT("millis"), cfg, VT_I4);
+	VARIANT* millis = cfg->getProperty(TEXT("millis"), VT_I4);
 	if (millis == NULL){
 		MyActiveSite::Throw(TEXT("Expect integer 'millis' property"), __uuidof(ISystem) );
 		return false;
@@ -58,8 +57,6 @@ bool Timer::AddHandler(IDispatchEx* cfg)
 		return false;
 	}
 
-	cfg->AddRef();
-
 	m_Handlers.insert(Handlers::value_type(timerId, cfg));
 
 	VariantClear(millis);
@@ -81,13 +78,13 @@ void Timer::TimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime){
 	if (findIt == t->m_Handlers.end())
 		return;
 
-	IDispatchEx* cfg = findIt->second;
+	ScriptObj* cfg = findIt->second;
 
 	t->m_Handlers.erase(findIt);
 
-	MyActiveSite::callMethod(TEXT("cmd"), cfg);
+	cfg->callMethod(TEXT("cmd"));
 
-	cfg->Release();
+	delete cfg;
 }
 
 Timer* Timer::GetInstance(){

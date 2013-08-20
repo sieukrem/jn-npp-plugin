@@ -185,29 +185,6 @@ DISPID* MyActiveSite::getDISPID(TCHAR* name, IDispatchEx* obj){
 	return (hr == S_OK)?new DISPID(dispid):NULL;		
 }
 
-VARIANT* MyActiveSite::getProperty(TCHAR* name, IDispatchEx* obj, int as){
-	VARIANT* result = NULL;
-	DISPID* dispid = getDISPID(name, obj);
-	if (dispid != NULL){
-		result = new VARIANT();
-		DISPPARAMS dispparamsNoArgs = {NULL, NULL, 0, 0};
-		HRESULT hr = obj->InvokeEx(*dispid, LOCALE_USER_DEFAULT,DISPATCH_PROPERTYGET, &dispparamsNoArgs,result, NULL, NULL);
-		delete dispid;
-
-		if	( hr != S_OK || // there is not this property
-			( (result->vt & as) != as ) &&  // property is another types than expected
-			( as != -1 ) )	// property type does care
-		{
-			VariantClear( result );
-			delete result;
-			result = NULL;
-		}
-
-	}
-
-	return result;
-}
-
 BOOL MyActiveSite::callMethod(TCHAR* method, IDispatchEx* obj){
 	DISPID* dispid = getDISPID(method, obj);
 	if (!dispid)
@@ -398,4 +375,140 @@ HRESULT __stdcall MyActiveSite::OnEnterScript(void)
 HRESULT __stdcall MyActiveSite::OnLeaveScript(void) 
 {
   return S_OK;
+}
+
+ScriptObj* MyActiveSite::WrapScriptObj(IDispatch* obj){
+	return new ScriptObj(m_ActiveScript, obj);
+}
+
+
+ScriptObj::ScriptObj(IActiveScript* activeScript, IDispatch* obj):m_ActiveScript(activeScript),m_Obj(NULL) {
+	if (FAILED(obj->QueryInterface(__uuidof(IDispatchEx), (void**)m_Obj)))
+		throw "QueryInterface failed";
+}
+
+ScriptObj::ScriptObj(ScriptObj& src):m_ActiveScript(src.m_ActiveScript), m_Obj(src.m_Obj){
+	
+}
+
+ScriptObj::~ScriptObj() {
+}
+
+VARIANT* ScriptObj::getProperty(TCHAR* name, int as){
+	VARIANT* result = NULL;
+	DISPID* dispid = getDISPID(name);
+	if (dispid != NULL){
+		result = new VARIANT();
+		DISPPARAMS dispparamsNoArgs = {NULL, NULL, 0, 0};
+		HRESULT hr = m_Obj->InvokeEx(*dispid, LOCALE_USER_DEFAULT,DISPATCH_PROPERTYGET, &dispparamsNoArgs,result, NULL, NULL);
+		delete dispid;
+
+		if	( hr != S_OK || // there is not this property
+			( (result->vt & as) != as ) &&  // property is another types than expected
+			( as != -1 ) )	// property type does care
+		{
+			VariantClear( result );
+			delete result;
+			result = NULL;
+		}
+
+	}
+
+	return result;
+}
+
+BOOL ScriptObj::callMethod(TCHAR* method){
+	if (!IsCallable())
+		return false;
+
+	DISPID* dispid = getDISPID(method);
+	if (!dispid)
+		return false;
+	
+	// Invoke method with "this" pointer
+	VARIANTARG var[1];
+	var[0].vt = VT_DISPATCH;
+	var[0].pdispVal = m_Obj;
+
+	DISPID putid = DISPID_THIS;
+	DISPPARAMS dispparams;
+	dispparams.rgvarg = var;
+	dispparams.rgdispidNamedArgs = &putid;
+	dispparams.cArgs = 1;
+	dispparams.cNamedArgs = 1;
+
+	HRESULT res = m_Obj->InvokeEx(*dispid, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &dispparams, NULL, NULL, NULL);
+	
+	delete dispid;
+
+	return true;
+}
+
+BOOL ScriptObj::callMethod(TCHAR* method, int value){
+	if (!IsCallable())
+		return false;
+
+	VARIANTARG arg;
+	arg.intVal = value;
+	arg.vt		= VT_INT;
+	return callMethod(method, &arg,1);
+}
+
+BOOL ScriptObj::callMethod(TCHAR* method, BSTR value){
+	if (!IsCallable())
+		return false;
+
+	VARIANTARG arg;
+	arg.bstrVal = value;
+	arg.vt		= VT_BSTR;
+	return callMethod(method, &arg,1);
+}
+// cleans arg at the end
+BOOL ScriptObj::callMethod(TCHAR* method, VARIANTARG* arg, int count, VARIANT* result){
+	if (!IsCallable())
+		return false;
+
+	DISPID* dispid = getDISPID(method);
+	if (!dispid)
+		return false;	
+	
+	// Invoke method with "this" pointer
+	VARIANTARG* var = new VARIANTARG[1+count];
+	var[0].vt = VT_DISPATCH;
+	var[0].pdispVal = m_Obj;
+
+	// revert positions of args
+	for (int i=1,j=count-1; i <= count; i++, j--)
+		var[i] = arg[j];
+
+	DISPID putid = DISPID_THIS;
+	DISPPARAMS dispparams;
+	dispparams.rgvarg = var;
+	dispparams.rgdispidNamedArgs = &putid;
+	dispparams.cArgs = 1 + count;
+	dispparams.cNamedArgs = 1;
+	HRESULT res = m_Obj->InvokeEx(*dispid, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &dispparams, result, NULL, NULL);
+
+	delete dispid;
+	delete[] var;
+
+	return true;
+}
+
+DISPID* ScriptObj::getDISPID(TCHAR* name){
+	if (!IsCallable())
+		return false;
+
+	DISPID dispid;
+	SysStr mod(name);
+	HRESULT hr = m_Obj->GetDispID(mod, 0, &dispid);
+	return (hr == S_OK)?new DISPID(dispid):NULL;		
+}
+
+bool ScriptObj::IsCallable(){
+	SCRIPTSTATE state;
+	if (FAILED(m_ActiveScript->GetScriptState(&state)))
+		return false;
+
+	return state != SCRIPTSTATE_CLOSED;
 }

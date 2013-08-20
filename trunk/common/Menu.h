@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "combase.h"
 #include "..\Interfaces.h"
+#include "MyActiveSite.h"
 
 #define CHECK_AND_FAIL 	if (!CheckValidity()) return E_FAIL;
 
@@ -195,12 +196,12 @@ public:
 class CMenuItem : public CAbstractMenuItem<IMenuItem>
 {
 private:
-	IDispatchEx* m_Config;
+	ScriptObj* m_Config;
 
 public:
 	static CMenuItem* GetInstance(HMENU hmenu, UINT itemPos);
 
-	CMenuItem(HMENU h, WORD id, IDispatch* config);
+	CMenuItem(HMENU h, WORD id, ScriptObj* config);
 
 	~CMenuItem();
 
@@ -211,7 +212,7 @@ class CMenu : public CAbstractMenuItem<IMenu>
 {
 private:
 	WORD  m_Items;
-	IDispatchEx* m_Config;
+	ScriptObj* m_Config;
 	HWND m_Hwnd;
 
 public:

@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "SCIView.h"
 #include "IndicatorPanel.h"
+#include "common\MyActiveSite.h"
 
 #define m_Handle (((m_Id-1)==0)? nppData._scintillaMainHandle : nppData._scintillaSecondHandle)
 
@@ -39,7 +40,7 @@ class CEditor;
 class CEditorView : public CComDispatch<IView>, public SCIView
 {
 public:
-	IDispatchEx* m_Listener;
+	ScriptObj* m_Listener;
 
 	CEditorView(int id);
 	~CEditorView(void){

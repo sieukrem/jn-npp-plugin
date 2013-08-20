@@ -29,7 +29,10 @@ CEditor::~CEditor(void){
 	}
 	
 	// Release Scripting elements
-	MyActiveSite::getInstance()->ReleaseScriptElement(&m_Listener);
+	if (m_Listener){
+		delete m_Listener;
+		m_Listener = NULL;
+	}
 
 	// Restore WndProc
 	SetWindowLong(m_NppHandle, GWL_WNDPROC, (LPARAM)m_OldWndProc);
@@ -216,10 +219,10 @@ void CEditor::CallListener(TCHAR* method, int view, int file){
 		var[1].vt = VT_INT;
 		var[1].intVal = file;
 		
-		MyActiveSite::callMethod(method, m_Listener, var, 2);
+		m_Listener->callMethod(method, var, 2);
 		
 	}else{
-		MyActiveSite::callMethod(method, m_Listener);
+		m_Listener->callMethod(method);
 	}
 }
 
@@ -375,14 +378,16 @@ HRESULT STDMETHODCALLTYPE CEditor::runMenuCmd( int cmd){
 
 
 HRESULT STDMETHODCALLTYPE CEditor::setListener(IDispatch* cfg){
-	if (m_Listener != NULL)
-		m_Listener->Release();
+	if (m_Listener != NULL){
+		delete m_Listener;
+		m_Listener = NULL;
+	}
 
-	if (cfg != NULL){
-		m_Listener = MyActiveSite::queryDispatchEx(cfg);
-		for(int i=0; i<m_ViewsNumber; i++){
-			m_Views[i]->m_Listener = m_Listener;
-		}
+	if (cfg != NULL)
+		m_Listener = MyActiveSite::getInstance()->WrapScriptObj(cfg);
+
+	for(int i=0; i<m_ViewsNumber; i++){
+		m_Views[i]->m_Listener = m_Listener;
 	}
 
 	return S_OK;
@@ -393,8 +398,7 @@ HRESULT STDMETHODCALLTYPE CEditor::createDockable(IDispatch* cfg, IDialog** resu
 	if (!cfg)
 		return S_OK;
 
-	IDispatchEx* cfgEx = MyActiveSite::queryDispatchEx(cfg);
-	Dialog* d = new DockableDialog(cfgEx, nppData._nppHandle);
+	Dialog* d = new DockableDialog(MyActiveSite::getInstance()->WrapScriptObj(cfg), nppData._nppHandle);
 	d->Init();
 
 	d->AddRef();
@@ -413,22 +417,20 @@ HRESULT STDMETHODCALLTYPE CEditor::get_handle(int *result){
 
 class AcceleratorHandler:public CAcceleratorTable::Accelerator{
 private:
-	IDispatchEx* cfgEx;
+	ScriptObj* cfgEx;
 public:
 
-	AcceleratorHandler(IDispatchEx* _cfgEx){
-		cfgEx = _cfgEx;
-		cfgEx->AddRef();
+	AcceleratorHandler(ScriptObj* _cfgEx):cfgEx(_cfgEx){
 	}
 
 	int execute(){
-		MyActiveSite::callMethod(TEXT("cmd"), cfgEx);
+		cfgEx->callMethod(TEXT("cmd"));
 
 		return 0;
 	}
 
 	~AcceleratorHandler(){
-		MyActiveSite::getInstance()->ReleaseScriptElement(&cfgEx);
+		delete cfgEx;
 	}
 };
 
@@ -439,9 +441,9 @@ HRESULT STDMETHODCALLTYPE CEditor::addHotKey(IDispatch* cfg){
 	if (cfg == NULL)
 		return S_OK;
 	
-	LocRef<IDispatchEx> cfgEx = MyActiveSite::queryDispatchEx(cfg);
+	ScriptObj* cfgEx = MyActiveSite::getInstance()->WrapScriptObj(cfg);
 
-	if (!cfgEx.m_Reference)
+	if (!cfgEx)
 		return S_OK;
 	
 
