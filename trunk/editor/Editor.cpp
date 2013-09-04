@@ -35,7 +35,8 @@ CEditor::~CEditor(void){
 	}
 
 	// Restore WndProc
-	SetWindowLong(m_NppHandle, GWL_WNDPROC, (LPARAM)m_OldWndProc);
+	WNDPROC oldWndProc = (WNDPROC)GetProp(m_NppHandle, SUBCLASSING);
+	SetWindowLong(m_NppHandle, GWL_WNDPROC, (LPARAM)oldWndProc);
 
 	AcceleratorHook::getInstance()->remove(&m_Accelerators);
 }
@@ -51,7 +52,6 @@ int CEditor::GetCurrentView(){
 // this problem we switch menu message handling from WM_COMMAND to WM_MENUCOMMAND
 // see 2.) and 3.)
 LRESULT CALLBACK CEditor::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
-	CEditor* editor = (CEditor*)GetProp(hwnd, SUBCLASSING);
 
 	if (message == WM_MENUCOMMAND){
 		CMenuItem* mItem = CMenuItem::GetInstance((HMENU)lParam, wParam);
@@ -77,14 +77,11 @@ LRESULT CALLBACK CEditor::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM
 			menu->oninitpopup();
 			return NULL;
 		}
-	} else if (message == WM_COMMAND){
-		
-			//WORD command = LOWORD(wParam);
-			//editor->m_Accelerators.CallHandler(command);
-	}
-	
+	}	
 
-	return CallWindowProc(editor->m_OldWndProc, hwnd, message, wParam, lParam);
+	WNDPROC oldWndProc = (WNDPROC)GetProp(hwnd, SUBCLASSING);
+
+	return CallWindowProc(oldWndProc, hwnd, message, wParam, lParam);
 
 }
 
@@ -94,8 +91,9 @@ CEditor::CEditor(HWND nppHandle):CComDispatch(),m_Accelerators(nppHandle){
 	// 3.) set our wndproc to have WM_MENUCOMMAND instead WM_COMMAND
 	// see 1.) and 2.)
 	m_NppHandle = nppHandle;
-	m_OldWndProc = (WNDPROC)SetWindowLong(nppHandle, GWL_WNDPROC, (LPARAM)CEditor::WndProc);
-	SetProp(m_NppHandle, SUBCLASSING, (HANDLE)this);
+
+	WNDPROC oldWndProc = (WNDPROC)SetWindowLong(nppHandle, GWL_WNDPROC, (LPARAM)CEditor::WndProc);
+	SetProp(m_NppHandle, SUBCLASSING, oldWndProc);
 
 	m_Listener = NULL;
 	
