@@ -20,3 +20,18 @@ function SaveAs(newFileName){
 }}}
 
 More information about [http://msdn.microsoft.com/en-us/library/8c6yea83%28v=vs.84%29.aspx WScript.Shell]
+
+= How to use system "Browse for folder" dialog =
+{{{
+var shellApp = new ActiveXObject("shell.application");
+
+var folder = shellApp.BrowseForFolder(0,"Select my folder",0, "c:\\");
+if (folder != null)
+	alert(folder.self.Path);
+else
+	alert("Canceled");
+
+}}}
+First parameter is a handle of a parent window. It is possible to use Editor.handle for this purpose. The second parameter is a text message shown at the top of dialog. Third parameter is a flag for a dialog. Fourth parameter is optional start node.
+
+More information about [http://msdn.microsoft.com/en-us/library/windows/desktop/bb774065%28v=vs.85%29.aspx Shell.BrowseForFolder]
