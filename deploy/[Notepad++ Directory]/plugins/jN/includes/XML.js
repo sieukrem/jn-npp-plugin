@@ -28,16 +28,22 @@ var selectCfg = {
 			// instrument selected elements with dummy attribute
 			for(var i=0,c=nodes.length; i<c; i++){
 				var n = nodes[i];
+				var nodeType = n.nodeTypeString;
 				
-				if (n.nodeTypeString == "element"){
+				if (nodeType == "element"){
 					xmltext += n.xml+"\n";
 					n.setAttribute("xml-sel","");
-				}
-				if (n.nodeTypeString == "attribute"){
+				} else
+				if (nodeType == "attribute"){
 					xmltext += n.text+"\n";
-				}
-				if (n.nodeTypeString == "text"){
+				} else
+				if (nodeType == "text"){
 					xmltext += n.text+"\n";
+				} else
+				if (nodeType == "cdatasection"){
+					xmltext += n.text+"\n";
+				}else{
+					alert("unhandled "+n.nodeTypeString);
 				}
 			}
 			
