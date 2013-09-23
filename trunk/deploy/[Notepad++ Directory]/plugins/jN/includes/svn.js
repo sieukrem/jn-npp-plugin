@@ -76,7 +76,7 @@
 		
 				var svnItem = null;
 				
-				if (fso.FileExists(this.file))			
+				if (fso.FileExists(this.file) && fso.FolderExists(fso.GetParentFolderName(this.file)+"/.svn"))			
 					svnItem = svnObjects.svn(this.file);
 			
 				svnObjects.commit.disabled = !svnItem || !svnItem.IsSvnItem || !svnItem.HasModifications;
