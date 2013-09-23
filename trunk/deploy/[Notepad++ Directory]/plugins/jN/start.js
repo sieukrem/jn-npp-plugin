@@ -224,7 +224,51 @@ function Listener(eventNames){
 	};
 })();
 	
+/**
+	Read all bytes of file with given charset
+*/
+function readFile(path, charset) {
+	var stream = new ActiveXObject("ADODB.Stream");
 
+	stream.Charset = charset;
+	stream.Open();
+	stream.LoadFromFile(path);
+
+	var result = stream.ReadText();
+	stream.close();
+
+	return result;
+}
+	
+/**
+	Load script file once.
+*/
+function require(file){
+	var fso = new ActiveXObject("Scripting.FileSystemObject");
+
+	if (!fso.FileExists(file)){
+		var startDir = fso.GetFile(System.scriptFullName).ParentFolder.Path;
+		if (fso.FileExists(startDir+"\\"+file))
+			file = startDir+"\\"+file;
+		else
+			throw "File does not exist: " + file;
+	}
+	
+	// use full path to script, to avoid multiple loads 
+	file = fso.GetFile(file).Path;
+
+	// file already loaded
+	if (require.hash[file])
+		return;
+	
+	var script = readFile(file, "UTF-8");
+
+	System.addScript(script, file);
+		
+	require.hash[file] = true;
+}
+
+require["hash"] = {};	
 
 /**
 	Is an Interface for Setting and Reading of Settings

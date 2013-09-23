@@ -381,7 +381,19 @@ HRESULT STDMETHODCALLTYPE Dialog::put_clientWidth( /* [in] */ int value){
 HRESULT STDMETHODCALLTYPE Dialog::get_top( /* [retval][out] */ int *result){
 	RECT rc;
 	::GetWindowRect(m_Hwnd, &rc);
-	*result = rc.top;
+
+	POINT top = {0, rc.top};
+
+	// Adapt result in case if dialog is a child window (has a parent), because of 
+	// SetWindowPos (see put_top) works accordingly to parent coordinates
+	// and not in Screen coordinates
+	HWND parent = GetAncestor(m_Hwnd, GA_PARENT);
+	if (parent != GetDesktopWindow()){
+		ScreenToClient(parent, &top);
+	}
+
+	*result = top.y;
+
 	return S_OK;
 }
 
@@ -394,8 +406,21 @@ HRESULT STDMETHODCALLTYPE Dialog::put_top( /* [in] */ int value){
 
 HRESULT STDMETHODCALLTYPE Dialog::get_left( /* [retval][out] */ int *result){
 	RECT rc;
+
 	::GetWindowRect(m_Hwnd, &rc);
-	*result = rc.left;
+
+	POINT left = {rc.left, 0};
+
+	// Adapt result in case if dialog is a child window (has a parent), because of 
+	// SetWindowPos (see put_top) works accordingly to parent coordinates
+	// and not in Screen coordinates
+	HWND parent = GetAncestor(m_Hwnd, GA_PARENT);
+	if (parent != GetDesktopWindow()){
+		ScreenToClient(parent, &left);
+	}
+
+	*result = left.x;
+
 	return S_OK;
 }
 
