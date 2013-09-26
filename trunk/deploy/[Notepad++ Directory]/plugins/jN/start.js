@@ -295,21 +295,11 @@ function Settings(file){
 		var fso = new ActiveXObject("Scripting.FileSystemObject");
 		if (settings == null){ // try to read
 			if (fso.FileExists(file)){
-
-				var f = fso.OpenTextFile(file,1, false,-1);  // for reading Unicode
-				if (!f.AtEndOfStream){
-					try{
-						var scr = f.ReadAll();
-						if (scr && scr.length>0){
-								if (scr.charCodeAt(0)==65279) 	// is UTF-8 with BOM
-									scr[0] = ' ';				// replace BOM with space symbol
-								settings = JSON.parse(scr);
-						}
-					}catch(e){
-						debug(e);
-					}
+				try{
+					settings = JSON.parse(readFile(file,"UTF-16"));
+				}catch(e){
+					debug(e);
 				}
-				f.Close();
 			}
 		}
 
@@ -379,18 +369,11 @@ var loadIdleHandler = {
 	*/
 	include : function (file){
 		if (this.fso.FileExists(file)){
-			var f = this.fso.OpenTextFile(file,1, false,0);
-			var scr = decodeFrom(65001,f.ReadAll());
-			if (scr && scr.length>0){
-				try{
-					if (scr.charCodeAt(0)==65279) 	// is UTF-8 with BOM
-						scr[0] = ' ';				// replace BOM with space symbol
-					addScript(scr, file);
-				}catch(e){
-					this.errors.push(e);
-				}
+			try{
+				addScript(readFile(file, "UTF-8"), file);
+			}catch(e){
+				this.errors.push(e);
 			}
-			f.Close();
 		}
 	},	
 	cmd:function(){
