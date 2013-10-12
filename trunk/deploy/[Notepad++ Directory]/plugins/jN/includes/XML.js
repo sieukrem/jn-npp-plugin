@@ -1,7 +1,7 @@
 var xmlCfg ={
 	menu	: Editor.addMenu("XML"),
 	BUFFERACTIVATED	:function(v){
-		this.menu.disabled = langs[v.lang].toLowerCase()!="xml";
+		this.menu.disabled = !langs[v.lang] || (langs[v.lang] && langs[v.lang].toLowerCase() != "xml"); 
 	}	
 };
 
