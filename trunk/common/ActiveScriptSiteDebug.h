@@ -30,6 +30,7 @@ private:
 	LocRef<IActiveScript, true> m_ActiveScript;
 	LocRef<IProcessDebugManager> m_Pdm;
 	LocRef<IDebugApplication>    m_App;
+	DWORD                        m_AppCookie;
 	typedef std::map<DWORD, IDebugDocumentHelper*> Docs;
 	Docs m_Docs;
 public:

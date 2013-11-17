@@ -26,19 +26,28 @@ ActiveScriptSiteDebug::ActiveScriptSiteDebug(TCHAR *appName, IActiveScript* as):
         __uuidof(IProcessDebugManager), (void **)&m_Pdm)))
 		throw "PDM creation failed";
 
-	if (FAILED(m_Pdm->GetDefaultApplication(&m_App)))
+	if (FAILED(m_Pdm->CreateApplication(&m_App)))
 		throw "Debug application creation failed";
 
 	HRESULT res = m_App->SetName(appName);
+
+	if (FAILED(m_Pdm->AddApplication(m_App, &m_AppCookie)))
+		throw "Debug application adding failed";
+
+
 }
 
 ActiveScriptSiteDebug::~ActiveScriptSiteDebug(){
-	for(Docs::const_iterator it=m_Docs.begin(); it!=m_Docs.end(); ++it)
+	for(Docs::const_iterator it=m_Docs.begin(); it!=m_Docs.end(); ++it){
+		it->second->Detach();
 		it->second->Release();
+	}
 
 	if (m_App)
 		m_App->Close();
 
+	if (FAILED(m_Pdm->RemoveApplication(m_AppCookie)))
+		throw "Debug application removing failed";
 }
 
 DWORD ActiveScriptSiteDebug::AddScript(BSTR script, BSTR name){
