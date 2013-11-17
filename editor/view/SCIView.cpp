@@ -33,13 +33,14 @@ SCIView::SCIView(HWND handle)
 
 	// subclassing of scintilla
 	sciOldWndProc =(WNDPROC)GetWindowLong(m_Handle, GWL_WNDPROC);
+	SetProp(m_Handle, TEXT("SCIView WndProc"), (HANDLE)sciOldWndProc);
+
 	SetWindowLong(m_Handle, GWL_WNDPROC, (LONG) sciPluginMessageProc);
 }
 
 SCIView::~SCIView(void)
 {
-	SetProp(m_Handle, TEXT("SCIView Pointer"), (HANDLE)NULL);
-	SetWindowLong(m_Handle, GWL_WNDPROC, (LONG) sciOldWndProc);
+	RemoveProp(m_Handle, TEXT("SCIView Pointer"));
 }
 
 LRESULT SCIView::sci(int cmd, int wParam, int lParam){
@@ -56,8 +57,11 @@ LRESULT SCIView::OnMessage(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
 
 LRESULT CALLBACK SCIView::sciPluginMessageProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
 	SCIView* self = (SCIView*)GetProp(hwnd, TEXT("SCIView Pointer"));
-	if (self == NULL)
-		return 0;
+	if (self == NULL){
+		WNDPROC old = (WNDPROC)GetProp(hwnd, TEXT("SCIView WndProc"));
+
+		return CallWindowProc(old,hwnd,message,wParam,lParam);
+	}
 
 	return  self->OnMessage(hwnd, message, wParam, lParam);
 }

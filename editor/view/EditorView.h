@@ -49,7 +49,6 @@ public:
 	LRESULT OnMessage(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 	int m_Id;
 
-	CEditor* m_Editor;
 	IndicatorPanel m_IndPanel;
 
 	void DoMessage(SCNotification* eventArgs);
