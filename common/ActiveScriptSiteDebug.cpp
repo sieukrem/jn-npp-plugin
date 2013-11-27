@@ -43,11 +43,15 @@ ActiveScriptSiteDebug::~ActiveScriptSiteDebug(){
 		it->second->Release();
 	}
 
+	if (FAILED(m_Pdm->RemoveApplication(m_AppCookie)))
+		throw "Debug application removing failed";
+
 	if (m_App)
 		m_App->Close();
 
-	if (FAILED(m_Pdm->RemoveApplication(m_AppCookie)))
-		throw "Debug application removing failed";
+	// release app and pdm in this order to avoid deadlocks
+	m_App->Release();
+	m_Pdm->Release();
 }
 
 DWORD ActiveScriptSiteDebug::AddScript(BSTR script, BSTR name){
@@ -78,7 +82,8 @@ HRESULT ActiveScriptSiteDebug::GetApplication(IDebugApplication **ppda){
 	if (!ppda)
 		return E_POINTER;
 
-	m_App.CopyTo(ppda);
+	*ppda = static_cast<IDebugApplication*>(m_App);
+	(*ppda)->AddRef();
 
 	return S_OK;
 }

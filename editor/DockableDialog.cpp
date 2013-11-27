@@ -89,15 +89,15 @@ int DockableDialog::GetDockingFlags(){
 
 	VARIANT* dockingText = m_Cfg->getProperty(TEXT("docking"), VT_BSTR);
 	if (dockingText){
-		if (CSTR_EQUAL == StrCmp(TEXT("top"),dockingText->bstrVal))
+		if (0 == StrCmp(TEXT("top"),dockingText->bstrVal))
 			result = DWS_DF_CONT_TOP;
-		else if (CSTR_EQUAL == StrCmp(TEXT("right"),dockingText->bstrVal))
+		else if (0 == StrCmp(TEXT("right"),dockingText->bstrVal))
 			result = DWS_DF_CONT_RIGHT;
-		else if (CSTR_EQUAL == StrCmp(TEXT("bottom"),dockingText->bstrVal))
+		else if (0 == StrCmp(TEXT("bottom"),dockingText->bstrVal))
 			result = DWS_DF_CONT_BOTTOM;
-		else if (CSTR_EQUAL == StrCmp(TEXT("left"),dockingText->bstrVal))
+		else if (0 == StrCmp(TEXT("left"),dockingText->bstrVal))
 			result = DWS_DF_CONT_LEFT;
-		else if (CSTR_EQUAL == StrCmp(TEXT("floating"),dockingText->bstrVal))
+		else if (0 == StrCmp(TEXT("floating"),dockingText->bstrVal))
 			result = DWS_DF_FLOATING;
 
 
