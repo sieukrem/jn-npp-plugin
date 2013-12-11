@@ -19,16 +19,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdarg.h>
 #include "SysStr.h"
  
-EXTERN_C const GUID DECLSPEC_SELECTANY CLSID_JSScript = { 0xf414c260, 0x6ac0, 0x11cf,  {0xb6,0xd1,0x0, 0xaa, 0x0, 0xbb, 0xbb, 0x58 } };
+EXTERN_C const GUID DECLSPEC_SELECTANY CLSID_JSScript = { 0xf414c260, 0x6ac0, 0x11cf, {0xb6,0xd1,0x0, 0xaa, 0x0, 0xbb, 0xbb, 0x58 } };
+EXTERN_C const GUID DECLSPEC_SELECTANY CLSID_JSScript9 ={ 0x16d51579, 0xa30b, 0x4c8b, {0xa2,0x76,0x0f,0xf4, 0xdc,0x41, 0xe7, 0x55 } }; //Chakra
 
 MyActiveSite::MyActiveSite(){
 
-	HRESULT res = CoCreateInstance(
-		CLSID_JSScript, 
-		NULL, CLSCTX_INPROC_SERVER,
-		IID_IActiveScript,
-		(void **)&m_ActiveScript
-	);
+	HRESULT res;
+	//if (FAILED(CoCreateInstance(
+	//		CLSID_JSScript9, 
+	//		NULL, CLSCTX_INPROC_SERVER,
+	//		IID_IActiveScript,
+	//		(void **)&m_ActiveScript
+	//		)))
+
+	{		res = CoCreateInstance(
+			CLSID_JSScript, 
+			NULL, CLSCTX_INPROC_SERVER,
+			IID_IActiveScript,
+			(void **)&m_ActiveScript
+		);
+	}
 
 	m_Assd.m_Reference = new ActiveScriptSiteDebug(TEXT("jN - a Notepad++ plugin"), m_ActiveScript);
 
@@ -336,7 +346,12 @@ HRESULT __stdcall MyActiveSite::OnScriptTerminate(  const VARIANT *pvarResult, c
 
 HRESULT __stdcall MyActiveSite::OnStateChange(SCRIPTSTATE ssScriptState) 
 {
-  return S_OK;
+	if (ssScriptState == SCRIPTSTATE_CLOSED && m_Assd.m_Reference!=NULL){
+		m_Assd.m_Reference->Release();
+		m_Assd.m_Reference = NULL;
+	}
+
+	return S_OK;
 }
 
 HRESULT __stdcall MyActiveSite::OnScriptError(IActiveScriptError *pscriptError) 
@@ -436,9 +451,14 @@ BOOL ScriptObj::callMethod(TCHAR* method){
 	dispparams.rgdispidNamedArgs = &putid;
 	dispparams.cArgs = 1;
 	dispparams.cNamedArgs = 1;
-
+	try{
 	HRESULT res = m_Obj->InvokeEx(*dispid, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &dispparams, NULL, NULL, NULL);
+	res = res;
+	}
+	catch(void* e){
 	
+	}
+
 	delete dispid;
 
 	return true;
