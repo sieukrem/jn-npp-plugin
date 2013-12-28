@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define VERSION_MA 1
+#define VERSION_MA 2
 #define VERSION_MI 0 
 
 // increment revision in case of modification

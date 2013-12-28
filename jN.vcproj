@@ -379,13 +379,6 @@
 			<File
 				RelativePath=".\common\ActiveScriptSiteDebug.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\common\ActiveScriptSiteDebug.h"
