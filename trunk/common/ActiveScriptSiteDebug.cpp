@@ -61,13 +61,15 @@ DWORD ActiveScriptSiteDebug::AddScript(BSTR script, BSTR name){
 	if (!doc)
 		return 0;
 
+	DWORD scriptAttr = 0;
 	TCHAR buf[100];
 	if (name == 0){
 		StringCbPrintf(buf, sizeof(buf) , TEXT("local_%d.js"), doc);
 		name = buf;
+		scriptAttr = TEXT_DOC_ATTR_READONLY;
 	}
 
-	HRESULT res = doc->Init(m_App, name, name, TEXT_DOC_ATTR_READONLY);
+	HRESULT res = doc->Init(m_App, name, name, scriptAttr);
 	res = doc->Attach(NULL);
 	res = doc->AddUnicodeText(script);
 
