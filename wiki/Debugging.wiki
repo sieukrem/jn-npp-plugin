@@ -1,0 +1,13 @@
+#summary Debugging of automation scripts
+#labels Featured
+
+= Introduction =
+Some times it is better one time to see than thousand times to read or hear about some thing. During implementing and testing of your automation scripts it can be necessary to investigate behaviour of Notepad++ or scripts. In such cases a powerful debugger is a very nice tool. Since jN 2.0.100 it is possible to debug your scripts in every tool that can attach to MS Script Engine.
+
+
+= Details =
+Today I know only two possibilities to debug scripts runing in Notepad++. 
+ * [http://www.microsoft.com/de-de/download/details.aspx?id=1757 Windows Script Debugger] (simple)
+ * MS Visual Studio (powerful)
+
+Since MS Visula Studio 2013 the [http://www.microsoft.com/de-de/download/details.aspx?id=40787 express editions] support this functionality too. 
