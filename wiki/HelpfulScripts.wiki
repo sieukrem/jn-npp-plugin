@@ -35,3 +35,30 @@ else
 First parameter is a handle of a parent window. It is possible to use Editor.handle for this purpose. The second parameter is a text message shown at the top of dialog. Third parameter is a flag for a dialog. Fourth parameter is optional start node.
 
 More information about [http://msdn.microsoft.com/en-us/library/windows/desktop/bb774065%28v=vs.85%29.aspx Shell.BrowseForFolder]
+
+= Read from file =
+{{{
+function readFile(path, charset) {
+	if (typeof(charset) == "undefined")
+		charset = "Windows-1252";
+		
+	var stream = new ActiveXObject("ADODB.Stream");
+
+	stream.Charset = charset;
+	stream.Open();
+	stream.LoadFromFile(path);
+
+	var result = stream.ReadText();
+	stream.close();
+
+	return result;
+}
+
+// test code
+try{
+	alert(readFile("d:\\my-utf8-file.txt","UTF-8"));
+	alert(readFile("d:\\my-ansi-file.txt"));
+}catch(e){
+	alert(e.message)
+}
+}}}
