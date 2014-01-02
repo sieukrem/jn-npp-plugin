@@ -10,4 +10,7 @@ Today I know only two possibilities to debug scripts runing in Notepad++.
  * [http://www.microsoft.com/de-de/download/details.aspx?id=1757 Windows Script Debugger] (simple)
  * MS Visual Studio (powerful)
 
-Since MS Visula Studio 2013 the [http://www.microsoft.com/de-de/download/details.aspx?id=40787 express editions] support this functionality too. 
+= MS Visual Studio =
+Since MS Visual Studio 2013 the [http://www.microsoft.com/de-de/download/details.aspx?id=40787 express editions] support this functionality too. 
+
+<wiki:video width="780" height="470" url="http://www.youtube.com/watch?v=3BwNSMRG8tU"/>
