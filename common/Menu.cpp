@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Menu.h"
 #include "MyActiveSite.h"
+#include "LastError.h"
 
 
 #pragma region CMenuItem
@@ -255,4 +256,49 @@ HRESULT STDMETHODCALLTYPE CMenu::put_checked( VARIANT_BOOL value){
 	return S_OK;
 }
 
+#pragma endregion
+
+#pragma region ContextMenu
+CContextMenu::CContextMenu(VARIANT cfg, HWND window){
+	m_Menu = new CMenu(NULL, 0, cfg);
+	m_Window = window;
+}
+
+CContextMenu::~CContextMenu(){
+	m_Menu->Release();
+}
+
+HRESULT STDMETHODCALLTYPE CContextMenu::addMenu( VARIANT cfg, IMenu **result){
+	return m_Menu->addMenu(cfg, result);
+}
+
+HRESULT STDMETHODCALLTYPE CContextMenu::addItem( IDispatch *config, IMenuItem **result){
+	return m_Menu->addItem(config, result);
+}
+
+HRESULT STDMETHODCALLTYPE CContextMenu::addSeparator(){
+	return m_Menu->addSeparator();
+}
+
+HRESULT STDMETHODCALLTYPE CContextMenu::show(){
+	TPMPARAMS tpm;
+	tpm.cbSize = sizeof(TPMPARAMS);
+	tpm.rcExclude;
+
+	GetClientRect(m_Window, &tpm.rcExclude);
+
+	MapWindowPoints(m_Window, HWND_DESKTOP, (LPPOINT)&tpm.rcExclude, 2);
+ 
+	// Show the menu and wait for input. 
+	// If the user selects an item, its WM_COMMAND is sent.
+	int res = TrackPopupMenuEx(m_Menu->getHandle(),
+	TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_VERTICAL,               
+	tpm.rcExclude.left, tpm.rcExclude.top, m_Window, &tpm); 
+
+	if (!res){
+		LastError err;
+	}
+
+	return S_OK;
+}
 #pragma endregion

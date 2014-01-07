@@ -207,6 +207,9 @@ library jN
 
 		[helpstring("Adds new application wide hot key combination. For cfg see addSystemHotKey method.")]
 					HRESULT addHotKey([in]IDispatch* cfg);
+
+		[helpstring("Creates an empty context menu. cfg = {oninitpopup:function(){}}")]
+					HRESULT createContextMenu([in]VARIANT cfg, [out, retval]ICtxMenu** result);
 	};
 
 };

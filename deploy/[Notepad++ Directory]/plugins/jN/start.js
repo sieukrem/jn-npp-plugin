@@ -145,20 +145,22 @@ function Listener(eventNames){
 	
 	var handle = function(evN, args){
 		var evHs = handler[evN];
+		var result;
 		if (evHs)
 			for (var i=0,c=evHs.length; i<c; i++)
 				try{
-					evHs[i][evN].apply(evHs[i], args);
+					result = evHs[i][evN].apply(evHs[i], args);
 				}catch(e){
 					debug(e);
 				}
+		return result;
 	};
 	
 	eventNames.forEach(function(evN){
 		// create for each event an array of handlers
 		handler[evN] = [];
 		// create for each event an function with the same name
-		self[evN] = function(n){return function(){handle(n,arguments);};}(evN);
+		self[evN] = function(n){return function(){ return handle(n,arguments);};}(evN);
 	});
 	
 	this.addListener = function(l){
