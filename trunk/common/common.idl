@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 	[	
-		uuid(0614FB00-6702-11d4-B0B7-0050BABFC903), 
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC800), 
 		oleautomation, 
 		helpstring("Represents a menu item with command.") 
 	] 
@@ -42,15 +42,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 	[	
-		uuid(0614FB00-6702-11d4-B0B7-0050BABFC904), 
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC801), 
 		oleautomation, 
 		helpstring("Represents a submenu.") 
 	] 
 	interface IMenu : IMenuItem 
 	{
-		//[helpstring("Appends a new menu and returns its.")]
-		//HRESULT addMenu([in]BSTR* text, [out, retval]IMenu** result);// no cmd, text only
-
 		[helpstring("Appends a new menu and returns its. cfg = {text:'my menu', oninitpopup:function(){}}")]
 		HRESULT addMenu([in]VARIANT cfg, [out, retval]IMenu** result);// no cmd, text only
 
@@ -60,6 +57,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		[helpstring("Appends a separator to the menu.")]
 		HRESULT addSeparator();
 		
+	};
+
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC802), 
+		oleautomation, 
+		helpstring("Represents a context menu.") 
+	] 
+	interface ICtxMenu : IDispatch 
+	{
+		[helpstring("Appends a new menu and returns its. cfg = {text:'my menu', oninitpopup:function(){}}")]
+		HRESULT addMenu([in]VARIANT cfg, [out, retval]IMenu** result);// no cmd, text only
+
+		[helpstring("Appends a new menu item to the menu. Returns new menu item object. cfg = {text:'My Menu', cmd:function(){}}")]
+		HRESULT addItem([in]IDispatch* cfg, [out, retval]IMenuItem** result); // {text:"",cmd:function(){}}
+
+		[helpstring("Appends a separator to the menu.")]
+		HRESULT addSeparator();
+
+		[helpstring("Shows menu")]
+		HRESULT show();
 	};
 
 	[	
@@ -221,8 +238,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		[propget, helpstring("Full path of start script file.")]
 					HRESULT scriptFullName([out,retval] BSTR* result);
 
-					[helpstring("Creates and shows user notification in system tray. cfg = {title='My Title', msg='long message'}")]
+		[helpstring("Creates and shows user notification in system tray. cfg = {title='My Title', msg='long message'}")]
 					HRESULT showNotification([in]IDispatch* cfg);
-
 	};
 

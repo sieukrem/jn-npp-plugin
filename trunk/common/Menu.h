@@ -210,9 +210,11 @@ public:
 
 class CMenu : public CAbstractMenuItem<IMenu>
 {
+protected: 
+	ScriptObj* m_Config;
+
 private:
 	WORD  m_Items;
-	ScriptObj* m_Config;
 	HWND m_Hwnd;
 
 public:
@@ -241,4 +243,22 @@ public:
 
     virtual HRESULT STDMETHODCALLTYPE put_checked( VARIANT_BOOL value);
 
+};
+
+class CContextMenu: public CComDispatch<ICtxMenu>{
+private:
+	CMenu* m_Menu;
+	HWND m_Window;
+public:
+	CContextMenu(VARIANT cfg, HWND window);
+	
+	~CContextMenu();
+
+	virtual HRESULT STDMETHODCALLTYPE addMenu( VARIANT cfg, IMenu **result);
+    
+    virtual HRESULT STDMETHODCALLTYPE addItem( IDispatch *config, IMenuItem **result);
+
+    virtual HRESULT STDMETHODCALLTYPE addSeparator( void);
+
+    virtual HRESULT STDMETHODCALLTYPE show(void);
 };

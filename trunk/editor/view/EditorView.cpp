@@ -359,7 +359,23 @@ LRESULT CEditorView::OnMessage(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
 				
 				m_Listener->callMethod(TEXT("CLICK"), var, 1);
 			}
-		default:
-			return SCIView::OnMessage(hwnd, message, wParam, lParam);
+			break;
+		case WM_CONTEXTMENU:
+			if (m_Listener){
+				VARIANT var[1];
+				var[0].vt = VT_DISPATCH;
+				var[0].pdispVal = this; 
+				
+				VARIANT res;
+				m_Listener->callMethod(TEXT("CONTEXTMENU"), var, 1, &res);
+
+				if (res.vt == VT_BOOL && res.boolVal != VARIANT_FALSE ){
+					return 0; // avoid showing of original context menu
+				}
+
+				HRESULT ok = VariantClear(&res);
+			}
+			break;
 	}
+	return SCIView::OnMessage(hwnd, message, wParam, lParam);
 }
