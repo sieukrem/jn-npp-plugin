@@ -433,8 +433,6 @@ public:
 };
 
 
-
-
 HRESULT STDMETHODCALLTYPE CEditor::addHotKey(IDispatch* cfg){
 	if (cfg == NULL)
 		return S_OK;
@@ -460,7 +458,6 @@ HRESULT STDMETHODCALLTYPE CEditor::addHotKey(IDispatch* cfg){
 HRESULT STDMETHODCALLTYPE CEditor::createContextMenu(VARIANT cfg, ICtxMenu **result){
 	CContextMenu* m = new CContextMenu(cfg, m_NppHandle); 
 	*result = m->As<ICtxMenu>();
-	m->AddRef();
 
 	return S_OK;
 }

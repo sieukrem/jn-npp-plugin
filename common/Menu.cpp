@@ -281,19 +281,14 @@ HRESULT STDMETHODCALLTYPE CContextMenu::addSeparator(){
 }
 
 HRESULT STDMETHODCALLTYPE CContextMenu::show(){
-	TPMPARAMS tpm;
-	tpm.cbSize = sizeof(TPMPARAMS);
-	tpm.rcExclude;
-
-	GetClientRect(m_Window, &tpm.rcExclude);
-
-	MapWindowPoints(m_Window, HWND_DESKTOP, (LPPOINT)&tpm.rcExclude, 2);
+	POINT point;
+	GetCursorPos(&point);
  
 	// Show the menu and wait for input. 
 	// If the user selects an item, its WM_COMMAND is sent.
 	int res = TrackPopupMenuEx(m_Menu->getHandle(),
 	TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_VERTICAL,               
-	tpm.rcExclude.left, tpm.rcExclude.top, m_Window, &tpm); 
+	point.x, point.y, m_Window, NULL); 
 
 	if (!res){
 		LastError err;
