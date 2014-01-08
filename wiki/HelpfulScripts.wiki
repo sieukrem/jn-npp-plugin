@@ -63,3 +63,42 @@ try{
 	alert(e.message)
 }
 }}}
+
+= Read registry keys using WMI =
+The next code using WMIs [http://msdn.microsoft.com/en-us/library/aa393664%28v=vs.85%29.aspx StdRegProv] is very tricky, because javascript does not support out parameters and the call we use returns value over it. It was a good message for me, that there is a [http://msdn.microsoft.com/en-us/library/aa389296%28v=vs.85%29.aspx way] to do it.
+{{{
+function readRegSubKeys(keyNum, subKeyName){
+	//Constructing InParameters Objects and Parsing OutParameters Objects
+	
+	var objReg=GetObject("winmgmts:{impersonationLevel=impersonate}!//./root/default:StdRegProv");
+	
+	// because of javascript does not support out parameters do all things other
+	// InParameters
+	var objInParam = objReg.Methods_("EnumKey").InParameters.SpawnInstance_();
+
+
+	// Add the input parameters.
+	objInParam.Properties_.Item("hDefKey")     =  keyNum;
+	objInParam.Properties_.Item("sSubKeyName") =  subKeyName;
+
+	// Execute the method and obtain the return status.
+	// The OutParameters object in objOutParams
+	// is created by the provider.
+	var objOutParams = objReg.ExecMethod_("EnumKey", objInParam);
+	
+	// read output parameter. For StdRegProv it is sNames
+	var sNames = objOutParams.Properties_.item("sNames").Value;
+	
+	// because of sNames is a SafeArray convert it to javascript array
+	return  (new VBArray(sNames)).toArray();
+}
+
+try{
+
+	var HKEY_CLASSES_ROOT  = 0x80000000;
+
+	alert(readRegSubKeys(HKEY_CLASSES_ROOT, "MIME\\Database\\Charset").join(", "));
+}catch(e){
+	alert(e.message)
+}
+}}}
