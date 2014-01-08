@@ -37,6 +37,7 @@ First parameter is a handle of a parent window. It is possible to use Editor.han
 More information about [http://msdn.microsoft.com/en-us/library/windows/desktop/bb774065%28v=vs.85%29.aspx Shell.BrowseForFolder]
 
 = Read from file =
+In following snippet we use ADODB.Stream ActiveX for reading from file. ADODB.Stream allows to use certain encoding (UTF-8, Windows-1252, ..) for reading files.
 {{{
 function readFile(path, charset) {
 	if (typeof(charset) == "undefined")
