@@ -23,16 +23,16 @@ ActiveScriptSiteDebug::ActiveScriptSiteDebug(TCHAR *appName, IActiveScript* as):
 	if (FAILED(CoCreateInstance(
 		CLSID_ProcessDebugManager, NULL,
 		CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER,
-        __uuidof(IProcessDebugManager), (void **)&m_Pdm)))
-		throw "PDM creation failed";
+        __uuidof(IProcessDebugManager), (void **)m_Pdm)))
+		throw TEXT("PDM creation failed");
 
 	if (FAILED(m_Pdm->CreateApplication(&m_App)))
-		throw "Debug application creation failed";
+		throw TEXT("Debug application creation failed");
 
 	HRESULT res = m_App->SetName(appName);
 
 	if (FAILED(m_Pdm->AddApplication(m_App, &m_AppCookie)))
-		throw "Debug application adding failed";
+		throw TEXT("Debug application adding failed");
 
 
 }
@@ -49,9 +49,6 @@ ActiveScriptSiteDebug::~ActiveScriptSiteDebug(){
 	if (m_App)
 		m_App->Close();
 
-	// release app and pdm in this order to avoid deadlocks
-	m_App->Release();
-	m_Pdm->Release();
 }
 
 DWORD ActiveScriptSiteDebug::AddScript(BSTR script, BSTR name){

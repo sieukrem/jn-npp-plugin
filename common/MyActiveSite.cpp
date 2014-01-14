@@ -40,7 +40,11 @@ MyActiveSite::MyActiveSite(){
 		);
 	}
 
-	m_Assd.m_Reference = new ActiveScriptSiteDebug(TEXT("jN - a Notepad++ plugin"), m_ActiveScript);
+	try{
+		m_Assd.m_Reference = new ActiveScriptSiteDebug(TEXT("jN - a Notepad++ plugin"), m_ActiveScript);
+	}catch(TCHAR* e){
+		MessageBox(0, e, TEXT("Exception"), 0);
+	}
 
 	res = m_ActiveScript->QueryInterface(IID_IActiveScriptParse, (void **)&m_ActiveScriptParse);
 

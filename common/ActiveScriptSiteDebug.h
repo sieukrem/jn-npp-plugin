@@ -28,8 +28,8 @@ class ActiveScriptSiteDebug : public CComBase<IActiveScriptSiteDebug>
 {
 private:
 	LocRef<IActiveScript, true> m_ActiveScript;
-	IProcessDebugManager*       m_Pdm; // because of permanent deadlocks
-	IDebugApplication*		    m_App; // make them without LocRef
+	LocRef<IProcessDebugManager, false>       m_Pdm; // because of permanent deadlocks
+	LocRef<IDebugApplication, false>		    m_App; // make them without LocRef
 	DWORD                       m_AppCookie;
 	typedef std::map<DWORD, IDebugDocumentHelper*> Docs;
 	Docs m_Docs;
