@@ -42,8 +42,8 @@ MyActiveSite::MyActiveSite(){
 
 	try{
 		m_Assd.m_Reference = new ActiveScriptSiteDebug(TEXT("jN - a Notepad++ plugin"), m_ActiveScript);
-	}catch(TCHAR* e){
-		MessageBox(0, e, TEXT("Exception"), 0);
+	}catch(TCHAR*){
+		// debugger not available
 	}
 
 	res = m_ActiveScript->QueryInterface(IID_IActiveScriptParse, (void **)&m_ActiveScriptParse);
@@ -459,7 +459,7 @@ BOOL ScriptObj::callMethod(TCHAR* method){
 	HRESULT res = m_Obj->InvokeEx(*dispid, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &dispparams, NULL, NULL, NULL);
 	res = res;
 	}
-	catch(void* e){
+	catch(void*){
 	
 	}
 
