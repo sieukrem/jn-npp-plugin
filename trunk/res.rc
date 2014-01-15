@@ -7,7 +7,7 @@
 
 STRINGTABLE
 BEGIN
-1 "jN Plugin for Notepad++\n© Eugen Kremer, 2013\nwww.softwarecanoe.de"
+1 "jN Plugin for Notepad++\n© Eugen Kremer, 2014\nwww.softwarecanoe.de"
 END
 
 1 VERSIONINFO
@@ -24,7 +24,7 @@ BLOCK "StringFileInfo"
 		VALUE "FileDescription", "jN Plugin for Notepad++ that allows you to automate certain Tasks with JavaScript"
 		VALUE "FileVersion", xstr(_VERSION_STR)
 		VALUE "InternalName", "jN.dll"
-		VALUE "LegalCopyright", "Copyleft 2011 by Eugen Kremer"
+		VALUE "LegalCopyright", "Copyleft 2014 by Eugen Kremer"
 		VALUE "OriginalFilename", "jN.dll"
 		VALUE "ProductName", "jN"
 		VALUE "ProductVersion", xstr(_VERSION_STR)
