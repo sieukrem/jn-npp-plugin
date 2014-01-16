@@ -1,0 +1,10 @@
+#summary Short description of SmartHighlighter integrated in jN
+#labels Featured
+
+= Introduction =
+
+I have seen this functionality in Eclipse and was excited. If you set cursor on some variable all of its usages are highlighted. I found it very helpful feature and wanted it in Notepad++. 
+
+For me it is enough to select text range and select some style in context menu. If one wants more (for example automaticaly selection of some tokens without doubleclicking) can extend or implement additional SmartHighlighter.js.
+
+http://www.youtube.com/watch?v=tgtu-R7QE8U
