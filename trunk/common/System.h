@@ -61,7 +61,7 @@ public:
 			mov v_ebp, ebp
 		}
 
-		CallBack* cb = *CallBack::GetCallBack(NUM);
+		CallBack* cb = *GetCallBack(NUM);
 		return cb->Call(v_ebp); // provide actual parameters
 #else
 #pragma message(": warning: Library::call not available")

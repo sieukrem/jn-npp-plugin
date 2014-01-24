@@ -27,10 +27,9 @@ DWORD CALLBACK AcceleratorHook::Handler( int code,   DWORD wParam,    LONG lPara
 	if (msg && code == HC_ACTION){
 		bool q = msg->message == WM_QUIT;
 		
-		AcceleratorHandler* handler = NULL;
 		EnterCriticalSection(&instance->m_CriticalSection);
 		for(Handlers::iterator it=instance->m_Handlers.begin(); it!=instance->m_Handlers.end(); ++it){
-			handler = *it;
+			AcceleratorHandler* handler = *it;
 			if (handler->execute(msg)){
 				msg->message = WM_NULL;
 				break;

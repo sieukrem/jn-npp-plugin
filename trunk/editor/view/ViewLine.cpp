@@ -116,7 +116,7 @@ HRESULT STDMETHODCALLTYPE ViewLine::get_text( BSTR *result){
 
 	*result = m_View->adjustFromCodePage(buf, -1);
 	
-	delete buf;
+	delete[] buf;
 
 	return S_OK;
 }
