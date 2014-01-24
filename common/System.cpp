@@ -146,7 +146,7 @@ HRESULT STDMETHODCALLTYPE System::decodeFrom(
 		*result = SysAllocStringLen(NULL, len);
 		res = MultiByteToWideChar(codepage, 0, buf, newlen, *result, len);
 
-		delete buf;
+		delete[] buf;
 	}
 	return S_OK;
 }
@@ -163,7 +163,7 @@ HRESULT STDMETHODCALLTYPE System::encodeTo( int codepage, BSTR *value, BSTR *res
 		*result = SysAllocStringLen(NULL, len);
 		res = MultiByteToWideChar(0, 0, buf, newlen, *result, len);
 
-		delete buf;
+		delete[] buf;
 	}
 	return S_OK;
 }
