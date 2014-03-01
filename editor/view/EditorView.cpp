@@ -165,7 +165,7 @@ HRESULT STDMETHODCALLTYPE CEditorView::get_selection( BSTR *value){
 	sci(SCI_GETSELTEXT, len, (LPARAM)buf);
 
 	*value = adjustFromCodePage(buf, -1);  
-	delete[] buf;
+	delete buf;
 
 	return S_OK;
 }
@@ -174,7 +174,7 @@ HRESULT STDMETHODCALLTYPE CEditorView::put_selection(BSTR *value){
 	char* buf = adjustToCodePage(*value);
 
 	sci(SCI_REPLACESEL, 0, (LPARAM)buf);
-	delete[] buf;
+	delete buf;
 	 
 	return S_OK;
 }
@@ -195,10 +195,9 @@ HRESULT STDMETHODCALLTYPE CEditorView::get_files(IDispatch **result){
 	// prepare for getting filenames
 	long nbFiles;
 	get_files(&nbFiles);
-	TCHAR** filesArray = new TCHAR*[nbFiles];
-
+	TCHAR** filesArray = (TCHAR**)malloc(sizeof(TCHAR*)*nbFiles);
 	for(int i=0; i<nbFiles; i++){
-		filesArray[i] = new TCHAR[MAX_PATH];
+		filesArray[i] = (TCHAR*)malloc(sizeof(TCHAR)*MAX_PATH);
 	}
 
 	// get filenames
@@ -214,10 +213,9 @@ HRESULT STDMETHODCALLTYPE CEditorView::get_files(IDispatch **result){
 	// fill and free allocated Resources
 	for(int i=0; i<nbFiles; i++){
 		MyActiveSite::getInstance()->pushValueInToArr(arr, filesArray[i]);
-		delete[] filesArray[i];
+		delete filesArray[i];
 	}
-
-	delete[] filesArray;
+	delete filesArray;
 
 	*result = arr;
 	return S_OK;
