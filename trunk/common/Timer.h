@@ -23,8 +23,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MyActiveSite.h"
 
 class Timer{
+public:
+	class Handler{
+	public:
+		virtual void execute(){
+			// overload this method
+		}
+	};
+
 private:
-	typedef std::map<UINT_PTR, ScriptObj*> Handlers;
+	typedef std::map<UINT_PTR, Handler*> Handlers;
 
 	Handlers m_Handlers;
 
@@ -34,7 +42,8 @@ public:
 
 	static  void CALLBACK TimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime);
 
-	bool AddHandler(ScriptObj* cfg);
+	void Add(Handler* handler, int millis);
+	void Remove(Handler* handler);
 
 	static Timer* GetInstance();
 };

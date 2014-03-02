@@ -19,12 +19,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <windows.h>
 #include <set>
 
+#include "Timer.h"
+
 class ForegroundIdleHook{
 private:
+	Timer::Handler* m_TimerHandler;// replacement for hook if OS does not support IdleHooks 
 	HHOOK m_Hook;
 	CRITICAL_SECTION m_CriticalSection; 
 
 	static DWORD CALLBACK Handler( int code,   DWORD wParam,    LONG lParam	);
+	void OnHandler();
 
 	ForegroundIdleHook();
 	~ForegroundIdleHook();
@@ -46,5 +50,4 @@ public:
 private:
 	typedef std::set<IdleHandler*> Handlers;
 	Handlers m_Handlers;
-
 };
