@@ -30,7 +30,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "LastError.h"
 
+class ScriptedTimerHandler : public Timer::Handler{
+private:
+	ScriptObj* m_Cfg;
+public:
+	ScriptedTimerHandler(ScriptObj* cfg){
+		m_Cfg = cfg;
+	};
+	~ScriptedTimerHandler(){
+		delete m_Cfg;
+	}
+	void execute() override {
+		if (m_Cfg == NULL)
+			return;
+		
+		m_Cfg->callMethod(TEXT("cmd"));
 
+		delete this;
+	}
+};
 
 CallBack::CallBack(unsigned int stacksize, IDispatchEx* cfg, unsigned int num):CComDispatch(){
 	m_Stack = stacksize;
@@ -260,7 +278,33 @@ HRESULT STDMETHODCALLTYPE System::addScript(BSTR* value, VARIANT* name){
 }
 
 HRESULT STDMETHODCALLTYPE System::setTimeout(IDispatch* cfg){
-	return Timer::GetInstance()->AddHandler(MyActiveSite::getInstance()->WrapScriptObj(cfg)) ? S_OK : E_FAIL;
+	ScriptObj* scrptObj = MyActiveSite::getInstance()->WrapScriptObj(cfg);
+
+	VARIANT* millis = scrptObj->getProperty(TEXT("millis"), VT_I4);
+	if (millis == NULL){
+		delete scrptObj;
+		MyActiveSite::Throw(TEXT("Expect integer property 'millis'"), __uuidof(ISystem) );
+		return E_FAIL;
+	}
+
+	int millisVal = millis->intVal;
+
+	VariantClear(millis);
+	delete millis;
+
+	ScriptedTimerHandler* timeOutHandler = new ScriptedTimerHandler(scrptObj);
+	try{
+		Timer::GetInstance()->Add(timeOutHandler, millisVal);
+	}catch(TCHAR* e){
+		// timeOutHandler deletes itself after execute() is called, but if Add method failes
+		// it should be deleted explicitly
+		delete timeOutHandler;
+
+		MyActiveSite::Throw(e, __uuidof(ISystem) );
+		return E_FAIL;
+	}
+
+	return S_OK;
 }
 
 HRESULT STDMETHODCALLTYPE System::put_clipBoard( BSTR *value){

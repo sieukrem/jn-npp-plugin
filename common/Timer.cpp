@@ -25,44 +25,37 @@ Timer::Timer(void)
 {
 }
 
-bool Timer::AddHandler(ScriptObj* cfg)
-{
-	VARIANT* millis = cfg->getProperty(TEXT("millis"), VT_I4);
-	if (millis == NULL){
-		MyActiveSite::Throw(TEXT("Expect integer 'millis' property"), __uuidof(ISystem) );
-		return false;
+void Timer::Add(Handler* handler, int millis){
+	static TCHAR exceptionBuf[100];
+
+	if (millis < USER_TIMER_MINIMUM){
+		wsprintf(exceptionBuf, TEXT("The millis value %d should be greater than %d"), millis, USER_TIMER_MINIMUM);
+		throw exceptionBuf;
 	}
 
-	if (millis->intVal < USER_TIMER_MINIMUM){
-		TCHAR buf[100];
-		wsprintf(buf, TEXT("The millis value %d should be greater than %d"), millis->intVal, USER_TIMER_MINIMUM);
-
-		MyActiveSite::Throw(buf, __uuidof(ISystem) );
-		return false;
+	if (millis > USER_TIMER_MAXIMUM){
+		wsprintf(exceptionBuf, TEXT("The millis value %d should be less than %d"), millis, USER_TIMER_MAXIMUM);
+		throw exceptionBuf;
 	}
 
-	if (millis->intVal > USER_TIMER_MAXIMUM){
-		TCHAR buf[100];
-		wsprintf(buf, TEXT("The millis value %d should be less than %d"), millis->intVal, USER_TIMER_MAXIMUM);
 
-		MyActiveSite::Throw(buf, __uuidof(ISystem) );
-		return false;
-	}
-
-	UINT_PTR timerId = SetTimer(NULL, NULL, millis->intVal, Timer::TimerProc);
+	UINT_PTR timerId = SetTimer(NULL, NULL, millis, Timer::TimerProc);
 	if (timerId == NULL){
 		LastError errMsg;
-		MyActiveSite::Throw(errMsg, __uuidof(ISystem) );
-
-		return false;
+		throw errMsg.staticmessage();
 	}
 
-	m_Handlers.insert(Handlers::value_type(timerId, cfg));
+	m_Handlers.insert(Handlers::value_type(timerId, handler));
+}
 
-	VariantClear(millis);
-	delete millis;
+void Timer::Remove(Handler* handler){
+	for(Handlers::iterator it=m_Handlers.begin(); it!=m_Handlers.end(); ){
+		Handlers::iterator current = it;
+		++it;
 
-	return true;
+		if (current->second == handler)
+			m_Handlers.erase(current);
+	}
 }
 
 Timer::~Timer(void){
@@ -78,13 +71,11 @@ void Timer::TimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime){
 	if (findIt == t->m_Handlers.end())
 		return;
 
-	ScriptObj* cfg = findIt->second;
+	Handler* cfg = findIt->second;
 
 	t->m_Handlers.erase(findIt);
 
-	cfg->callMethod(TEXT("cmd"));
-
-	delete cfg;
+	cfg->execute();
 }
 
 Timer* Timer::GetInstance(){
