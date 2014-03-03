@@ -9,6 +9,10 @@ Makes SmartHighlighter running on Wine.
 Fixes crash if developer tools are not installed.
 [http://jn-npp-plugin.googlecode.com/files/jN_2.0.116.zip jN_2.0.116.zip]
 
+= Version 2.0.100 ==
+- Added [Debugging debugging functionality] for scripts.
+[http://jn-npp-plugin.googlecode.com/files/jN_2.0.100.zip jN_2.0.100.zip]
+
 = Version 1.0.34 =
 First release on Google Code. 
 [http://jn-npp-plugin.googlecode.com/files/jN_1.0.34.zip jN_1.0.34.zip]
