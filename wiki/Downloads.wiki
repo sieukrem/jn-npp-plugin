@@ -1,18 +1,18 @@
 #summary Released versions of jN
 #labels Featured,Downloads
 
-= Version 2.0.122 =
+=== Version 2.0.122 ===
 Makes SmartHighlighter running on Wine.
 [http://jn-npp-plugin.googlecode.com/svn/wiki/downloads/jN_2.0.122.zip jN_2.0.122.zip]
 
-= Version 2.0.116 =
+=== Version 2.0.116 ===
 Fixes crash if developer tools are not installed.
 [http://jn-npp-plugin.googlecode.com/files/jN_2.0.116.zip jN_2.0.116.zip]
 
-= Version 2.0.100 ==
+=== Version 2.0.100 ===
 - Added [Debugging debugging functionality] for scripts.
 [http://jn-npp-plugin.googlecode.com/files/jN_2.0.100.zip jN_2.0.100.zip]
 
-= Version 1.0.34 =
+=== Version 1.0.34 ===
 First release on Google Code. 
 [http://jn-npp-plugin.googlecode.com/files/jN_1.0.34.zip jN_1.0.34.zip]
