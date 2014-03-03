@@ -1,0 +1,6 @@
+#summary Released versions of jN
+#labels Featured,Downloads
+
+= Version 2.0.122 =
+Makes SmartHighlighter running on Wine.
+[http://jn-npp-plugin.googlecode.com/svn/wiki/downloads/jN_2.0.122.zip jN_2.0.122.zip]
