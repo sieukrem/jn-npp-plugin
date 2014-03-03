@@ -284,7 +284,7 @@ function Settings(file){
 		var fso = new ActiveXObject("Scripting.FileSystemObject");
 		var f,e;
 		try{
-			f = fso.OpenTextFile(file,2, true,-1); // for writing ASCII
+			f = fso.OpenTextFile(file,2, true,-1); // 2 for writing, -1 UTF-16
 			f.Write(JSON.stringify(settings));
 		}catch(e){
 			debug(e);
@@ -298,7 +298,7 @@ function Settings(file){
 		if (settings == null){ // try to read
 			if (fso.FileExists(file)){
 				try{
-					settings = JSON.parse(readFile(file,"UTF-16"));
+					settings = JSON.parse(fso.OpenTextFile(file,1, false,-1).ReadAll()); // 1 for reading, -1 UTF-16
 				}catch(e){
 					debug(e);
 				}
