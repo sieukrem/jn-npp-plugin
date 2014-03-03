@@ -215,7 +215,12 @@ wmi.addItem({
 
 (function(){
 	// Power Plans
-	var objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!//./root/cimv2/power");
+	try{
+		var objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!//./root/cimv2/power");
+	}catch(e){
+		// service not available
+		return;
+	}
 	
 	var planItems = {};
 	
