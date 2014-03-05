@@ -8,6 +8,14 @@ Some one asked me recently how to work with Scintilla directly and I wanted to w
 == Encoding ==
 Keep in mind that scintilla is working with UTF-8 encoded strings and jN with MultiByte strings (constraint of used Scripting Engine). Hence every time you need to provide a string to Scintilla you need to convert it first.
 
+== Wrapper == 
+I have begun a simple wrapper around scintilla (scintilla.js). Today it contains collection of constants and one method *Call*. The constructor expects a handle of scintilla's window. In our case it is *handle* property of *view*.
+
+{{{
+   var sci = new Scintilla(currentView.handle);
+   var bytesOfDoc = sci.Call("SCI_GETLENGTH", 0, 0);
+   alert(bytesOfDoc);
+}}}
 
 == How to show autocompletition list box ==
 The next example shows how to prepare entries of autocompletition list and show them. 
