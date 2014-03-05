@@ -18,8 +18,6 @@ The next example shows how to prepare entries of autocompletition list and show 
 require("lib/scintilla.js")
 require("lib/Kernel32.dll.js")
 
-var sci = new Scintilla(firstView.handle);
-
 function toUtf8(str){
 	// determine necessary count of bytes 
 	var newlen = Kernel32.WideCharToMultiByte(65001, 0, str, str.length, 0, 0, 0, 0); // 65001 means UTF-8
@@ -34,6 +32,8 @@ function toUtf8(str){
 }
 
 showAutoComplete = function(arr){ // Global scope
+	var sci = new Scintilla(currentView.handle);
+
 	var currentSep = String.fromCharCode(sci.Call("SCI_AUTOCGETSEPARATOR",0,0));
 	var list = arr.join(currentSep);
 	var listEncoded = toUtf8(list); // because Scintilla is working internally with UTF-8 
