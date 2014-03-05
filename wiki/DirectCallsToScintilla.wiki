@@ -1,0 +1,46 @@
+#summary How to call functions of Scintilla directly via Win32 API
+#labels Featured
+
+== Introduction ==
+Some one asked me recently how to work with Scintilla directly and I wanted to write a simple example to explain that. But I understood it is difficult to do without knowing how jN and Scintilla are woking internally. For Scintilla there is very good documentation [http://www.scintilla.org/ScintillaDoc.html page]. This page should do this for jN.
+
+
+== Encoding ==
+Keep in mind that scintilla is working with UTF-8 encoded strings and jN with MultiByte strings (constraint of used Scripting Engine). Hence every time you need to provide a string to Scintilla you need to convert it first.
+
+
+== How to show autocompletition list box ==
+The next example shows how to prepare entries of autocompletition list and show them. 
+
+{{{
+(function(){
+
+require("lib/scintilla.js")
+require("lib/Kernel32.dll.js")
+
+var sci = new Scintilla(firstView.handle);
+
+function toUtf8(str){
+	// determine necessary count of bytes 
+	var newlen = Kernel32.WideCharToMultiByte(65001, 0, str, str.length, 0, 0, 0, 0); // 65001 means UTF-8
+
+	// prepare buffer
+	var buf = Kernel32.NativeLibrary.alloc(newlen+1); // returns javascript string of newlen+1
+	Kernel32.NativeLibrary.writeByte(buf, newlen, 0); // terminate encoded string with 0
+
+	// encode string as UTF-8
+	var reallen = Kernel32.WideCharToMultiByte(65001, 0, str, str.length, buf, newlen, 0, 0);
+	return buf;
+}
+
+showAutoComplete = function(arr){ // Global scope
+	var currentSep = String.fromCharCode(sci.Call("SCI_AUTOCGETSEPARATOR",0,0));
+	var list = arr.join(currentSep);
+	var listEncoded = toUtf8(list); // because Scintilla is working internally with UTF-8 
+	
+	sci.Call("SCI_AUTOCSHOW", 0, listEncoded);
+}
+})();
+
+showAutoComplete(["hello","world"])
+}}}
