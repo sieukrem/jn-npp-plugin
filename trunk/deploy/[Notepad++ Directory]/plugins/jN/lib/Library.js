@@ -6,11 +6,19 @@ Library.prototype.Types = {
 	"UINT"  :4,
 	"WPARAM":4,
 	"LPARAM":4,
-	"LPCTSTR" : 4, 
+	"BYTE"  :1,
+	"WORD"  :2,
+	"DWORD" :4,
+	"BOOL"  :4,
+	"LPCTSTR" : 4,
+	"LPCSTR"  : 4, 
+	"LPSTR"   : 4,
+	"LPCWSTR" : 4,
 	"LONG_PTR": 4,
 	"int"     : 4,
 	"POINT"	  : 8,
 	"LPPOINT" : 4,
+	"LPBOOL"  : 4,
 	SizeToSimple:function(size){
 		switch(size){
 			case 1:return "Byte";

@@ -1,9 +1,17 @@
 require("lib/User32.dll.js");
 
+/**
+ * Creates new Scintilla wrapper for given scintilla window
+ * @param {HANDLE} handle of scintilla window (e.g. firstView.handle)
+*/
 function Scintilla(handle){
 	this.Handle = handle;
 }
 
+/**
+ * Collection of constants used by Scintilla. Take a look into scintilla documentation 
+ * to understand what they do. http://www.scintilla.org/ScintillaDoc.html
+*/
 Scintilla.prototype.Const = {
 	SCI_START	: 2000
 	,SCI_OPTIONAL_START	: 3000
