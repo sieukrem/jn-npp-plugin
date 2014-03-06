@@ -57,5 +57,22 @@ alert(EnumWindows().length);
 
 It is not possible to get an address of an JavaScript function and use it like Win32 function. Hence it was necessary to create native wrapper function that is able to call specified JavaScript function. To make this object oriented way we use an Object with required member function named _cmd_ instead of naked function. System.registerCallback function takes our _Cfg_ object and number of bytes necessary for parameters of callback and returns us a wraper object we can use like a pointer to a native callback function.
 
+== Wrapper ==
+Some time ago I begun a little javascript [http://code.google.com/p/jn-npp-plugin/source/browse/trunk/deploy/%5BNotepad%2B%2B%20Directory%5D/plugins/jN/lib/Library.js wrapper] around jN's Win32 API. It offers easy way to declare Win32 functions and collect them in own libraries (e.g. [http://code.google.com/p/jn-npp-plugin/source/browse/trunk/deploy/%5BNotepad%2B%2B+Directory%5D/plugins/jN/lib/User32.dll.js User32.dll.js]).
+
+First of all we create new file for a dll where we define new global variable with a name of dll
+{{{
+require("lib/library.js"); // make library wrapper available
+
+User32 = new Library("User32.dll"); // either a path to dll or it's name in case of system dlls
+}}}
+Now we can declare functions which that dll exports. For this purpose I go to documentation page of [http://msdn.microsoft.com/en-us/library/windows/desktop/ms645505%28v=vs.85%29.aspx function] due to know count and types of parameters. Take care about unicode and ANSI names of a function (e.g. MessageBoxW and MessageBoxA). Prefer unicode one. 
+{{{
+User32.Define("MessageBoxW", "HWND", "LPCTSTR", "LPCTSTR", "UINT");
+}}}
+After this is done User32 object has definition of MessageBoxW method expecting 4 parameters. Following code shows how to use it
+{{{
+User32.MessageBoxW(0, "My Message", "My Title", 0);
+}}}
 == Some thoughts about memory usage and GC ==
 TODO
