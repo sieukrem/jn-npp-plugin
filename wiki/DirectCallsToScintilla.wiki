@@ -53,4 +53,6 @@ showAutoComplete = function(arr){ // Global scope
 showAutoComplete(["hello","world"])
 }}}
 
+[http://jn-npp-plugin.googlecode.com/svn/wiki/scintilla_autocompletition_list_box.png]
+
 Be aware it is only an example without take care about sort order, escaping of separator and so on. Read the [http://www.scintilla.org/ScintillaDoc.html#Autocompletion documentation] first :)
