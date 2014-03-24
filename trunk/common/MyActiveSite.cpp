@@ -278,7 +278,7 @@ void MyActiveSite::Connect(){
    }
 }
 
-void MyActiveSite::runScript(BSTR script, BSTR name){
+HRESULT MyActiveSite::runScript(BSTR script, BSTR name){
 
 	DWORD ctx = 0;
 	if (m_Assd)
@@ -286,6 +286,7 @@ void MyActiveSite::runScript(BSTR script, BSTR name){
 
 	EXCEPINFO ei;
 	HRESULT hr = m_ActiveScriptParse->ParseScriptText(script, NULL, NULL, NULL, ctx, 0, SCRIPTTEXT_HOSTMANAGESSOURCE, NULL, &ei);
+	return hr;
 }
 
 HRESULT __stdcall MyActiveSite::QueryInterface(REFIID riid, LPVOID *ppv){

@@ -266,12 +266,18 @@ HRESULT STDMETHODCALLTYPE System::addIdleHandler(IDispatch* cfg){
 }
 
 HRESULT STDMETHODCALLTYPE System::addScript(BSTR* value, VARIANT* name){
+
+	if (value == NULL){
+		MyActiveSite::Throw(TEXT("Null is not valid script value"), __uuidof(ISystem));
+		return E_INVALIDARG;
+	}
+
 	if (value != NULL){
 		BSTR name_ = NULL;
 		if (name && name->vt == VT_BSTR)
 			name_ = name->bstrVal;
 
-		m_ActiveSite.runScript(*value, name_);
+		return m_ActiveSite.runScript(*value, name_);
 	}
 
 	return S_OK;

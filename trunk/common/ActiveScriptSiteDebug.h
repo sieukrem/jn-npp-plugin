@@ -34,6 +34,8 @@ private:
 	typedef std::map<DWORD, IDebugDocumentHelper*> Docs;
 	Docs m_Docs;
 public:
+	virtual HRESULT __stdcall QueryInterface(REFIID riid, LPVOID *ppv);
+
 	#pragma region IActiveScriptSiteDebug
     HRESULT STDMETHODCALLTYPE GetDocumentContextFromPosition( 
 		DWORD dwSourceContext,

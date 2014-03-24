@@ -130,13 +130,15 @@ class Empty{
 
 };
 
-template <class I1, class I2> class QI2: public  I1, public  I2{
+template <class I1, class I2> class QI2: public virtual I1, public virtual I2{
 protected:
 	HRESULT Query(REFIID riid, LPVOID *ppv){
 		*ppv = NULL;
 		
-		if (I2::Query(riid, ppv)== S_OK){
-		}else if ( I1::Query(riid, ppv)== S_OK){
+		if (IsEqualIID(riid, __uuidof(I2))){
+			*ppv = static_cast<I2*>(this);
+		}else if ( IsEqualIID(riid, __uuidof(I1))){
+			*ppv = static_cast<I1*>(this);
 		}else
 			return E_NOINTERFACE;
 
@@ -222,14 +224,21 @@ public:
 	
     virtual HRESULT STDMETHODCALLTYPE GetTypeInfoCount( 
 		/* [out] */ __RPC__out UINT *pctinfo){
-		return E_NOTIMPL;
+		*pctinfo = 1;
+		return S_OK;
 	}
     
     virtual HRESULT STDMETHODCALLTYPE GetTypeInfo( 
         /* [in] */ UINT iTInfo,
         /* [in] */ LCID lcid,
 		/* [out] */ __RPC__deref_out_opt ITypeInfo **ppTInfo){
-		return E_NOTIMPL;
+
+		if (iTInfo != 0)
+			return DISP_E_BADINDEX;
+
+		HRESULT res = m_TypeLib->GetTypeInfoOfGuid(__uuidof(DispInterface), ppTInfo);
+
+		return res;
 	}
     
     virtual HRESULT STDMETHODCALLTYPE GetIDsOfNames( 
