@@ -55,4 +55,16 @@ showAutoComplete(["hello","world"])
 
 [http://jn-npp-plugin.googlecode.com/svn/wiki/scintilla_autocompletition_list_box.png]
 
-Be aware it is only an example without take care about sort order, escaping of separator and so on. Read the [http://www.scintilla.org/ScintillaDoc.html#Autocompletion documentation] first :)
+Be aware it is only an example without taking care about sort order, escaping of separator and so on. Read the [http://www.scintilla.org/ScintillaDoc.html#Autocompletion documentation] first :)
+
+== Folding of foldable region ==
+Following code snipet shows how to fold a foldable region using javascript.
+{{{
+require("lib/Scintilla.js") // do it only once 
+var sci = new Scintilla(currentView.handle);
+
+// following call folds region beginning at line 17
+sci.Call("SCI_TOGGLEFOLD", 17 - 1, 0);
+
+}}}
+Learn more from [http://www.scintilla.org/ScintillaDoc.html#SCI_TOGGLEFOLD Scintilla documentation].
