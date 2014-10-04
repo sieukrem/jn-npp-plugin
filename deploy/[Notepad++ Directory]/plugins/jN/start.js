@@ -68,58 +68,6 @@ var jN = {
 }
 
 /**
-	calls fn for each el in an Array. Returns an new array of results of fn calls
-	XXX: had to make this function closer to ECMA-262 5th spec since original
-	implementation breaks compatibility for Underscore library
-*/
-if (!Array.prototype.forEach) {
-	Array.prototype.forEach = function(fn, scope) {
-		var result = [];
-		for (var i = 0, len = this.length; i < len; ++i) {
-			result.push(fn.call(scope || this, this[i], i, this));
-		}
-
-		return result;
-	};
-}
-/**
- * returns index of el in an Array, otherwise -1
- * XXX ECMA-262 implemetation
- */
-if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
-        "use strict";
-        if (this == null) {
-            throw new TypeError();
-        }
-        var t = Object(this);
-        var len = t.length >>> 0;
-        if (len === 0) {
-            return -1;
-        }
-        var n = 0;
-        if (arguments.length > 0) {
-            n = Number(arguments[1]);
-            if (n != n) { // shortcut for verifying if it's NaN
-                n = 0;
-            } else if (n != 0 && n != Infinity && n != -Infinity) {
-                n = (n > 0 || -1) * Math.floor(Math.abs(n));
-            }
-        }
-        if (n >= len) {
-            return -1;
-        }
-        var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
-        for (; k < len; k++) {
-            if (k in t && t[k] === searchElement) {
-                return k;
-            }
-        }
-        return -1;
-    };
-}
-
-/**
 	for internal use
 */
 function debug(e){
@@ -174,59 +122,6 @@ function Listener(eventNames){
 };
 
 /**
-	Define global JSON object if native one is not 
-	available. Native JSON object has more stable 
-	implementation.
-*/
-(function(){
-	if (typeof(JSON) != "undefined")
-		return;
-		
-	var rexQuote = /\"/g;
-	var rexSlash = /\\/g;
-	
-	function direct(v){
-		return v;
-	};
-	function unk2str(unk){
-		var type = typeof(unk);
-		return conv[(type == "object" && unk.join) ?"array":type](unk);
-	};
-	var	conv = {
-		"boolean"	: direct,
-		"string"	: function(str){	return  '"'+str.replace(rexSlash, '\\\\').replace(rexQuote, '\\"')+'"';},
-		"number" 	: direct,
-		"object" 	:function(obj){
-						var r = "", comma = "";
-						for(var el in obj){
-							r+= comma+unk2str(el)+':'+unk2str(obj[el]);
-							comma = ",";
-						}
-						return  "{"+r+"}";
-					},
-		"array"		:function(arr){ 
-						var r="",comma="";
-						for(var i=0, c=arr.length; i<c; i++){
-							r+= comma+unk2str(arr[i]);
-							comma = ",";
-						}
-						return "["+r+"]";
-					},
-		"undefined"	:direct,
-		"function"	:direct
-	};
-	
-	JSON = {
-		stringify : function(value){
-			return unk2str(value);
-		},
-		parse : function(str){
-			return eval("(" + str + ")");
-		}
-	};
-})();
-	
-/**
 	Read all bytes of file with given charset
 */
 function readFile(path, charset) {
@@ -248,29 +143,52 @@ function readFile(path, charset) {
 function require(file){
 	var fso = new ActiveXObject("Scripting.FileSystemObject");
 
-	if (!fso.FileExists(file)){
-		var startDir = fso.GetFile(System.scriptFullName).ParentFolder.Path;
-		if (fso.FileExists(startDir+"\\"+file))
-			file = startDir+"\\"+file;
-		else
-			throw "File does not exist: " + file;
-	}
+	if (fso.FileExists(file))
+		file = file;
+	else if (fso.FileExists(file + ".js"))
+		file = file + ".js"
+	else if (fso.FileExists(require.currentDir+"\\"+file))
+		file = require.currentDir+"\\"+file;
+	else if (fso.FileExists(require.currentDir+"\\"+file+".js"))
+		file = require.currentDir+"\\"+file+".js";
+	else
+		throw "File does not exist: " + file;
 	
-	// use full path to script, to avoid multiple loads 
-	file = fso.GetFile(file).Path;
+	// use full path to script, to avoid multiple loads
+	var fileObj = fso.GetFile(file);
+	file = fileObj.Path;
 
 	// file already loaded
 	if (require.hash[file])
-		return;
+		return require.hash[file].exports;
 	
 	var script = readFile(file, "UTF-8");
-
-	System.addScript(script, file);
+	var oldDir = require.currentDir;
+	var oldModule = typeof(module) != "undefined"? module : "undefined";
+	try{
+		require.currentDir = fileObj.ParentFolder.Path;
+		module = {exports:{}};
 		
-	require.hash[file] = true;
+		System.addScript(script, file);
+		
+		require.hash[file] = { exports: module.exports };
+		
+	}finally{
+		require.currentDir = oldDir;
+		delete module;
+		
+		if (oldModule != "undefined")
+			module = oldModule;
+	}
+	
+	return require.hash[file].exports;
 }
 
-require["hash"] = {};	
+require["hash"] = {};
+require["currentDir"] = new ActiveXObject("Scripting.FileSystemObject").GetFile(System.scriptFullName).ParentFolder.Path;
+require["currentModule"] = {exports:{}};	
+
+require("lib/ECMA262.js");
 
 /**
 	Is an Interface for Setting and Reading of Settings
@@ -359,7 +277,7 @@ DetectAndMoveSettings();
 LoadSettings();
 
 // initialize Listener with known event names
-GlobalListener = new Listener(['SHUTDOWN','READONLYCHANGED','LANGCHANGED','BUFFERACTIVATED','FILESAVED','FILECLOSED','FILEOPENED','CHARADDED','DOUBLECLICK','CLICK','UPDATEUI','MODIFYATTEMPTRO']);
+GlobalListener = new Listener(['SHUTDOWN','READONLYCHANGED','LANGCHANGED','BUFFERACTIVATED','FILESAVED','FILECLOSED','FILEOPENED','CHARADDED','DOUBLECLICK','CLICK','UPDATEUI','MODIFYATTEMPTRO','CONTEXTMENU']);
 Editor.setListener(GlobalListener);
 
 var loadIdleHandler = {
