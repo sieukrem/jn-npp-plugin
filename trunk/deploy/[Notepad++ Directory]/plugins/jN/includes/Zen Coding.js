@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Zen Coding 
  * @author Sergey Chikuyonok (serge.che@gmail.com)
  * @link http://chikuyonok.ru
@@ -3973,37 +3973,6 @@ var zen_editor = (function(){
 	};
 	
 	/**
-	 * Find start and end index of text line for <code>from</code> index
-	 * @param {String} text 
-	 * @param {Number} from 
-	 */
-	function findNewlineBounds(text, from) {
-		var len = text.length,
-			start = 0,
-			end = len - 1;
-		
-		// search left
-		for (var i = from - 1; i > 0; i--) {
-			var ch = text.charAt(i);
-			if (ch == '\n' || ch == '\r') {
-				start = i + 1;
-				break;
-			}
-		}
-		// search right
-		for (var j = from; j < len; j++) {
-			var ch = text.charAt(j);
-			if (ch == '\n' || ch == '\r') {
-			//if (ch == '\n' || ch == '\r') {
-				end = j;
-				break;
-			}
-		}
-		
-		return {start: start, end: end};
-	}
-	
-	/**
 	 * Returns whitrespace padding of string
 	 * @param {String} str String line
 	 * @return {String}
@@ -4067,7 +4036,8 @@ var zen_editor = (function(){
 		 * alert(range.start + ', ' + range.end);
 		 */
 		getCurrentLineRange: function() {
-			return findNewlineBounds(this.getContent(), this.getCaretPos());
+			var line = context.lines.get(context.lines.current);
+			return {start: line.start, end: line.end};
 		},
 		
 		/**
@@ -4091,8 +4061,7 @@ var zen_editor = (function(){
 		 * @return {String}
 		 */
 		getCurrentLine: function() {
-			var range = this.getCurrentLineRange();
-			return this.getContent().substring(range.start, range.end);
+			return context.lines.get(context.lines.current).text;
 		},
 		
 		/**
