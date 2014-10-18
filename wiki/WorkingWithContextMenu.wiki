@@ -44,4 +44,4 @@ Following steps are necessary:
 })()
 }}}
 
-Use snippet above to realize context menus in your own plugins.
+Use snippet above to realize context menus in your own plugins. Take a look in to [http://jn-npp-plugin.googlecode.com/svn/wiki/API/api.xml API] for more.
