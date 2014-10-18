@@ -27,6 +27,7 @@ Following steps are necessary:
 	}})
 		
 	OnContextMenu = function(){
+		// Show new context menu only for JavaScript files
 		if (Editor.langs[currentView.lang] != "JS")
 			return false;
 
@@ -37,7 +38,7 @@ Following steps are necessary:
 
 
 	GlobalListener.addListener({
-		CONTEXTMENU: function(){return OnContextMenu();} 
+		CONTEXTMENU: OnContextMenu
 	})
 
 })()
