@@ -45,3 +45,5 @@ Following steps are necessary:
 }}}
 
 Use snippet above to realize context menus in your own plugins. Take a look into [http://jn-npp-plugin.googlecode.com/svn/wiki/API/api.xml API] for more.
+
+<wiki:video width="820" height="500" url="http://youtu.be/OmJVkP_qWw8"/>
