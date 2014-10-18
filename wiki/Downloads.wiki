@@ -2,8 +2,8 @@
 #labels Featured,Downloads
 
 === Version 2.0.122 ===
-+ New feature allowing to catch context menu request and to create own one.
-+ Zen Coding.js updated to v0.7
+  * New feature allowing to catch context menu request and to create own one.
+  * Zen Coding.js updated to v0.7
 [http://jn-npp-plugin.googlecode.com/svn/wiki/downloads/jN_2.0.146.zip jN_2.0.146.zip]
 
 
