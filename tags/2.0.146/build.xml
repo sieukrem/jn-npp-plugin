@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<project name="nppscripting" default="go" basedir=".">
+    <description>
+    </description>
+
+	<target name="go" depends="">
+		<delete file="deploy/jN.zip"/>
+		<zip destfile="deploy/jN.zip" >
+			<zipfileset dir="deploy/[Notepad++ Directory]" prefix="[Notepad++ Directory]"/>
+			<zipfileset file="deploy/readme.txt"/>
+			<zipfileset file="Release/jN.dll" prefix="[Notepad++ Directory]/plugins"/>
+		</zip>
+	</target>
+</project>
+
