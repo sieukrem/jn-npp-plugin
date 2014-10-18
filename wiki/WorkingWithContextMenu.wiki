@@ -1,0 +1,11 @@
+#summary Addapting of context menu to available and useful task is one of things imroving enormously user experience
+
+= Introduction =
+Working with context menu means the way how javascript plugin developers can override default context menu of Notepad++ and improve so the user experience enormously. 
+
+Following steps are necessary:
+ # Add own context menu handler.
+ # Create own instance of context menu.
+ # Add code filling new context menu.
+ # Add code deciding if own or default context menu should be shown.
+ # Add code disabling some menu items dependend on current context.
