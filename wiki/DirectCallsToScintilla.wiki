@@ -72,7 +72,7 @@ sci.Call("SCI_TOGGLEFOLD", 17 - 1, 0);
 }}}
 Learn more from [http://www.scintilla.org/ScintillaDoc.html#SCI_TOGGLEFOLD Scintilla documentation].
 
-== Retrieve "IsModified" flag for current file ==
+== Retrieve "Is Modified" flag for current file ==
 Following code snippet shows how to get information if current document in first view is modified.
 {{{
 require("lib/Scintilla.js") // do it only once 
