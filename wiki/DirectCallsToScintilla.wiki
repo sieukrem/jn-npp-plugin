@@ -7,7 +7,7 @@ Some one asked me recently how to work with Scintilla directly and I wanted to w
 
 = Prerequisites=
 == Encoding ==
-Keep in mind that scintilla is working with UTF-8 encoded strings and jN with MultiByte strings (constraint of used Scripting Engine). Hence every time you need to provide a string to Scintilla you need to convert it first.
+Keep in mind that scintilla works with UTF-8 encoded strings and jN uses MultiByte strings (constraint of used Scripting Engine). Hence every time you need to provide a string to Scintilla you have to convert it to UTF-8 first.
 
 == Wrapper == 
 I have begun a simple wrapper around scintilla (scintilla.js). Today it contains collection of constants and one method *Call*. The constructor expects a handle of scintilla's window. In our case it is *handle* property of *view*.
