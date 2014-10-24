@@ -80,5 +80,4 @@ var modified = sci.Call("SCI_GETMODIFY", 0, 0);
 
 alert("modified "+(modified != 0))
 }}}
-Due to get collection of modified files one should iterate over all opened files of view, activate them temporarily and call "SCI_GETMODIFY".
-Learn more about[http://www.scintilla.org/ScintillaDoc.html#SCI_GETMODIFY  SCI_GETMODIFY]
+Due to get collection of modified files one should iterate over all opened files of view, activate them temporarily and call "[http://www.scintilla.org/ScintillaDoc.html#SCI_GETMODIFY  SCI_GETMODIFY]".
