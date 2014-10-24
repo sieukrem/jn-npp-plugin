@@ -75,7 +75,6 @@ Following code snippet shows how to get information if current document in first
 require("lib/Scintilla.js") // do it only once 
 var sci = new Scintilla(firstView.handle);
 
-// following call folds region beginning at line 17
 var modified = sci.Call("SCI_GETMODIFY", 0, 0);
 
 alert("modified "+(modified != 0))
