@@ -4,6 +4,8 @@
 = Calling of Win32 API functions =
 jN provides very powerful API working with Notepad++ and its views. But some times it is necessary to use Win32 API directly to get more inside or outside of Notepad++.
 
+<wiki:toc max_depth="2" />
+
 == The simplest call ==
 We begin with the simplest call. It is [http://msdn.microsoft.com/en-us/library/windows/desktop/ms645505.aspx MessageBoxW] defined in user32.dll
 
