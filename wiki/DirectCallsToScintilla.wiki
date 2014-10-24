@@ -1,11 +1,9 @@
 #summary How to call functions of Scintilla directly via Win32 API
 #labels Featured
 
-<wiki:toc max_depth="2" />
-
-== Introduction ==
 Some one asked me recently how to work with Scintilla directly and I wanted to write a simple example to explain that. But I understood it is difficult to do without knowing how jN and Scintilla are woking internally. For Scintilla there is very good documentation [http://www.scintilla.org/ScintillaDoc.html page]. This page should do this for jN.
 
+<wiki:toc max_depth="2" />
 
 == Encoding ==
 Keep in mind that scintilla is working with UTF-8 encoded strings and jN with MultiByte strings (constraint of used Scripting Engine). Hence every time you need to provide a string to Scintilla you need to convert it first.
