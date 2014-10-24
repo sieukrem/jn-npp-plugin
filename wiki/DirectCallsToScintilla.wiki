@@ -58,7 +58,7 @@ showAutoComplete(["hello","world"])
 Be aware it is only an example without taking care about sort order, escaping of separator and so on. Read the [http://www.scintilla.org/ScintillaDoc.html#Autocompletion documentation] first :)
 
 == Folding of foldable region ==
-Following code snipet shows how to fold a foldable region using javascript.
+Following code snippet shows how to fold a foldable region using javascript.
 {{{
 require("lib/Scintilla.js") // do it only once 
 var sci = new Scintilla(currentView.handle);
@@ -68,3 +68,17 @@ sci.Call("SCI_TOGGLEFOLD", 17 - 1, 0);
 
 }}}
 Learn more from [http://www.scintilla.org/ScintillaDoc.html#SCI_TOGGLEFOLD Scintilla documentation].
+
+== Retrieve "IsModified" flag for current file ==
+Following code snippet shows how to get information if current document in first view is modified.
+{{{
+require("lib/Scintilla.js") // do it only once 
+var sci = new Scintilla(firstView.handle);
+
+// following call folds region beginning at line 17
+var modified = sci.Call("SCI_GETMODIFY", 0, 0);
+
+alert("modified "+(modified != 0))
+}}}
+Due to get collection of modified files one should iterate over all opened files of view, activate them temporarily and call "SCI_GETMODIFY".
+Learn more about[http://www.scintilla.org/ScintillaDoc.html#SCI_GETMODIFY  SCI_GETMODIFY]
