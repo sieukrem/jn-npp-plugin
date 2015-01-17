@@ -317,6 +317,8 @@ HRESULT STDMETHODCALLTYPE System::put_clipBoard( BSTR *value){
 
 	if (OpenClipboard(NULL)) { // NULL - open task clipboard
 
+		EmptyClipboard(); 
+
 		BSTR str = *value;
 		int newlen = SysStringByteLen(*value);
 
