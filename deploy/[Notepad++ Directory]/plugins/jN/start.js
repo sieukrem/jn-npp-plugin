@@ -297,7 +297,7 @@ var loadIdleHandler = {
 		}
 	},	
 	cmd:function(){
-		var includeDir = Editor.nppDir+"\\Plugins\\jN\\includes";
+		var includeDir = require.currentDir+"\\includes";
 		var incDirObj = this.fso.GetFolder(includeDir);
 		if (incDirObj){
 			var filesEnum = new Enumerator(incDirObj.files);

@@ -1,7 +1,7 @@
 (function(){
 	var incMenu = Editor.addMenu("Includes");
 
-	var includeDir = Editor.nppDir+"\\Plugins\\jN\\includes";
+	var includeDir = require.currentDir+"\\includes";
 	var fso = new ActiveXObject("Scripting.FileSystemObject");
 	var incDirObj = fso.GetFolder(includeDir);
 	var openF = function(){
