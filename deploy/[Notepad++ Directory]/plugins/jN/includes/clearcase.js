@@ -1,5 +1,5 @@
 (function(){
-	var helperCC = null; 
+	var helperCC = null;
 	try{
 		helperCC = new ActiveXObject("ClearCase.Application");
 	}catch(e){
@@ -15,7 +15,7 @@
 		
 	function getFile(){
 		return Editor.currentView.files[Editor.currentView.file];
-	};
+	}
 
 	var updateOnInitPopupFn = [];
 	
@@ -28,7 +28,7 @@
 				//alert(ex.message);
 			}
 			return null;			
-		},
+		}
 		oninitpopup:function(){
 			var fileFullPath = getFile();
 			var version = this.get("Version", fileFullPath);
@@ -174,13 +174,13 @@
 		var version = null;
 		
 		try{
-		version = helperCC.Version(file);
+			version = helperCC.Version(file);
 		}catch(e){}
       
 		if (version == null || version.IsCheckedOut)// nothing to do from point of view of ClearCase
 			return;
 			
-		shell.run("cleardlg /window 2808d6 /windowmsg A065 /checkout \""+file+'\"');
+		shell.run("cleardlg /window 2808d6 /windowmsg A065 /checkout \""+file+'\"',0,1); // open dialog and wait
 	}});
 	
 })();
