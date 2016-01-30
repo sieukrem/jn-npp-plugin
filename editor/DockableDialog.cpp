@@ -58,11 +58,13 @@ public:
 
 StringCache CachedStrings;
 
+#define CHARS_IN(a) sizeof(a)/sizeof(TCHAR)
+
 #define DD_AFTER_REGISTERASDOCKABLE WM_USER+1 // sent to control after
 
 DockableDialog::DockableDialog(ScriptObj* cfg, HWND parent): Dialog(cfg, parent),CComDispatch(),m_Modul(TEXT("jN.dll,")), m_Name(TEXT("jN"))
 {
-	StringCchCopy(m_Info,sizeof(m_Info), TEXT(""));
+	StringCchCopy(m_Info,CHARS_IN(m_Info), TEXT(""));
 
 	VARIANT* textValue = m_Cfg->getProperty(TEXT("name"), VT_BSTR);
 	if (textValue != NULL){
@@ -182,7 +184,7 @@ HRESULT STDMETHODCALLTYPE DockableDialog::get_title( BSTR* result){
 }
 
 HRESULT STDMETHODCALLTYPE DockableDialog::put_title( BSTR* value){
-	StringCchCopy(m_Info, sizeof(m_Info), *value);
+	StringCchCopy(m_Info, CHARS_IN(m_Info), *value);
 
 	UpdateInfo();
 	return S_OK;

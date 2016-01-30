@@ -30,7 +30,7 @@ private:
 	tTbData m_Data;
 
 	SysStr m_Name;
-	TCHAR  m_Info[64];
+	TCHAR  m_Info[256];
 	SysStr m_Modul;
 	
 	void RegisterAsDockable();

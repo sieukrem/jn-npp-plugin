@@ -186,7 +186,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;$(TargetPath)&quot; &quot;F:\Program FilesS\NotePad++\plugins&quot;"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>
@@ -239,7 +239,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="SubWCRev.exe $(InputDir) $(InputFileName) VersionInfo.h&#x0D;&#x0A;"
+						CommandLine=""
 						Outputs="VersionInfo.h"
 					/>
 				</FileConfiguration>
