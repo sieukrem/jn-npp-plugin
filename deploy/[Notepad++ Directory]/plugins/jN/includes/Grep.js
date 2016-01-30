@@ -3,7 +3,7 @@
 	
 	function grep(text, regexStr){
 		var matches = [];
-		var rx = new RegExp("(\r?\n)|"+regexStr, "g");
+		var rx = new RegExp("(\r?\n+|\n+|\r+)|"+regexStr, "g");
 		var m=null;
 		
 		var lineBegin = 0;
@@ -42,6 +42,7 @@
 		
 		MenuCmds.FILE_NEW();
 		MenuCmds.VIEW_GOTO_ANOTHER_VIEW();
+		MenuCmds.FORMAT_UTF_8();
 		
 		currentView.text = text;
 		view.file = file;
