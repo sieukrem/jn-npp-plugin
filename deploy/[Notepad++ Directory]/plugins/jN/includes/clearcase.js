@@ -28,7 +28,7 @@
 				//alert(ex.message);
 			}
 			return null;			
-		}
+		},
 		oninitpopup:function(){
 			var fileFullPath = getFile();
 			var version = this.get("Version", fileFullPath);
