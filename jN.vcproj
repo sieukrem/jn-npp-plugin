@@ -100,7 +100,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;$(TargetPath)&quot; &quot;F:\Program FilesS\NotePad++\plugins&quot;"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
