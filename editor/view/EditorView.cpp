@@ -329,13 +329,23 @@ HRESULT STDMETHODCALLTYPE CEditorView::get_lines(IViewLines** result){
 }
 
 HRESULT STDMETHODCALLTYPE CEditorView::get_navBarHidden( VARIANT_BOOL *result){
-	*result = m_IndPanel.m_Disabled;
+	*result = m_IndPanel.GetDisabled();
 
 	return S_OK;
 }
 
 HRESULT STDMETHODCALLTYPE CEditorView::put_navBarHidden( VARIANT_BOOL value){
 	m_IndPanel.SetDisabled(value == TRUE);
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CEditorView::get_navBarIndicatorMask( DWORD *result){
+	*result = m_IndPanel.GetIndicatorMask();
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CEditorView::put_navBarIndicatorMask( DWORD value){
+	m_IndPanel.SetIndicatorMask(value);
 	return S_OK;
 }
 

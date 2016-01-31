@@ -127,6 +127,10 @@ public :
         
         virtual HRESULT STDMETHODCALLTYPE put_navBarHidden( VARIANT_BOOL value);
 
+		virtual HRESULT STDMETHODCALLTYPE get_navBarIndicatorMask( DWORD *result);
+        
+        virtual HRESULT STDMETHODCALLTYPE put_navBarIndicatorMask( DWORD value);
+
 		virtual HRESULT STDMETHODCALLTYPE get_handle(int *result);
 
 #pragma endregion

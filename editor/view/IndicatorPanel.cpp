@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma warning (disable : 4355)
 IndicatorPanel::IndicatorPanel(SCIView* view ): m_IndicPixelsUp(this), m_IndicLinesUp(this)
 {
+	m_IndicatorMask = (~0); // All of indicators are enabled
 	m_Disabled = true;
 	m_View = view;
 
@@ -306,8 +307,9 @@ void IndicatorPanel::paintIndicators(HDC hdc){
 
 	for (int i=0; i<m_PixelIndicatorsLen; i++){
 		DWORD mask = pixelIndicators[i];
-		if (mask){
-			COLORREF color = getColorForMask(mask);		
+		DWORD maskToPaint = m_IndicatorMask & mask;
+		if (maskToPaint){
+			COLORREF color = getColorForMask(maskToPaint);		
 			hpen = CreatePen(PS_SOLID, 1, color);
 			oldPen = (HPEN)SelectObject(hdc, hpen);
 			int curOffset = i + topOffset;
@@ -361,4 +363,14 @@ void IndicatorPanel::SetDisabled(bool value){
 
 bool IndicatorPanel::GetDisabled(){
 	return m_Disabled;
+}
+
+DWORD IndicatorPanel::GetIndicatorMask(){
+	return m_IndicatorMask;
+}
+
+void  IndicatorPanel::SetIndicatorMask(DWORD value){
+	m_IndicatorMask = value;
+
+	paintIndicators();
 }

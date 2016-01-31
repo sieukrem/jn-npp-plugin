@@ -134,6 +134,10 @@ library jN
 					HRESULT navBarHidden([out,retval] VARIANT_BOOL* result);
 		[propput]	HRESULT navBarHidden([in] VARIANT_BOOL  value);
 
+		[propget, helpstring("Value indicating which of 32 indicators are shown in navigation bar.")]
+					HRESULT navBarIndicatorMask([out,retval] dword* result);
+		[propput]	HRESULT navBarIndicatorMask([in] dword  value);
+
 		[propget, helpstring("Window handle of view.")]
 					HRESULT handle([out,retval] int* result);
 

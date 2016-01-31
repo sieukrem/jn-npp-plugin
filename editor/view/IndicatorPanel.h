@@ -62,8 +62,13 @@ public:
 	LRESULT OnNCCalcSize(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 	LRESULT OnNCPaint(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
+	DWORD m_IndicatorMask; 
+	bool  m_Disabled;
+
 public:
-	bool m_Disabled;
+
+	DWORD GetIndicatorMask();
+	void SetIndicatorMask(DWORD value);
 
 	void SetDisabled(bool value);
 	bool GetDisabled();
