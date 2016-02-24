@@ -1,4 +1,4 @@
-require("lib/Library.js");
+require("Library.js");
 
 User32 = new Library("User32.dll");
 

@@ -1,4 +1,4 @@
-require("lib/User32.dll.js");
+require("User32.dll.js");
 
 /**
  * Creates new Scintilla wrapper for given scintilla window

@@ -1,4 +1,4 @@
-require("lib/Library.js");
+require("Library.js");
 
 Kernel32 = new Library("Kernel32.dll");
 
