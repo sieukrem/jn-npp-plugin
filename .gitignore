@@ -1,0 +1,10 @@
+/deploy/\[Notepad++ Directory\]/plugins/jN.dll
+/deploy/*.zip
+Debug
+Release
+/*.ncb
+/Interfaces.h
+/editor_i.c
+/jN.9.suo
+/jN.vcproj.Emilie-PC.Emilie.user
+/project.tlb

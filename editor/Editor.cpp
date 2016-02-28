@@ -21,6 +21,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define SUBCLASSING TEXT("jN.Npp.Subclassing")
 
+
+const TCHAR* langs[] ={
+	TEXT("TXT"), TEXT("PHP") , TEXT("C"), TEXT("CPP"), TEXT("CS"), TEXT("OBJC"), TEXT("JAVA"), TEXT("RC"),
+	TEXT("HTML"), TEXT("XML"), TEXT("MAKEFILE"), TEXT("PASCAL"), TEXT("BATCH"), TEXT("INI"), TEXT("NFO"), TEXT("USER"),
+	TEXT("ASP"), TEXT("SQL"), TEXT("VB"), TEXT("JS"), TEXT("CSS"), TEXT("PERL"), TEXT("PYTHON"), TEXT("LUA"),
+	TEXT("TEX"), TEXT("FORTRAN"), TEXT("BASH"), TEXT("FLASH"), TEXT("NSIS"), TEXT("TCL"), TEXT("LISP"), TEXT("SCHEME"),
+	TEXT("ASM"), TEXT("DIFF"), TEXT("PROPS"), TEXT("PS"), TEXT("RUBY"), TEXT("SMALLTALK"), TEXT("VHDL"), TEXT("KIX"), TEXT("AU3"),
+	TEXT("CAML"), TEXT("ADA"), TEXT("VERILOG"), TEXT("MATLAB"), TEXT("HASKELL"), TEXT("INNO"), TEXT("SEARCHRESULT"),
+	TEXT("CMAKE"), TEXT("YAML"),TEXT("COBOL"), TEXT("GUI4CLI"), TEXT("D"), TEXT("POWERSHELL"), TEXT("R"), TEXT("JSP"),
+	TEXT("COFFEESCRIPT"), TEXT("JSON"), TEXT("JAVASCRIPT"),
+	TEXT("EXTERNAL")
+};
+
+
+
 CEditor::~CEditor(void){
 
 	// Release Views

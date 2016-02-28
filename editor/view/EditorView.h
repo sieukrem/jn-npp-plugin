@@ -32,9 +32,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define m_Handle (((m_Id-1)==0)? nppData._scintillaMainHandle : nppData._scintillaSecondHandle)
 
-
-extern const TCHAR* langs[];
-
 class CEditor;
 
 class CEditorView : public CComDispatch<IView>, public SCIView
