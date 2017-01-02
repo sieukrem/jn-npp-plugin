@@ -19,13 +19,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
-DWORD CALLBACK ForegroundIdleHook::Handler( int code,   DWORD wParam,    LONG lParam	){
+LRESULT CALLBACK ForegroundIdleHook::Handler( int code, WPARAM wParam, LPARAM lParam	){
 	ForegroundIdleHook* instance = ForegroundIdleHook::getInstance(); 
 	if (code == HC_ACTION){
 		instance->OnHandler();
 
 		// The regular hook works.
-		// Hence remove timer handler from the hanler list of timer
+		// Hence remove timer handler from the handler list of timer
 		if (instance->m_TimerHandler){
 			Timer::GetInstance()->Remove(instance->m_TimerHandler);
 			delete instance->m_TimerHandler;

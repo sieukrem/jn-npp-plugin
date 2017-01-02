@@ -31,14 +31,14 @@ private:
 	LocRef<IProcessDebugManager, false>       m_Pdm; // because of permanent deadlocks
 	LocRef<IDebugApplication, false>		    m_App; // make them without LocRef
 	DWORD                       m_AppCookie;
-	typedef std::map<DWORD, IDebugDocumentHelper*> Docs;
+	typedef std::map<DWORD_PTR, IDebugDocumentHelper*> Docs;
 	Docs m_Docs;
 public:
 	virtual HRESULT __stdcall QueryInterface(REFIID riid, LPVOID *ppv);
 
 	#pragma region IActiveScriptSiteDebug
     HRESULT STDMETHODCALLTYPE GetDocumentContextFromPosition( 
-		DWORD dwSourceContext,
+		DWORD_PTR dwSourceContext,
 		ULONG uCharacterOffset,
 		ULONG uNumChars,
 		IDebugDocumentContext** ppsc);

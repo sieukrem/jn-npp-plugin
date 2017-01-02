@@ -34,7 +34,7 @@ private:
 
 				MessageOnlyWindow *instance =(MessageOnlyWindow *)(cstruct->lpCreateParams);
 				instance->m_Hwnd = hwnd;
-				::SetWindowLongPtr(hwnd, GWLP_USERDATA, (long)instance);
+				::SetWindowLongPtr(hwnd, GWLP_USERDATA, (LPARAM)instance);
 
 				instance->MessageProc(message, wParam, lParam);
 

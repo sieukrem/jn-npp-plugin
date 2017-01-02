@@ -325,7 +325,7 @@ void IndicatorPanel::paintIndicators(HDC hdc){
 
 
 bool IndicatorPanel::hasStyle(HWND hwnd, int style) {
-	return (GetWindowLong(hwnd, GWL_STYLE) & style) != 0;
+	return (GetWindowLongPtr(hwnd, GWL_STYLE) & style) != 0;
 }
 
 COLORREF IndicatorPanel::getColorForMask(DWORD mask){

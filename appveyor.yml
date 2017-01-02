@@ -1,0 +1,69 @@
+version: 2.2.183.{build}
+image: Visual Studio 2015
+
+
+environment:
+  matrix:
+  - PlatformToolset: v140_xp
+  - PlatformToolset: v120_xp
+
+platform:
+    - x64
+    - Win32
+
+configuration:
+    - Release
+    - Debug
+
+install:
+    - if "%platform%"=="x64" set archi=amd64
+    - if "%platform%"=="Win32" set archi=x86
+    - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %archi%
+
+build:
+    parallel: true                  # enable MSBuild parallel builds
+    verbosity: minimal
+
+build_script:
+    - cd "%APPVEYOR_BUILD_FOLDER%"
+    - msbuild jN.vcxproj /p:configuration="%configuration%" /p:platform="%platform%" /p:PlatformToolset="%PlatformToolset%"
+
+after_build:
+    - cd "%APPVEYOR_BUILD_FOLDER%"
+    - ps: >-
+
+        if ($env:PLATFORM -eq "x64") {
+            Push-AppveyorArtifact "$env:PLATFORM\$env:CONFIGURATION\jN.dll" -FileName jN.dll
+        }
+
+        if ($env:PLATFORM -eq "Win32" ) {
+            Push-AppveyorArtifact "$env:CONFIGURATION\jN.dll" -FileName jN.dll
+        }
+
+        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v120_xp") {
+            if($env:PLATFORM -eq "x64"){
+            $ZipFileName = "jN_$($env:APPVEYOR_REPO_TAG_NAME)_x64.zip"
+            7z a $ZipFileName $env:PLATFORM\$env:CONFIGURATION\*.dll
+            }
+            if($env:PLATFORM -eq "Win32"){
+            $ZipFileName = "jN_$($env:APPVEYOR_REPO_TAG_NAME)_x86.zip"
+            7z a $ZipFileName $env:CONFIGURATION\*.dll
+            }
+        }
+
+artifacts:
+  - path: jN_*.zip
+    name: releases
+
+deploy:
+    provider: GitHub
+    auth_token:
+        secure: !!TODO, see https://www.appveyor.com/docs/deployment/github/#provider-settings!!
+    artifact: releases
+    draft: false
+    prerelease: false
+    force_update: true
+    on:
+        appveyor_repo_tag: true
+        PlatformToolset: v120_xp
+        configuration: Release
