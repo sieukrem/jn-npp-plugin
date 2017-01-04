@@ -16,3 +16,4 @@ int WideCharToMultiByte(
 );
 */
 Kernel32.Define("WideCharToMultiByte", "UINT", "DWORD", "LPCWSTR", "int", "LPSTR", "int", "LPCSTR", "LPBOOL");
+Kernel32.Define("GetLastError");
