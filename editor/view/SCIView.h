@@ -22,15 +22,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class SCIView
 {
 private:
-	int (__cdecl *m_SciFn)(void*,int,int,int);
-	void* m_SciPtr;
+	sptr_t(*m_SciFn)(sptr_t, unsigned int, uptr_t, sptr_t);
+	sptr_t m_SciPtr;
 
 public:
 	HWND m_Handle;
 	SCIView(HWND handle);
 	~SCIView(void);
 
-	LRESULT sci(int cmd, int wParam, int lParam);
+	LRESULT sci(unsigned int cmd, uptr_t wParam, sptr_t lParam);
 
 	// subclassing for scintilla
 	WNDPROC sciOldWndProc;

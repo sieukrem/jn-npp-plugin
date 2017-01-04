@@ -29,7 +29,7 @@ private:
 	HHOOK m_Hook;
 	CRITICAL_SECTION m_CriticalSection; 
 
-	static DWORD CALLBACK Handler( int code,   DWORD wParam,    LONG lParam	);
+	static LRESULT CALLBACK Handler( int code, WPARAM wParam, LPARAM lParam	);
 
 	AcceleratorHook();
 	~AcceleratorHook();

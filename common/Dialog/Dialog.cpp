@@ -50,7 +50,7 @@ Dialog::~Dialog(){
 	}
 
 	if (isCreated()) {
-		::SetWindowLongPtr(m_Hwnd, GWLP_USERDATA, (long)NULL);	//Prevent MessageProc from doing anything, since its virtual
+		::SetWindowLongPtr(m_Hwnd, GWLP_USERDATA, (LPARAM)NULL);	//Prevent MessageProc from doing anything, since its virtual
 		destroy();
 	}
 }
@@ -232,7 +232,7 @@ LRESULT CALLBACK Dialog::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
 			Dialog *dialog =(Dialog *)(cstruct->lpCreateParams);
 			dialog->m_Hwnd = hwnd;
-			::SetWindowLongPtr(hwnd, GWLP_USERDATA, (long)dialog);
+			::SetWindowLongPtr(hwnd, GWLP_USERDATA, (LPARAM)dialog);
 			dialog->MessageProc(message, wParam, lParam);
 			return 0;
 		}

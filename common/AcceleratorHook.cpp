@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <windows.h>
 #include "AcceleratorHook.h"
 
-DWORD CALLBACK AcceleratorHook::Handler( int code,   DWORD wParam,    LONG lParam	){
+LRESULT CALLBACK AcceleratorHook::Handler( int code, WPARAM wParam, LPARAM lParam	){
 	AcceleratorHook* instance = AcceleratorHook::getInstance(); 
 
 	MSG* msg = (MSG*)lParam;

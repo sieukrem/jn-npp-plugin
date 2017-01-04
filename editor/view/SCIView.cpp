@@ -21,8 +21,8 @@ SCIView::SCIView(HWND handle)
 {
 	m_Handle = handle;
 	// retrieve Sci Pointer and Function, for direct calls
-	m_SciFn = (int (__cdecl *)(void *,int,int,int))SendMessage(handle,SCI_GETDIRECTFUNCTION,0,0);
-	m_SciPtr = (void *)SendMessage(handle,SCI_GETDIRECTPOINTER,0,0);
+	m_SciFn = (sptr_t(*)(sptr_t, unsigned int, uptr_t, sptr_t))SendMessage(handle,SCI_GETDIRECTFUNCTION,0,0);
+	m_SciPtr = SendMessage(handle,SCI_GETDIRECTPOINTER,0,0);
 
 	LRESULT eventmask = sci(SCI_GETMODEVENTMASK, 0,0);
 	eventmask |= SC_MOD_CHANGEFOLD|SC_MOD_DELETETEXT;
@@ -32,10 +32,10 @@ SCIView::SCIView(HWND handle)
 	SetProp(m_Handle, TEXT("SCIView Pointer"), (HANDLE)this);
 
 	// subclassing of scintilla
-	sciOldWndProc =(WNDPROC)GetWindowLong(m_Handle, GWL_WNDPROC);
+	sciOldWndProc =(WNDPROC)GetWindowLongPtr(m_Handle, GWLP_WNDPROC);
 	SetProp(m_Handle, TEXT("SCIView WndProc"), (HANDLE)sciOldWndProc);
 
-	SetWindowLong(m_Handle, GWL_WNDPROC, (LONG) sciPluginMessageProc);
+	SetWindowLongPtr(m_Handle, GWLP_WNDPROC, (LONG_PTR) sciPluginMessageProc);
 }
 
 SCIView::~SCIView(void)
@@ -43,7 +43,7 @@ SCIView::~SCIView(void)
 	RemoveProp(m_Handle, TEXT("SCIView Pointer"));
 }
 
-LRESULT SCIView::sci(int cmd, int wParam, int lParam){
+LRESULT SCIView::sci(unsigned int cmd, uptr_t wParam, sptr_t lParam){
 	return m_SciFn(m_SciPtr, cmd, wParam, lParam);
 }
 

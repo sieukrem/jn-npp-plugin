@@ -51,7 +51,7 @@ CEditor::~CEditor(void){
 
 	// Restore WndProc
 	WNDPROC oldWndProc = (WNDPROC)GetProp(m_NppHandle, SUBCLASSING);
-	SetWindowLong(m_NppHandle, GWL_WNDPROC, (LPARAM)oldWndProc);
+	SetWindowLongPtr(m_NppHandle, GWLP_WNDPROC, (LPARAM)oldWndProc);
 
 	AcceleratorHook::getInstance()->remove(&m_Accelerators);
 }
@@ -107,7 +107,7 @@ CEditor::CEditor(HWND nppHandle):CComDispatch(),m_Accelerators(nppHandle){
 	// see 1.) and 2.)
 	m_NppHandle = nppHandle;
 
-	WNDPROC oldWndProc = (WNDPROC)SetWindowLong(nppHandle, GWL_WNDPROC, (LPARAM)CEditor::WndProc);
+	WNDPROC oldWndProc = (WNDPROC)SetWindowLongPtr(nppHandle, GWLP_WNDPROC, (LPARAM)CEditor::WndProc);
 	SetProp(m_NppHandle, SUBCLASSING, oldWndProc);
 
 	m_Listener = NULL;
