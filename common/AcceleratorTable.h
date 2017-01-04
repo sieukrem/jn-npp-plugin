@@ -61,7 +61,7 @@ public:
 	~CAcceleratorTable(){
 		destroyTable();
 
-		for(int i=0, c=m_Accelerators.size(); i<c; i++){
+		for(size_t i=0, c=m_Accelerators.size(); i<c; i++){
 			delete m_Accelerators[i];
 		}
 	}

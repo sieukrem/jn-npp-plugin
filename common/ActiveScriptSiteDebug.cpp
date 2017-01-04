@@ -140,7 +140,7 @@ DWORD ActiveScriptSiteDebug::AddScript(BSTR script, BSTR name){
 
 	res = doc->AddUnicodeText(script);
 
-	DWORD srcContext = 0;
+	DWORD_PTR srcContext = 0;
 	res = doc->DefineScriptBlock(0, SysStringLen(script), m_ActiveScript, false, &srcContext);
 
 	m_Docs.insert(Docs::value_type(srcContext, doc));
@@ -158,7 +158,7 @@ HRESULT ActiveScriptSiteDebug::GetApplication(IDebugApplication **ppda){
 	return S_OK;
 }
 
-HRESULT ActiveScriptSiteDebug::GetDocumentContextFromPosition(DWORD dwSourceContext, ULONG uCharacterOffset, ULONG uNumChars, IDebugDocumentContext **ppsc){
+HRESULT ActiveScriptSiteDebug::GetDocumentContextFromPosition(DWORD_PTR dwSourceContext, ULONG uCharacterOffset, ULONG uNumChars, IDebugDocumentContext **ppsc){
 	if (!ppsc) 
 		return E_POINTER; 
 

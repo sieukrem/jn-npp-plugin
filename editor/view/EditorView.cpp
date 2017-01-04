@@ -28,9 +28,9 @@ CEditorView::CEditorView(int id):CComDispatch(),m_IndPanel(this), SCIView((((id-
 }
 
 
-int CEditorView::getBufferId(){
+LRESULT CEditorView::getBufferId(){
 	int curDoc =(int) NPPM(GETCURRENTDOCINDEX, 0, m_Id-1);
-	return (int)NPPM(GETBUFFERIDFROMPOS, curDoc, m_Id-1);		
+	return NPPM(GETBUFFERIDFROMPOS, curDoc, m_Id-1);		
 }
 
 BSTR CEditorView::adjustFromCodePage(char* buf, int len){
@@ -234,14 +234,14 @@ HRESULT STDMETHODCALLTYPE CEditorView::get_file(int *value){
 };
 
 HRESULT STDMETHODCALLTYPE CEditorView::get_lang( int *result){
-	int bufId = getBufferId();
+	LRESULT bufId = getBufferId();
 
 	*result = NPPM(GETBUFFERLANGTYPE, bufId, 0);
 	return S_OK;
 }
 HRESULT STDMETHODCALLTYPE CEditorView::put_lang( int value){
 
-	int bufId = getBufferId();
+	LRESULT bufId = getBufferId();
 
 	NPPM(SETBUFFERLANGTYPE, bufId, value);
 	return S_OK;						

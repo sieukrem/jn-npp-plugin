@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library jN
 {
     importlib("stdole32.tlb");
-    importlib("stdole.tlb"); 
+    importlib("stdole2.tlb"); 
 
 
 	#include "..\common\common.idl"
