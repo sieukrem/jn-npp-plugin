@@ -46,11 +46,11 @@ after_build:
 
             if($env:PLATFORM -eq "x64"){
             $ZipFileName = "jN_$($env:APPVEYOR_REPO_TAG_NAME)_x64.zip"
-            $JnDllPath = $env:PLATFORM\$env:CONFIGURATION\*.dll
+            $JnDllPath = "$env:PLATFORM\$env:CONFIGURATION\*.dll"
             }
             if($env:PLATFORM -eq "Win32"){
             $ZipFileName = "jN_$($env:APPVEYOR_REPO_TAG_NAME)_x86.zip"
-            $JnDllPath = $env:CONFIGURATION\*.dll
+            $JnDllPath = "$env:CONFIGURATION\*.dll"
             }
             if($ZipFileName -ne ""){
             $ZipFileName = "..\" + $ZipFileName
