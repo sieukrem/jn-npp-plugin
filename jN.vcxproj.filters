@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Misc">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+    <Filter Include="Npp">
+      <UniqueIdentifier>{ae1b0d1b-163e-404d-844f-c0d040ef20da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor">
+      <UniqueIdentifier>{8613817a-899d-489c-8004-fa6834d838cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\View">
+      <UniqueIdentifier>{8efc3e52-5bcd-4bf2-911c-9acbefb0a3e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{9f0c42e6-271b-41d1-a03c-fa1c3e779ded}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Hooks">
+      <UniqueIdentifier>{dab95eaa-a7a5-4760-957e-cc07e80025da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Hooks\Handler">
+      <UniqueIdentifier>{15109821-36a3-449e-804a-151808756221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Dialog">
+      <UniqueIdentifier>{0daec937-0605-413a-9a46-50c37533ee43}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="jN.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="npp\PluginDefinition.cpp">
+      <Filter>Npp</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\DockableDialog.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\Editor.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\view\EditorView.cpp">
+      <Filter>Editor\View</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\view\IndicatorPanel.cpp">
+      <Filter>Editor\View</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\view\SCIView.cpp">
+      <Filter>Editor\View</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\view\ViewLine.cpp">
+      <Filter>Editor\View</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\view\ViewLines.cpp">
+      <Filter>Editor\View</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ActiveScriptSiteDebug.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\LastError.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Library.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Menu.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\MyActiveSite.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Statics.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\System.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Timer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\AcceleratorHook.cpp">
+      <Filter>Common\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ForegroundIdleHook.cpp">
+      <Filter>Common\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ScriptedIdleHandler.cpp">
+      <Filter>Common\Hooks\Handler</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Dialog\Dialog.cpp">
+      <Filter>Common\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Dialog\MDocHostUIHandler.cpp">
+      <Filter>Common\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Dialog\MOleClientSite.cpp">
+      <Filter>Common\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Dialog\MOleInPlaceFrame.cpp">
+      <Filter>Common\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Dialog\MOleInPlaceSite.cpp">
+      <Filter>Common\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Dialog\WindowClass.cpp">
+      <Filter>Common\Dialog</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="jN.ico">
+      <Filter>Misc</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="res.rc">
+      <Filter>Misc</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="npp\Docking.h">
+      <Filter>Npp</Filter>
+    </ClInclude>
+    <ClInclude Include="npp\dockingResource.h">
+      <Filter>Npp</Filter>
+    </ClInclude>
+    <ClInclude Include="npp\menuCmdID.h">
+      <Filter>Npp</Filter>
+    </ClInclude>
+    <ClInclude Include="npp\Notepad_plus_msgs.h">
+      <Filter>Npp</Filter>
+    </ClInclude>
+    <ClInclude Include="npp\PluginDefinition.h">
+      <Filter>Npp</Filter>
+    </ClInclude>
+    <ClInclude Include="npp\PluginInterface.h">
+      <Filter>Npp</Filter>
+    </ClInclude>
+    <ClInclude Include="npp\Scintilla.h">
+      <Filter>Npp</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\DockableDialog.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\Editor.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\view\EditorView.h">
+      <Filter>Editor\View</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\view\IndicatorPanel.h">
+      <Filter>Editor\View</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\view\SCIView.h">
+      <Filter>Editor\View</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\view\ViewLine.h">
+      <Filter>Editor\View</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\view\ViewLines.h">
+      <Filter>Editor\View</Filter>
+    </ClInclude>
+    <ClInclude Include="common\AcceleratorTable.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ActiveScriptSiteDebug.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ComBase.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\LastError.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Library.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Menu.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\MessageOnlyWindow.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\MyActiveSite.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Statics.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\SysStr.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\System.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Timer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\AcceleratorHook.h">
+      <Filter>Common\Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ForegroundIdleHook.h">
+      <Filter>Common\Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ScriptedIdleHandler.h">
+      <Filter>Common\Hooks\Handler</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Dialog\Dialog.h">
+      <Filter>Common\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Dialog\MDocHostUIHandler.h">
+      <Filter>Common\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Dialog\MOleClientSite.h">
+      <Filter>Common\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Dialog\MOleInPlaceFrame.h">
+      <Filter>Common\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Dialog\MOleInPlaceSite.h">
+      <Filter>Common\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Dialog\WindowClass.h">
+      <Filter>Common\Dialog</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="editor\editor.idl">
+      <Filter>Editor</Filter>
+    </Midl>
+    <Midl Include="common\common.idl">
+      <Filter>Common</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="GPL_and_Commercial.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="VersionInfo.h">
+      <Filter>Misc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="VersionInfo_tmpl.h">
+      <Filter>Misc</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
