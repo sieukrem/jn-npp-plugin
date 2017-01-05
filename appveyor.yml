@@ -41,23 +41,23 @@ after_build:
         }
 
         if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v120_xp") {
-			$ZipFileName = ""
-			$JnDllPath = ""
+            $ZipFileName = ""
+            $JnDllPath = ""
 
             if($env:PLATFORM -eq "x64"){
             $ZipFileName = "jN_$($env:APPVEYOR_REPO_TAG_NAME)_x64.zip"
-			$JnDllPath = $env:PLATFORM\$env:CONFIGURATION\*.dll
+            $JnDllPath = $env:PLATFORM\$env:CONFIGURATION\*.dll
             }
             if($env:PLATFORM -eq "Win32"){
             $ZipFileName = "jN_$($env:APPVEYOR_REPO_TAG_NAME)_x86.zip"
-			$JnDllPath = $env:CONFIGURATION\*.dll
+            $JnDllPath = $env:CONFIGURATION\*.dll
             }
-			if($ZipFileName -ne ""){
-			$ZipFileName = "..\" + $ZipFileName
-			copy $JnDllPath ".\deploy\`[Notepad++ Directory`]\plugins"
-			cd .\deploy
+            if($ZipFileName -ne ""){
+            $ZipFileName = "..\" + $ZipFileName
+            copy $JnDllPath ".\deploy\`[Notepad++ Directory`]\plugins"
+            cd .\deploy
             7z a $ZipFileName *
-			}
+            }
         }
 
 artifacts:
