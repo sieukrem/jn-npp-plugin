@@ -22,27 +22,17 @@
     <ProjectGuid>{1590D7CD-7D3A-4AB7-A355-EE02F7FB987D}</ProjectGuid>
     <RootNamespace>NppPluginTemplate</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120_xp</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120_xp</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
@@ -70,8 +60,6 @@
     <_ProjectFileVersion>15.0.26009.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(Configuration)\</OutDir>
-    <IntDir>$(Configuration)\</IntDir>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
     <LinkIncremental />
   </PropertyGroup>
@@ -80,8 +68,6 @@
     <LinkIncremental />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(Configuration)\</OutDir>
-    <IntDir>$(Configuration)\</IntDir>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
     <LinkIncremental />
   </PropertyGroup>
@@ -331,36 +317,17 @@
   </ItemGroup>
   <ItemGroup>
     <Midl Include="common\common.idl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <GenerateTypeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</GenerateTypeLibrary>
-      <GenerateTypeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</GenerateTypeLibrary>
-      <TypeLibraryName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </TypeLibraryName>
-      <TypeLibraryName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </TypeLibraryName>
-      <OutputDirectory Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)com</OutputDirectory>
-      <OutputDirectory Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)com</OutputDirectory>
-      <DllDataFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </DllDataFileName>
-      <DllDataFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </DllDataFileName>
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+      <GenerateTypeLibrary>false</GenerateTypeLibrary>
+      <TypeLibraryName></TypeLibraryName>
+      <OutputDirectory>$(ProjectDir)com</OutputDirectory>
+      <DllDataFileName></DllDataFileName>
     </Midl>
     <Midl Include="editor\editor.idl">
-      <TypeLibraryName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)/project.tlb</TypeLibraryName>
-      <TypeLibraryName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/project.tlb</TypeLibraryName>
-      <OutputDirectory Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)</OutputDirectory>
-      <OutputDirectory Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)</OutputDirectory>
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Interfaces.h</HeaderFileName>
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Interfaces.h</HeaderFileName>
-      <DllDataFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Interfaces.c</DllDataFileName>
-      <DllDataFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Interfaces.c</DllDataFileName>
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Interfaces.h</HeaderFileName>
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Interfaces.h</HeaderFileName>
-      <DllDataFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Interfaces.c</DllDataFileName>
-      <DllDataFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Interfaces.c</DllDataFileName>
+      <TypeLibraryName>$(ProjectDir)/project.tlb</TypeLibraryName>
+      <OutputDirectory>$(ProjectDir)</OutputDirectory>
+      <HeaderFileName>Interfaces.h</HeaderFileName>
+      <DllDataFileName>Interfaces.c</DllDataFileName>
     </Midl>
   </ItemGroup>
   <ItemGroup>
