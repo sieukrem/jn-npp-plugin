@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define VERSION_MI 2 
 
 // increment revision in case of modification
-#define REVISION 182 
+#define REVISION 185 
  #define xstr(s) str(s)
  #define str(s) #s
 #define _VERSION_STR VERSION_MA ## . ## REVISION
