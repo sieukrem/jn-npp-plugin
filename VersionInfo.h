@@ -1,6 +1,6 @@
 /*
 This file is part of jN, a plugin for Notepad++
-Copyright (C)2013 Eugen Kremer <eugen DOT kremer AT gmail DOT com>
+Copyright (C)2017 Eugen Kremer <eugen DOT kremer AT gmail DOT com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
