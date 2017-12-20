@@ -66,6 +66,8 @@ var jN = {
 	},
 	empty : function(){}
 }
+var fso = new ActiveXObject("Scripting.FileSystemObject");
+var shell = new ActiveXObject("WScript.Shell");
 
 /**
 	for internal use
@@ -136,13 +138,27 @@ function readFile(path, charset) {
 
 	return result;
 }
+
 	
 /**
 	Load script file once.
 */
-function require(file){
-	var fso = new ActiveXObject("Scripting.FileSystemObject");
-
+function require(file,force){
+	if(fso.FolderExists(file)){
+		var dirObj = fso.GetFolder(file);
+		var filesEnum = new Enumerator(dirObj.files);
+		for (; !filesEnum.atEnd(); filesEnum.moveNext()){
+			var file = filesEnum.item().Path;
+			if (/\.js$/i.test(file)){
+				require(file,force);
+			}
+		}
+		var foldersEnum = new Enumerator(dirObj.SubFolders);
+		for (;!foldersEnum.atEnd(); foldersEnum.moveNext()){
+			require(foldersEnum.item().Path,force);
+		}
+		return;
+	}
 	if (fso.FileExists(file))
 		file = file;
 	else if (fso.FileExists(file + ".js"))
@@ -159,7 +175,7 @@ function require(file){
 	file = fileObj.Path;
 
 	// file already loaded
-	if (require.hash[file])
+	if (!force && typeof require.hash[file]!=="undefined")
 		return require.hash[file].exports;
 	
 	var script = readFile(file, "UTF-8");
@@ -183,10 +199,9 @@ function require(file){
 	
 	return require.hash[file].exports;
 }
-
 require["hash"] = {};
 require["currentDir"] = new ActiveXObject("Scripting.FileSystemObject").GetFile(System.scriptFullName).ParentFolder.Path;
-require["currentModule"] = {exports:{}};	
+require["currentModule"] = {exports:{}};
 
 require("lib/ECMA262.js");
 
@@ -199,7 +214,6 @@ function Settings(file){
 	var settings = null;
 	
 	var save = function(){
-		var fso = new ActiveXObject("Scripting.FileSystemObject");
 		var f,e;
 		try{
 			f = fso.OpenTextFile(file,2, true,-1); // 2 for writing, -1 UTF-16
@@ -212,7 +226,6 @@ function Settings(file){
 	};
 	
 	this.get = function(name){
-		var fso = new ActiveXObject("Scripting.FileSystemObject");
 		if (settings == null){ // try to read
 			if (fso.FileExists(file)){
 				try{
@@ -245,7 +258,6 @@ function Settings(file){
 * tries to copy existing file from nppDir\Plugins\jN
 */
 function DetectAndMoveSettings(){
-	var fso = new ActiveXObject("Scripting.FileSystemObject");
 	var newSettings = Editor.pluginConfigDir+"\\jN.settings.js";
 	if (fso.FileExists(newSettings))
 		return;
@@ -281,7 +293,7 @@ GlobalListener = new Listener(['SHUTDOWN','READONLYCHANGED','LANGCHANGED','BUFFE
 Editor.setListener(GlobalListener);
 
 var loadIdleHandler = {
-	fso : new ActiveXObject("Scripting.FileSystemObject"),
+	fso : fso,
 	errors : [],
 	/** 
 		Reads and runs your JavaScript file.
@@ -295,6 +307,7 @@ var loadIdleHandler = {
 				this.errors.push(e);
 			}
 		}
+		//if(this.errors.length>0)alert(JSON.stringify(this.errors));
 	},	
 	cmd:function(){
 		var includeDir = require.currentDir+"\\includes";
@@ -311,6 +324,7 @@ var loadIdleHandler = {
 	},
 	millis:1000
 }
+
 //loadIdleHandler.cmd();
 //Editor.addIdleHandler(loadIdleHandler);
 setTimeout(loadIdleHandler);
