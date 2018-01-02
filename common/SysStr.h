@@ -61,6 +61,22 @@ public:
 		return *this;
 	}
 
+	template<UINT sz>
+	SysStr& Append(const TCHAR (&value) [sz]) {
+		if (!m_Str) {
+			Set(value);
+			return *this;
+		}
+
+		UINT newLen = sz + Length();
+
+		SysReAllocStringLen(&m_Str, m_Str, newLen);
+
+		StringCchCat(m_Str, newLen + 1, value);
+
+		return *this;
+	}
+
 	void Set(const TCHAR* value){
 		Free();
 
@@ -73,6 +89,14 @@ public:
 		
 		Set(value);
 	}
+
+	SysStr(const SysStr& value) {
+		m_Str = NULL;
+
+		Set(value.m_Str);
+	}
+
+	BSTR* operator& () { return &m_Str; }
 
 	~SysStr(){
 		Free();

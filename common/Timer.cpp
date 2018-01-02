@@ -29,12 +29,12 @@ void Timer::Add(Handler* handler, int millis){
 	static TCHAR exceptionBuf[100];
 
 	if (millis < USER_TIMER_MINIMUM){
-		wsprintf(exceptionBuf, TEXT("The millis value %d should be greater than %d"), millis, USER_TIMER_MINIMUM);
+		StringCbPrintf(exceptionBuf, sizeof(exceptionBuf), TEXT("The millis value %d should be greater than %d"), millis, USER_TIMER_MINIMUM);
 		throw exceptionBuf;
 	}
 
 	if (millis > USER_TIMER_MAXIMUM){
-		wsprintf(exceptionBuf, TEXT("The millis value %d should be less than %d"), millis, USER_TIMER_MAXIMUM);
+		StringCbPrintf(exceptionBuf, sizeof(exceptionBuf), TEXT("The millis value %d should be less than %d"), millis, USER_TIMER_MAXIMUM);
 		throw exceptionBuf;
 	}
 

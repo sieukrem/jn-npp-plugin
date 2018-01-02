@@ -162,12 +162,11 @@ HRESULT ActiveScriptSiteDebug::GetDocumentContextFromPosition(DWORD_PTR dwSource
 	if (!ppsc) 
 		return E_POINTER; 
 
-	Docs::iterator it=m_Docs.find(dwSourceContext);
-	*ppsc = NULL; 
-	if (it==m_Docs.end())
-		return E_UNEXPECTED; 
+	*ppsc = NULL;
 
-	IDebugDocumentHelper* doc = it->second;
+	IDebugDocumentHelper* doc = GetDocumentFromContext(dwSourceContext);
+	if (doc == NULL)
+		return E_UNEXPECTED;
 	
 	// every running document has a special "cookie" associated with it. 
 	// this code assumes only 1 document with a cookie value stored in 
@@ -179,6 +178,14 @@ HRESULT ActiveScriptSiteDebug::GetDocumentContextFromPosition(DWORD_PTR dwSource
 		return doc->CreateDebugDocumentContext( ulStartPos + uCharacterOffset, uNumChars, ppsc); 
 
 	return hr; 
+}
+
+IDebugDocumentHelper* ActiveScriptSiteDebug::GetDocumentFromContext(DWORD_PTR dwSourceContext) {
+	Docs::iterator it = m_Docs.find(dwSourceContext);
+	if (it == m_Docs.end())
+		return NULL;
+
+	return it->second;
 }
 
 HRESULT ActiveScriptSiteDebug::GetRootApplicationNode(IDebugApplicationNode **ppdanRoot){

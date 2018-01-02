@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "MyActiveSite.h"
 #include <stdarg.h>
-#include "SysStr.h"
+
  
 EXTERN_C const GUID DECLSPEC_SELECTANY CLSID_JSScript = { 0xf414c260, 0x6ac0, 0x11cf, {0xb6,0xd1,0x0, 0xaa, 0x0, 0xbb, 0xbb, 0x58 } };
 EXTERN_C const GUID DECLSPEC_SELECTANY CLSID_JSScript9 ={ 0x16d51579, 0xa30b, 0x4c8b, {0xa2,0x76,0x0f,0xf4, 0xdc,0x41, 0xe7, 0x55 } }; //Chakra
@@ -359,6 +359,26 @@ HRESULT __stdcall MyActiveSite::OnStateChange(SCRIPTSTATE ssScriptState)
 	return S_OK;
 }
 
+SysStr MyActiveSite::GetFilePathFromContext(DWORD_PTR context) {
+	SysStr filePath(NULL);
+	if (!m_Assd)
+		return filePath;
+	
+	IDebugDocumentHelper* doc = m_Assd->GetDocumentFromContext(context);
+
+	if (doc == NULL)
+		return filePath;
+
+	LocRef<IDebugDocumentContext> ddc;
+	doc->CreateDebugDocumentContext(0, 0, &ddc);
+	LocRef<IDebugDocument> dd;
+	ddc->GetDocument(&dd);
+
+	dd->GetName(DOCUMENTNAMETYPE_APPNODE, &filePath);
+
+	return filePath;
+}
+
 HRESULT __stdcall MyActiveSite::OnScriptError(IActiveScriptError *pscriptError) 
 {
   // Это сообщение появится в случае ошибки в скрипте.
@@ -371,10 +391,17 @@ HRESULT __stdcall MyActiveSite::OnScriptError(IActiveScriptError *pscriptError)
 	  DWORD co;
 	  hr = pscriptError->GetSourcePosition(&co, &line, &cp);
 
+	  SysStr fileName = GetFilePathFromContext(co);
+	  if (fileName.Length() > 0)
+		  fileName.Append(TEXT("\n"));
+	  else
+		  fileName.Append(TEXT(""));
+
+
 	  TCHAR buf[1024];
 	  TCHAR* msg = ei.bstrDescription;
 	  if (SysStringLen(ei.bstrDescription) < (1024 - 13 - 10 - 10)){
-		StringCbPrintf(buf, sizeof(buf) , TEXT("%s\nline: %d, pos: %d"), ei.bstrDescription, line+1, cp+1);
+		StringCbPrintf(buf, sizeof(buf) , TEXT("%s\n%sline: %d, pos: %d"), ei.bstrDescription, (BSTR)fileName, line+1, cp+1);
 		msg = buf;
 	  }
 

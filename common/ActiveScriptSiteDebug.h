@@ -55,6 +55,8 @@ public:
 
 	DWORD AddScript(BSTR script, BSTR name);
 
+	IDebugDocumentHelper* GetDocumentFromContext(DWORD_PTR dwSourceContext);
+
 	ActiveScriptSiteDebug(TCHAR* appName, IActiveScript* as);
 	~ActiveScriptSiteDebug();
 };

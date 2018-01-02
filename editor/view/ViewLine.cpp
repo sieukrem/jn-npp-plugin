@@ -42,7 +42,7 @@ bool ViewLine::CheckValidity(){
 
 	// number out of range
 	TCHAR buf[100];
-	wsprintf(buf, TEXT("Line number %d out of range [0..%d)"), m_number, count);
+	StringCbPrintf(buf, sizeof(buf), TEXT("Line number %d out of range [0..%d)"), m_number, count);
 
 	MyActiveSite::Throw(buf, __uuidof(IViewLine) );
 

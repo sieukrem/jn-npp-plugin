@@ -52,7 +52,7 @@ HRESULT STDMETHODCALLTYPE ViewLines::put_current(int value){
 	int count = m_View->sci(SCI_GETLINECOUNT, 0, 0);
 	if (value >= count || value < 0){
 		TCHAR buf[100];
-		wsprintf(buf, TEXT("Line number %d out of range [0..%d)"), value, count);
+		StringCbPrintf(buf, sizeof(buf), TEXT("Line number %d out of range [0..%d)"), value, count);
 
 		MyActiveSite::Throw(buf, __uuidof(IViewLine) );
 
