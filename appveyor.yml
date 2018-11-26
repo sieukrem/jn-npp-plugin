@@ -1,11 +1,11 @@
-version: 2.2.183.{build}
-image: Visual Studio 2015
+version: 2.2.185.{build}
+image: Visual Studio 2017
 
 
 environment:
   matrix:
   - PlatformToolset: v140_xp
-  - PlatformToolset: v120_xp
+  - PlatformToolset: v141_xp
 
 platform:
     - x64
@@ -17,26 +17,27 @@ configuration:
 
 install:
     - if "%platform%"=="x64" set archi=amd64
-    - if "%platform%"=="Win32" set archi=x86
-    - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %archi%
+    - if "%platform%"=="x64" set platform_input=x64
 
-build:
-    parallel: true                  # enable MSBuild parallel builds
-    verbosity: minimal
+    - if "%platform%"=="Win32" set archi=x86
+    - if "%platform%"=="Win32" set platform_input=x86
+
+    - if "%PlatformToolset%"=="v140_xp" call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %archi%
+    - if "%PlatformToolset%"=="v141_xp" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %archi%
 
 build_script:
     - cd "%APPVEYOR_BUILD_FOLDER%"
-    - msbuild jN.vcxproj /p:configuration="%configuration%" /p:platform="%platform%" /p:PlatformToolset="%PlatformToolset%"
+    - msbuild jN.vcxproj /p:configuration="%configuration%" /p:platform="%platform_input%" /p:PlatformToolset="%PlatformToolset%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 after_build:
     - cd "%APPVEYOR_BUILD_FOLDER%"
     - ps: >-
 
-        if ($env:PLATFORM -eq "x64") {
+        if ($env:PLATFORM_INPUT -eq "x64") {
             Push-AppveyorArtifact "$env:PLATFORM\$env:CONFIGURATION\jN.dll" -FileName jN.dll
         }
 
-        if ($env:PLATFORM -eq "Win32" ) {
+        if ($env:PLATFORM_INPUT -eq "Win32" ) {
             Push-AppveyorArtifact "$env:CONFIGURATION\jN.dll" -FileName jN.dll
         }
 
@@ -44,19 +45,19 @@ after_build:
             $ZipFileName = ""
             $JnDllPath = ""
 
-            if($env:PLATFORM -eq "x64"){
-            $ZipFileName = "jN_$($env:APPVEYOR_REPO_TAG_NAME)_x64.zip"
-            $JnDllPath = "$env:PLATFORM\$env:CONFIGURATION\*.dll"
+            if($env:PLATFORM_INPUT -eq "x64"){
+                $ZipFileName = "jN_$($env:APPVEYOR_REPO_TAG_NAME)_x64.zip"
+                $JnDllPath = "$env:PLATFORM\$env:CONFIGURATION\*.dll"
             }
-            if($env:PLATFORM -eq "Win32"){
-            $ZipFileName = "jN_$($env:APPVEYOR_REPO_TAG_NAME)_x86.zip"
-            $JnDllPath = "$env:CONFIGURATION\*.dll"
+            if($env:PLATFORM_INPUT -eq "Win32"){
+                $ZipFileName = "jN_$($env:APPVEYOR_REPO_TAG_NAME)_x86.zip"
+                $JnDllPath = "$env:CONFIGURATION\*.dll"
             }
             if($ZipFileName -ne ""){
-            $ZipFileName = "..\" + $ZipFileName
-            copy $JnDllPath ".\deploy\`[Notepad++ Directory`]\plugins"
-            cd .\deploy
-            7z a $ZipFileName *
+                $ZipFileName = "..\" + $ZipFileName
+                copy $JnDllPath ".\deploy\"
+                cd .\deploy
+                7z a $ZipFileName *
             }
         }
 
@@ -74,5 +75,5 @@ deploy:
     force_update: true
     on:
         appveyor_repo_tag: true
-        PlatformToolset: v120_xp
+        PlatformToolset: v140_xp
         configuration: Release
