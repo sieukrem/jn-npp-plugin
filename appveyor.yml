@@ -41,7 +41,7 @@ after_build:
             Push-AppveyorArtifact "$env:CONFIGURATION\jN.dll" -FileName jN.dll
         }
 
-        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v120_xp") {
+        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v140_xp") {
             $ZipFileName = ""
             $JnDllPath = ""
 
