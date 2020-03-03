@@ -9,4 +9,4 @@ services like Shell, WMI of operating system.
 Due to automate Notepad++ jN wraps the Notepad++ API into ActiveX interfaces accessible via global objects *Editor* and *System*.
 
 ## Getting Started
-You will find list of feature set and examples in [wiki](wiki).
+You will find the features list and examples in [wiki](https://github.com/sieukrem/jn-npp-plugin/wiki).
