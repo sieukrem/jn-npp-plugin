@@ -118,5 +118,6 @@ public:
     HRESULT STDMETHODCALLTYPE get_scriptFullName( BSTR *result);
 
     HRESULT STDMETHODCALLTYPE showNotification(IDispatch* cfg);
-
+	        
+	HRESULT STDMETHODCALLTYPE IsX64(VARIANT_BOOL *result);
 };

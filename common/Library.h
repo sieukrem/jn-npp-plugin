@@ -54,5 +54,5 @@ public:
 	HRESULT STDMETHODCALLTYPE readDWord( BSTR src,unsigned int pos,VARIANT *value);
 	HRESULT STDMETHODCALLTYPE readInt64( BSTR src,unsigned int pos,VARIANT *value);
 	HRESULT STDMETHODCALLTYPE readBSTR( BSTR src,unsigned int pos, BSTR* value);
-        
+
 };

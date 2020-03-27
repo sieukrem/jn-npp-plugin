@@ -76,7 +76,7 @@ public:
 	void add(BYTE modifier, WORD key, Accelerator* handler){
 		
 		ACCEL accel;
-		accel.cmd   = m_HotKeyArray.size();
+		accel.cmd   = (WORD)m_HotKeyArray.size();
 		accel.fVirt = modifier;
 		accel.key   = key;
 
@@ -85,7 +85,7 @@ public:
 
 		destroyTable();
 
-		m_HotKeyTable = CreateAcceleratorTable(&m_HotKeyArray[0], m_HotKeyArray.size());
+		m_HotKeyTable = CreateAcceleratorTable(&m_HotKeyArray[0], (int)m_HotKeyArray.size());
 	}
 
 	int execute(MSG* msg){

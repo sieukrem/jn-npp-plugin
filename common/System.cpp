@@ -480,4 +480,14 @@ WORD System::getKeyCode(ScriptObj* cfgEx){
 
 
 
+HRESULT STDMETHODCALLTYPE System::IsX64(VARIANT_BOOL *result){
+
+#ifdef _M_X64
+	*result = TRUE;
+#else
+	*result = FALSE;
+#endif
+
+	return S_OK;
+}
 

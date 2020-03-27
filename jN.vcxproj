@@ -214,6 +214,7 @@
   <ItemGroup>
     <ClCompile Include="common\AcceleratorHook.cpp" />
     <ClCompile Include="common\ActiveScriptSiteDebug.cpp" />
+    <ClCompile Include="common\CallFrame.cpp" />
     <ClCompile Include="common\Dialog\Dialog.cpp" />
     <ClCompile Include="common\Dialog\MDocHostUIHandler.cpp" />
     <ClCompile Include="common\Dialog\MOleClientSite.cpp" />
@@ -251,6 +252,7 @@
     <ClInclude Include="common\AcceleratorHook.h" />
     <ClInclude Include="common\AcceleratorTable.h" />
     <ClInclude Include="common\ActiveScriptSiteDebug.h" />
+    <ClInclude Include="common\CallFrame.h" />
     <ClInclude Include="common\ComBase.h" />
     <ClInclude Include="common\Dialog\Dialog.h" />
     <ClInclude Include="common\Dialog\MDocHostUIHandler.h" />
@@ -283,6 +285,7 @@
     <ClInclude Include="npp\PluginDefinition.h" />
     <ClInclude Include="npp\PluginInterface.h" />
     <ClInclude Include="npp\Scintilla.h" />
+    <ClInclude Include="Sci_Position.h" />
     <CustomBuild Include="VersionInfo.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">VersionInfo_tmpl.h;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VersionInfo_tmpl.h;%(AdditionalInputs)</AdditionalInputs>

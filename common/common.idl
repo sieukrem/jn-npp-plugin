@@ -125,7 +125,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					HRESULT close();
 
 		[propget, helpstring("Window handle of dialog.")]
-					HRESULT handle([out,retval] int* result);
+					HRESULT handle([out,retval] void** result);
 
 		[helpstring("Sets window into the foreground and activates it.")]
 					HRESULT foreground();
@@ -240,5 +240,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 		[helpstring("Creates and shows user notification in system tray. cfg = {title='My Title', msg='long message'}")]
 					HRESULT showNotification([in]IDispatch* cfg);
+
+		[helpstring("Returns true if current process is x64")]
+					HRESULT IsX64([out, retval]VARIANT_BOOL* result);
+
 	};
 
+	
+	[	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC90A), 
+		oleautomation, 
+		helpstring("Memory buffer transporting call arguments from javascript to native call") 
+	] 
+	interface ICallFrame : IDispatch 
+	{
+		[helpstring("Writes BYTE from value")]
+					HRESULT pushByte([in]VARIANT value);
+
+		[helpstring("Writes WORD from value")]
+					HRESULT pushWORD([in]VARIANT value);
+
+		[helpstring("Writes DWORD from value")]
+					HRESULT pushDWORD([in]VARIANT value);
+
+		[helpstring("Writes LWORD from value")]
+					HRESULT pushLWORD([in]VARIANT value);
+
+		[helpstring("Writes Ptr from value")]
+					HRESULT pushPtr([in]VARIANT value);
+
+
+	};

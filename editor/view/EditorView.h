@@ -126,7 +126,7 @@ public :
         
         virtual HRESULT STDMETHODCALLTYPE put_navBarIndicatorMask( DWORD value);
 
-		virtual HRESULT STDMETHODCALLTYPE get_handle(int *result);
+		virtual HRESULT STDMETHODCALLTYPE get_handle(void* *result);
 
 #pragma endregion
 

@@ -100,14 +100,52 @@ int CEditor::GetMenuItemPosition(HANDLE hMenu, TCHAR* text)
 	return result;
 }
 
-// 1.) because NPP use lets IDs for  menu items 
-// and we can not get new IDs for our dynamic menu items. To solve 
-// this problem we switch menu message handling from WM_COMMAND to WM_MENUCOMMAND
+int CEditor::GetMenuItemPosition(HANDLE hMenu, TCHAR* text)
+{
+	int count = GetMenuItemCount(m_mainMenu);
+	int result = count -1;
+
+	MENUITEMINFO mii;
+	mii.cbSize = sizeof(mii);
+	mii.fMask = MIIM_STRING;
+	mii.fType = MFT_STRING;
+
+	size_t len;
+	if (FAILED(StringCchLength(text, 100, &len)))
+		return result;
+
+	size_t bufferSize = len + 1 + 1; // one character more + one for \0
+	mii.dwTypeData = new TCHAR[bufferSize];
+
+	for (int i = 0; i < count; i++) {
+		mii.cch = bufferSize;
+
+		BOOL res = GetMenuItemInfo(
+			m_mainMenu,
+			(UINT)i,
+			TRUE,
+			&mii
+		);
+
+		if (StrCmp(mii.dwTypeData, text) == 0) {
+			result = i;
+			break;
+		}
+	}
+
+	delete mii.dwTypeData;
+
+	return result;
+}
+
+// 1.) NPP uses IDs for  menu items but does not offer API
+// to get new IDs for our dynamic menu items. Due to solve 
+// this problem switch menu message handling from WM_COMMAND to WM_MENUCOMMAND
 // see 2.) and 3.)
 LRESULT CALLBACK CEditor::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
 
 	if (message == WM_MENUCOMMAND){
-		CMenuItem* mItem = CMenuItem::GetInstance((HMENU)lParam, wParam);
+		CMenuItem* mItem = CMenuItem::GetInstance((HMENU)lParam, (UINT)wParam);
 		if (mItem){ 
 			// here we have our menu item
 			mItem->call();
@@ -180,7 +218,7 @@ CEditor::CEditor(HWND nppHandle):CComDispatch(),m_Accelerators(nppHandle){
 }
 
 void CEditor::getViewAndPosFrom(SCNotification* eventArgs, int* view, int* pos){
-	int view_pos = NPPM(GETPOSFROMBUFFERID,eventArgs->nmhdr.idFrom,0);
+	int view_pos = (int)NPPM(GETPOSFROMBUFFERID,eventArgs->nmhdr.idFrom,0);
 	if (view_pos!=-1){
 		*pos = view_pos & 0xdfffffff;
 		*view = view_pos>>30;
@@ -460,8 +498,8 @@ HRESULT STDMETHODCALLTYPE CEditor::createDockable(IDispatch* cfg, IDialog** resu
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE CEditor::get_handle(int *result){
-	*result = (int)m_NppHandle;
+HRESULT STDMETHODCALLTYPE CEditor::get_handle(void* *result){
+	*result = m_NppHandle;
 	return S_OK;
 }
 
