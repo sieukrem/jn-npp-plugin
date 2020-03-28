@@ -109,6 +109,9 @@
     <ClCompile Include="common\CallFrame.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="common\CallBack.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="jN.ico">
@@ -230,6 +233,9 @@
       <Filter>Npp</Filter>
     </ClInclude>
     <ClInclude Include="common\CallFrame.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\CallBack.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

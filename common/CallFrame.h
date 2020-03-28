@@ -25,9 +25,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "windows.h"
 #include <dispex.h>
 
+#include "CallBack.h"
+
 class CallFrame:  public CComDispatch<ICallFrame>{
 private:
     std::vector<uint8_t> m_Buffer;
+
+    template<typename T>
+	HRESULT write( VARIANT value){
+		T val;
+
+		switch(value.vt){
+			case VT_BOOL:	val = (T)*(unsigned short*)&value.boolVal; break;
+			case VT_UI1:	val = (T)*(unsigned char*)&value.bVal; break;
+			case VT_I1:		val = (T)*(unsigned char*)&value.cVal; break;
+			case VT_I2:     val = (T)*(unsigned short*)&value.iVal; break;
+			case VT_I4:     val = (T)*(unsigned long*)&value.lVal; break;
+			case VT_I8:     val = (T)*(unsigned long long*)&value.llVal; break;
+			case VT_INT:    val = (T)*(unsigned int*)&value.intVal;  break; 
+			case VT_R4:     val = (T)*(unsigned int*)&value.fltVal;  break; 
+			case VT_R8:     val = (T)*(unsigned long long*)&value.dblVal;  break; 
+			case VT_BSTR:   val = (T)*(unsigned __int32*)&value.bstrVal;  break; 
+			case VT_DISPATCH:{
+				#pragma warning( push )
+#pragma warning(disable:4311 4302)
+				void* pint = NULL; 
+				value.pdispVal->QueryInterface(__uuidof(ICallBack), &pint);
+				if (pint!=NULL){
+					val = (T)(static_cast<CallBack*>(value.pdispVal))->Proc();
+					value.pdispVal->Release();
+				}else
+					val = (T)value.pdispVal;
+				#pragma warning( pop )
+			}
+		}
+
+		m_Buffer.insert(m_Buffer.end(), (uint8_t*)&val, (uint8_t*)&val+sizeof(T));
+
+		return S_OK;
+	}
+
 public:
 	CallFrame();
 	~CallFrame(void);
