@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class CallFrame:  public CComDispatch<ICallFrame>{
 private:
     std::vector<uint8_t> m_Buffer;
-
+  
     template<typename T>
 	HRESULT write( VARIANT value){
 		T val;
@@ -45,10 +45,36 @@ private:
 			case VT_INT:    val = (T)*(unsigned int*)&value.intVal;  break; 
 			case VT_R4:     val = (T)*(unsigned int*)&value.fltVal;  break; 
 			case VT_R8:     val = (T)*(unsigned long long*)&value.dblVal;  break; 
-			case VT_BSTR:   val = (T)*(unsigned __int32*)&value.bstrVal;  break; 
+			case VT_BSTR:  
+			case VT_DISPATCH:
+				return S_FALSE;
+		}
+
+		m_Buffer.insert(m_Buffer.end(), (uint8_t*)&val, (uint8_t*)&val+sizeof(T));
+
+		return S_OK;
+	}
+	
+	template<typename T>
+	HRESULT writePtr( VARIANT value){
+		T val;
+
+		switch(value.vt){
+			case VT_BOOL:
+			case VT_UI1:
+			case VT_I1:	
+			case VT_I2:  
+			case VT_I4:  
+			case VT_I8:  
+			case VT_INT: 
+			case VT_R4:  
+			case VT_R8:  
+				return  S_FALSE;
+
+			case VT_BSTR:   val = (T)value.bstrVal;  break; 
 			case VT_DISPATCH:{
 				#pragma warning( push )
-#pragma warning(disable:4311 4302)
+				#pragma warning(disable:4311 4302)
 				void* pint = NULL; 
 				value.pdispVal->QueryInterface(__uuidof(ICallBack), &pint);
 				if (pint!=NULL){
@@ -57,7 +83,7 @@ private:
 				}else
 					val = (T)value.pdispVal;
 				#pragma warning( pop )
-			}
+				}
 		}
 
 		m_Buffer.insert(m_Buffer.end(), (uint8_t*)&val, (uint8_t*)&val+sizeof(T));
@@ -82,4 +108,10 @@ public:
         
     HRESULT STDMETHODCALLTYPE pushPtr( 
         VARIANT value);
+
+    HRESULT STDMETHODCALLTYPE pushFloat( 
+        VARIANT value);
+
+    HRESULT STDMETHODCALLTYPE pushDouble( 
+		VARIANT value);
 };

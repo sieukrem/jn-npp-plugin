@@ -213,6 +213,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		[helpstring("Writes Ptr from value")]
 					HRESULT pushPtr([in]VARIANT value);
 
+		[helpstring("Writes floating point number from value")]
+					HRESULT pushFloat([in]VARIANT value);
+
+		[helpstring("Writes double floating point number from value")]
+					HRESULT pushDouble([in]VARIANT value);
 
 	};
 

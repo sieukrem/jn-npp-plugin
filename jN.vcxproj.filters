@@ -258,4 +258,9 @@
       <Filter>Misc</Filter>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <MASM Include="common\x64Dispatcher.asm">
+      <Filter>Common</Filter>
+    </MASM>
+  </ItemGroup>
 </Project>

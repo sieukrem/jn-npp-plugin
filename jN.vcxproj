@@ -52,6 +52,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <PropertyGroup>
     <_ProjectFileVersion>15.0.26009.0</_ProjectFileVersion>
@@ -327,7 +328,11 @@
   <ItemGroup>
     <Text Include="GPL_and_Commercial.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <MASM Include="common\x64Dispatcher.asm" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>
