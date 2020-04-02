@@ -1,9 +1,13 @@
 #include "CallFrame.h"
-extern "C"
-size_t STDMETHODCALLTYPE nativecall(uint64_t p1,uint64_t p2,uint64_t p3,uint64_t p4, FARPROC proc);
+
+#ifdef _M_X64
+extern "C" size_t STDMETHODCALLTYPE nativecall(uint64_t p1,uint64_t p2,uint64_t p3,uint64_t p4, FARPROC proc);
+#endif
 
 CallFrame::CallFrame() {
+#ifdef _M_X64
 	auto res = nativecall(0, (uint64_t) TEXT("Editor"), (uint64_t)TEXT("Editor"), MB_OK, (FARPROC)MessageBoxW);
+#endif
 }
 CallFrame::~CallFrame(void) {
 }
