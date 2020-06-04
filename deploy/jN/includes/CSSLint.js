@@ -6,7 +6,7 @@ function getCSSLint(){
 	
 	var fso = new ActiveXObject("Scripting.FileSystemObject");
 	
-	var fn = Editor.nppDir+"\\Plugins\\jN\\includes\\csslint\\csslint.js";
+	var fn = Editor.nppDir + "\\plugins\\jN\\jN\\includes\\csslint\\csslint.js";
 	if (fso.FileExists(fn)){
 		var f = fso.OpenTextFile(fn,1, false,0);
 		var scr = decodeFrom(65001,f.ReadAll());
@@ -118,8 +118,8 @@ CSSLintMenu.addItem({
 		this.showDialog(rows);	
 	},
 	getCells:function(rule){
-		var checked = settings[rule.id] != 1?"checked=''":""; // negative logic, if exists then not selected
-		return ["<input type='checkbox' "+checked+" name='"+rule.id+"'>",rule.name,rule.desc];
+		var checked = settings[rule.id] != 1 ? ' checked="checked"' : ''; // negative logic, if exists then not selected
+		return ['<input type="checkbox"' + checked + ' name="' + rule.id + '">', rule.name, rule.desc];
 	},
 
 	showDialog:function(rules){
