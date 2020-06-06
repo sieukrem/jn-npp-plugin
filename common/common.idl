@@ -132,8 +132,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	};
 
 
+    [	
+		uuid(0614FB00-6702-11d4-B0B7-0050BABFC90A), 
+		oleautomation, 
+		helpstring("Memory buffer transporting call arguments from javascript to native call") 
+	] 
+	interface ICallFrame : IDispatch 
+	{
+		[helpstring("Writes BYTE from value")]
+					HRESULT pushByte([in]VARIANT value);
 
+		[helpstring("Writes WORD from value")]
+					HRESULT pushWORD([in]VARIANT value);
 
+		[helpstring("Writes DWORD from value")]
+					HRESULT pushDWORD([in]VARIANT value);
+
+		[helpstring("Writes LWORD from value")]
+					HRESULT pushLWORD([in]VARIANT value);
+
+		[helpstring("Writes Ptr from value")]
+					HRESULT pushPtr([in]VARIANT value);
+
+		[helpstring("Writes floating point number from value")]
+					HRESULT pushFloat([in]VARIANT value);
+
+		[helpstring("Writes double floating point number from value")]
+					HRESULT pushDouble([in]VARIANT value);
+
+	};
+
+	
 	[	
 		uuid(0614FB00-6702-11d4-B0B7-0050BABFC907), 
 		oleautomation, 
@@ -148,6 +177,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 		[helpstring("Calls specified function.")]
 					HRESULT call([in]BSTR functionName,[in]BSTR params, [out, retval]int* result);
+
+		[helpstring("Calls specified function.")]
+					HRESULT callWithFrame([in]BSTR functionName,[in]IDispatch* params, [out, retval]int* result);
 
 		[helpstring("Writes BYTE from value to dest beginning at pos.")]
 					HRESULT writeByte([in]BSTR dest, [in]unsigned int pos, [in]VARIANT value);
@@ -190,37 +222,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	interface ICallBack : IDispatch 
 	{
 	}
-
-	[	
-		uuid(0614FB00-6702-11d4-B0B7-0050BABFC90A), 
-		oleautomation, 
-		helpstring("Memory buffer transporting call arguments from javascript to native call") 
-	] 
-	interface ICallFrame : IDispatch 
-	{
-		[helpstring("Writes BYTE from value")]
-					HRESULT pushByte([in]VARIANT value);
-
-		[helpstring("Writes WORD from value")]
-					HRESULT pushWORD([in]VARIANT value);
-
-		[helpstring("Writes DWORD from value")]
-					HRESULT pushDWORD([in]VARIANT value);
-
-		[helpstring("Writes LWORD from value")]
-					HRESULT pushLWORD([in]VARIANT value);
-
-		[helpstring("Writes Ptr from value")]
-					HRESULT pushPtr([in]VARIANT value);
-
-		[helpstring("Writes floating point number from value")]
-					HRESULT pushFloat([in]VARIANT value);
-
-		[helpstring("Writes double floating point number from value")]
-					HRESULT pushDouble([in]VARIANT value);
-
-	};
-
 
 	[	
 		uuid(0614FB00-6702-11d4-B0B7-0050BABFC909), 

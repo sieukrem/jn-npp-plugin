@@ -23,6 +23,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "LastError.h"
 
 #include "System.h"
+#include "CallFrame.h"
+
+
+#ifdef _M_X64
+extern "C" size_t STDMETHODCALLTYPE nativecall(uint64_t i1, uint64_t f2, FARPROC proc, void* stack, uint64_t stackSize);
+#endif
+
+
+size_t STDMETHODCALLTYPE nativecall2(float f1, double d2, int i1, int i2){
+	double t = f1 + d2;
+	return i1 + i2;
+}
+
 
 Library::Library(BSTR* path):CComDispatch()
 {
@@ -104,6 +117,71 @@ HRESULT STDMETHODCALLTYPE Library::call(BSTR functionName, BSTR params, int* res
 	*result = v_res;
 #else
 #pragma message(": warning: Library::call not available")
+#endif
+
+	return S_OK;
+}
+
+
+HRESULT STDMETHODCALLTYPE Library::callWithFrame(BSTR functionName, IDispatch* params, int* result){
+	FARPROC proc = GetProc(functionName);
+
+	if (proc == NULL){
+		LastError errMsg;
+		MyActiveSite::getInstance()->Throw(errMsg, __uuidof(ILibrary) );		
+		
+		return E_FAIL;
+	}
+
+#ifndef _M_X64
+
+	return E_FAIL;
+
+	int paramlen = SysStringByteLen(params);
+	
+	/*
+		copy params to stack
+	*/
+
+	char* buf;		// pointer to the buffer on stack
+	void* v_esp;	// old stack pointer
+	DWORD v_res;
+
+	// reserve memory on stack
+	__asm {
+		mov v_esp, esp
+		mov eax, paramlen
+		sub esp, eax
+		mov buf, esp
+	}
+
+	memcpy(buf, params, paramlen);
+
+	/*
+		make a call to the function
+	*/
+
+    __asm {
+        call    proc
+		mov v_res, eax
+        mov eax, paramlen
+        mov esp, v_esp
+    }
+ 
+	*result = v_res;
+#else
+
+	size_t res2 = nativecall2(1.1, 2.3, 3, 4);
+
+	CallFrame* callFrame = static_cast<CallFrame*>(params);
+	auto res = nativecall(
+		(uint64_t)callFrame->m_IntegerRegister,
+		(uint64_t)callFrame->m_DoubleFloatRegister,
+		proc,
+		callFrame->m_Buffer.size()==0? 0 : &callFrame->m_Buffer[0],
+		callFrame->m_Buffer.size()
+		);
+
 #endif
 
 	return S_OK;

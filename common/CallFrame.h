@@ -28,37 +28,63 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "CallBack.h"
 
 class CallFrame:  public CComDispatch<ICallFrame>{
-private:
+public:
+	uint64_t m_DoubleFloatRegister[4];
+	uint64_t m_IntegerRegister[4];
+
     std::vector<uint8_t> m_Buffer;
+
+private:
+	int m_Position = 0;
+	const int c_MaxPosition = (sizeof(m_DoubleFloatRegister) / sizeof(m_DoubleFloatRegister[0])) - 1;
   
     template<typename T>
-	HRESULT write( VARIANT value){
-		T val;
+	void insert(T val){
+		if (m_Position > c_MaxPosition){
+			m_Buffer.insert(m_Buffer.end(), (uint8_t*)&val, (uint8_t*)&val+sizeof(T));
+		}else{
+			insertRegister(val);
+			m_Position++;
+		}
+	}
 
+	template<typename T>
+	void insertRegister(T val){
+		m_IntegerRegister[m_Position] = (uint64_t)(UINT64_MAX & val);
+	}
+
+	template<>
+	void insertRegister(double val){
+		m_DoubleFloatRegister[m_Position] = (uint64_t)val;
+	}
+
+	template<>
+	void insertRegister(float val){
+		m_DoubleFloatRegister[m_Position] = (uint64_t)val;
+	}
+
+    template<typename T>
+	HRESULT write(VARIANT value){
 		switch(value.vt){
-			case VT_BOOL:	val = (T)*(unsigned short*)&value.boolVal; break;
-			case VT_UI1:	val = (T)*(unsigned char*)&value.bVal; break;
-			case VT_I1:		val = (T)*(unsigned char*)&value.cVal; break;
-			case VT_I2:     val = (T)*(unsigned short*)&value.iVal; break;
-			case VT_I4:     val = (T)*(unsigned long*)&value.lVal; break;
-			case VT_I8:     val = (T)*(unsigned long long*)&value.llVal; break;
-			case VT_INT:    val = (T)*(unsigned int*)&value.intVal;  break; 
-			case VT_R4:     val = (T)*(unsigned int*)&value.fltVal;  break; 
-			case VT_R8:     val = (T)*(unsigned long long*)&value.dblVal;  break; 
+			case VT_BOOL:	insert<T>((T)*(unsigned short*)&value.boolVal); break;
+			case VT_UI1:	insert<T>((T)*(unsigned char*)&value.bVal); break;
+			case VT_I1:		insert<T>((T)*(unsigned char*)&value.cVal); break;
+			case VT_I2:     insert<T>((T)*(unsigned short*)&value.iVal); break;
+			case VT_I4:     insert<T>((T)*(unsigned long*)&value.lVal); break;
+			case VT_I8:     insert<T>((T)*(unsigned long long*)&value.llVal); break;
+			case VT_INT:    insert<T>((T)*(unsigned int*)&value.intVal);  break; 
+			case VT_R4:     insert<T>((T)*(uint32_t*)&value.fltVal);  break; 
+			case VT_R8:     insert<T>((T)*(uint64_t*)&value.dblVal);  break; 
 			case VT_BSTR:  
 			case VT_DISPATCH:
-				return S_FALSE;
+				return E_FAIL;
 		}
-
-		m_Buffer.insert(m_Buffer.end(), (uint8_t*)&val, (uint8_t*)&val+sizeof(T));
-
+		
 		return S_OK;
 	}
 	
 	template<typename T>
 	HRESULT writePtr( VARIANT value){
-		T val;
-
 		switch(value.vt){
 			case VT_BOOL:
 			case VT_UI1:
@@ -69,24 +95,22 @@ private:
 			case VT_INT: 
 			case VT_R4:  
 			case VT_R8:  
-				return  S_FALSE;
+				return  E_FAIL;
 
-			case VT_BSTR:   val = (T)value.bstrVal;  break; 
+			case VT_BSTR: insert<T>((T)value.bstrVal);  break; 
 			case VT_DISPATCH:{
 				#pragma warning( push )
 				#pragma warning(disable:4311 4302)
 				void* pint = NULL; 
 				value.pdispVal->QueryInterface(__uuidof(ICallBack), &pint);
 				if (pint!=NULL){
-					val = (T)(static_cast<CallBack*>(value.pdispVal))->Proc();
+					insert<T>((T)(static_cast<CallBack*>(value.pdispVal))->Proc());
 					value.pdispVal->Release();
 				}else
-					val = (T)value.pdispVal;
+					insert<T>((T)value.pdispVal);
 				#pragma warning( pop )
 				}
 		}
-
-		m_Buffer.insert(m_Buffer.end(), (uint8_t*)&val, (uint8_t*)&val+sizeof(T));
 
 		return S_OK;
 	}
