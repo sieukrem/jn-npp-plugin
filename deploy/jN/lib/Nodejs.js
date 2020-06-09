@@ -19,7 +19,7 @@ process = new function() {
 		for (; !colVar.atEnd(); colVar.moveNext())
 		{
 			var item = colVar.item();
-			env[item.Name] = item.VariableValue;
+			env[item.Name] = shell.ExpandEnvironmentStrings(item.VariableValue);
 		}
 		return env;
 	}
