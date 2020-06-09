@@ -136,6 +136,20 @@ function readFile(path, charset) {
 
 	return result;
 }
+
+
+function attachDebugger(){
+	
+	require("lib/Kernel32.dll.js");
+	var pid = Kernel32.GetCurrentProcessId();
+	
+	
+	var objWMIService = GetObject("winmgmts:\\\\.\\root\\CIMV2") 
+	var colItems = objWMIService.ExecQuery("SELECT * FROM Win32_Process WHERE ProcessId='"+pid+"'");
+
+	new Enumerator(colItems).item().AttachDebugger();
+}
+
 	
 /**
 	Load script file once.
