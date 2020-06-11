@@ -92,7 +92,9 @@ var console = {
 		}
 }
 
+require("../lib/ECMA262")
 require("../lib/Nodejs")
+
 
 
 function main(){

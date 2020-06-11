@@ -1,4 +1,5 @@
 require("describe");
+var expect = require("expect").expect;
 
 describe("process", function (){
 	describe("env", function(){
@@ -24,23 +25,14 @@ describe("process", function (){
 
 describe("downloadFile", function (){
 	it("works", function (){
-		downloadFile("https://raw.githubusercontent.com/sieukrem/jn-plugins/3972cb6c78f92feb1387f33aaa21355cfc65be19/plugins.json", process.env["TEMP"]+"/jn-test-plugins.json")
+		downloadFile("https://raw.githubusercontent.com/jn-npp-plugin/plugin-registry/master/plugins.json", process.env["TEMP"]+"/jn-test-plugins.json")
 	});
-	it("fails if file not exists", function (){
-		expectThrow(function(){
-			downloadFile("https://raw.githubusercontent.com/sieukrem/jn-plugins/3972cb6c78f92feb1387f33aaa21355cfc65be19/pluginss.json", process.env["TEMP"]+"/jn-tests-plugins.json")
-		});
+	it("fails if file does not exist", function (){
+		expect(function(){
+			downloadFile("https://raw.githubusercontent.com/jn-npp-plugin/plugin-registry/master/plugins.jsonn", process.env["TEMP"]+"/jn-tests-plugins.json")
+		}).throws();
 	});
 });
-
-function expectThrow(cb){
-	try{
-		cb();
-	}catch(e){
-		return;
-	}
-	throw new Error("Expected throw, but was not");
-}
 
 function downloadFile(url, dest){
 	var xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
