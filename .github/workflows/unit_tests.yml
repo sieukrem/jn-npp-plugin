@@ -14,5 +14,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd deploy/jN/tests
-      - run: cscript /nologo runner.cli.js
+      - run: |
+          cd deploy/jN/tests
+          cscript /nologo runner.cli.js
