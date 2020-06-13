@@ -11,6 +11,9 @@ process = new function() {
 	
 	this.env = GetEnvironmentVariables();
 	this.pid = GetCurrentPID();
+	this.exit = function(code){
+		WScript.Quit(code);
+	}
 	
 	
 	function GetEnvironmentVariables(){

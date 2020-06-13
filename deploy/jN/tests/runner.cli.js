@@ -108,23 +108,35 @@ function main(){
 		}
 	}
 	
-	printResults(runTests());
+	var failed = printResults(runTests());
+
+	if (failed > 0)
+		console.log("Failed: "+failed);
+
+	process.exit(failed);
 }
 
 function printResults(results, _path){
 	if (!_path)
 		_path = [];
 	
+	var failed = 0;
+
 	var path = results.name ? _path.concat([results.name]) : [];
 	
 	if (!!results.result){
+		if (results.result==="failed")
+			failed++;
+
 		console.log("["+results.result+"]  "+path.join(" "));
-		return;
+		return failed;
 	}
 	
 	for(var i=0; i< results.tests.length; i++){
-		printResults(results.tests[i], path);
+		failed += printResults(results.tests[i], path);
 	}
+
+	return failed;
 }
 
 main();
