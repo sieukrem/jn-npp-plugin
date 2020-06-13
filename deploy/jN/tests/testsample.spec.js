@@ -32,6 +32,9 @@ describe("downloadFile", function (){
 			downloadFile("https://raw.githubusercontent.com/jn-npp-plugin/plugin-registry/master/plugins.jsonn", process.env["TEMP"]+"/jn-tests-plugins.json")
 		}).throws();
 	});
+	it("fail",function(){
+		throw "some"
+	})
 });
 
 function downloadFile(url, dest){
