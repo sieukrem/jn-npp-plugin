@@ -4,7 +4,6 @@ image: Visual Studio 2017
 
 environment:
   matrix:
-  - PlatformToolset: v140_xp
   - PlatformToolset: v141_xp
 
 platform:
@@ -22,7 +21,6 @@ install:
     - if "%platform%"=="Win32" set archi=x86
     - if "%platform%"=="Win32" set platform_input=x86
 
-    - if "%PlatformToolset%"=="v140_xp" call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %archi%
     - if "%PlatformToolset%"=="v141_xp" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %archi%
 
 build_script:
@@ -41,7 +39,7 @@ after_build:
             Push-AppveyorArtifact "$env:CONFIGURATION\jN.dll" -FileName jN.dll
         }
 
-        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v140_xp") {
+        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v141_xp") {
             $ZipFileName = "jN_$($env:APPVEYOR_REPO_TAG_NAME)_$($env:PLATFORM_INPUT).zip"
             $JnDllPath = ""
 
@@ -73,5 +71,5 @@ deploy:
     force_update: true
     on:
         appveyor_repo_tag: true
-        PlatformToolset: v140_xp
+        PlatformToolset: v141_xp
         configuration: Release
