@@ -832,14 +832,14 @@ Scintilla.prototype.Const = {
 	,SCN_AUTOCCANCELLED	: 2025
 	,SCN_AUTOCCHARDELETED	: 2026
 	,SCN_SCROLLED	: 2080
-        ,SCN_FOLDINGSTATECHANGED 2081
+	,SCN_FOLDINGSTATECHANGED	: 2081
 };
 
 Scintilla.prototype.Call = function(msg, lparam, wparam){
-    return User32.SendMessageW(
-        this.Handle,
-        this.Const[msg],
-        this.Const[lparam] ? this.Const[lparam] : lparam, 
-        this.Const[wparam] ? this.Const[wparam] : wparam
-    ); 
+	return User32.SendMessageW(
+		this.Handle,
+		this.Const[msg],
+		this.Const[lparam] ? this.Const[lparam] : lparam, 
+		this.Const[wparam] ? this.Const[wparam] : wparam
+	); 
 }
