@@ -30,6 +30,15 @@ describe("fs", function (){
         it("creates directory does not fail if exists", function(){
             var tmpDir = process.env["TEMP"];
             fs.mkdirSync(tmpDir);          
+        });
+        it("creates directory recursive", function(){
+            var tmpDir = process.env["TEMP"] + "/fs.spec.rec\\ursive";
+            fs.mkdirSync(tmpDir, {recursive:true});       
+            
+            expect(fs.existsSync(process.env["TEMP"] + "/fs.spec.rec")).eq(true);
+            expect(fs.existsSync(process.env["TEMP"] + "/fs.spec.rec\\ursive")).eq(true);
+            
+            fs.rmdirSync(tmpDir);
 		});
     });
     describe("rmdirSync", function(){

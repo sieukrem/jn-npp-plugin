@@ -7,13 +7,19 @@
             return fso.FileExists(path) || fso.FolderExists(path);
         },
         mkdirSync: function(path, options){
-            if (!!options)
+            if (!!options && !!options.mode )
                 throw new Error("Not implemented for options")
 
             if (fso.FolderExists(path))
-                return;
-            
+                return path;
+
+            if (!!options && options.recursive){
+                fs.mkdirSync(path.replace(/[\/\\][^\/\\]*$/g, ""), options);
+            }
+
             fso.CreateFolder(path);
+
+            return path;
         },
         rmdirSync: function(path, options){
             if (!!options)
@@ -27,6 +33,9 @@
                 throw new Error("Not implemented for options")
             
             return prefix + fso.GetTempName();
+        },
+        renameSync: function(oldPath, newPath){
+            fso.MoveFolder(oldPath, newPath);
         }
     }
 

@@ -15,23 +15,24 @@ function require(file){
 	else if (fso.FileExists(require.currentDir+"\\"+file+".js"))
 		file = require.currentDir+"\\"+file+".js";
 	else
-		throw "File does not exist: " + file;
-	
+		throw new Error("File does not exist: " + file);
+		
 	// use full path to script, to avoid multiple loads
 	var fileObj = fso.GetFile(file);
 	file = fileObj.Path;
 
 	// file already loaded
-	if (require.hash[file])
+	if (require.hash[file]){
 		return require.hash[file].exports;
-	
+	}
+		
 	var script = readFile(file, "UTF-8");
 	var oldDir = require.currentDir;
-	var oldModule = typeof(module) != "undefined"? module : "undefined";
+	var oldModule = typeof(module) == "undefined" ? undefined : module;
 	try{
 		require.currentDir = fileObj.ParentFolder.Path;
 		module = {exports:{}};
-		
+
 		execScript(script, file);
 		
 		require.hash[file] = { exports: module.exports };
@@ -40,7 +41,7 @@ function require(file){
 		require.currentDir = oldDir;
 		delete module;
 		
-		if (oldModule != "undefined")
+		if (oldModule != undefined)
 			module = oldModule;
 	}
 	
