@@ -3,15 +3,15 @@ require("User32.dll.js");
 /**
  * Creates new Scintilla wrapper for given scintilla window
  * @param {HANDLE} handle of scintilla window (e.g. firstView.handle)
-*/
-function Scintilla(handle){
+ */
+function Scintilla(handle) {
 	this.Handle = handle;
 }
 
 /**
- * Collection of constants used by Scintilla. Take a look into scintilla documentation 
- * to understand what they do. http://www.scintilla.org/ScintillaDoc.html
-*/
+ * Collection of constants used by Scintilla.
+ * @link http://www.scintilla.org/ScintillaDoc.html
+ */
 Scintilla.prototype.Const = {
 	SCI_START	: 2000
 	,SCI_OPTIONAL_START	: 3000
@@ -832,8 +832,14 @@ Scintilla.prototype.Const = {
 	,SCN_AUTOCCANCELLED	: 2025
 	,SCN_AUTOCCHARDELETED	: 2026
 	,SCN_SCROLLED	: 2080
+	,SCN_FOLDINGSTATECHANGED	: 2081
 };
 
 Scintilla.prototype.Call = function(msg, lparam, wparam){
-	return User32.SendMessageW(this.Handle, this.Const[msg], lparam, wparam); 
+	return User32.SendMessageW(
+		this.Handle,
+		this.Const[msg],
+		this.Const[lparam] ? this.Const[lparam] : lparam, 
+		this.Const[wparam] ? this.Const[wparam] : wparam
+	); 
 }
