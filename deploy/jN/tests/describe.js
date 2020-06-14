@@ -54,6 +54,7 @@ runTests = function(fixture){
 			result.result = "succeded";
 		}catch(e){
 			result.result = "failed";
+			result.error = e;
 		}		
 		return result;
 	}

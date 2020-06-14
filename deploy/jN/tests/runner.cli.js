@@ -125,10 +125,15 @@ function printResults(results, _path){
 	var path = results.name ? _path.concat([results.name]) : [];
 	
 	if (!!results.result){
-		if (results.result==="failed")
-			failed++;
-
+		
 		console.log("["+results.result+"]  "+path.join(" "));
+
+		if (results.result==="failed"){
+			console.log(JSON.stringify(results.error, null, 2));
+
+			failed++;
+		}
+
 		return failed;
 	}
 	
