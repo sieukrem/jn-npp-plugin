@@ -1,6 +1,6 @@
 # JavaScript Test Environment
 
-This folder contains simple test environment for jN.dll independent code.
+This folder contains simple test environment for jN.dll independent javascript code.
 
 ## How to write tests
 
@@ -11,6 +11,8 @@ Following code declares 4 unit tests for `func1` function under test. The
 test throws exception if the expectation is not fulfilled.
 
 ```javascript
+require("describe");
+
 describe("func1", function(){
 	describe("works", function(){
 		it("for 10", function(){
@@ -35,6 +37,31 @@ describe("func1", function(){
 })
 
 ```
+
+### Expectations
+
+The test is failed if the expectation is not fulfilled and and test code threw an exception. The module `expect` brings builder pattern simplifying definition of an expectation.
+
+Following test definition expects that `func1` throws an exception if its parameter is `123`
+```javascript
+require("expect");
+
+describe("func1", function(){
+	it("throws on 123", function(){
+		expect(function(){func1(123)}).throws();
+	})
+})
+```
+
+The next test expects that `func1` returns 321
+```javascript
+describe("func1", function(){
+	it("works", function(){
+		expect(func1(3)).eq(321);
+	})
+})
+```
+
 
 ## How to execute tests
 
