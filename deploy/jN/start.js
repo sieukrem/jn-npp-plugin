@@ -203,6 +203,8 @@ require["hash"] = {};
 require["currentDir"] = new ActiveXObject("Scripting.FileSystemObject").GetFile(System.scriptFullName).ParentFolder.Path;
 require["currentModule"] = {exports:{}};
 
+require("lib/es5-shim.js");
+/*require("lib/es6-shim.js"); //for now not needed, uncomment if needed*/
 require("lib/ECMA262.js");
 
 /**
