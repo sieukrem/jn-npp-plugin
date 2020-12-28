@@ -29,14 +29,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class CallFrame:  public CComDispatch<ICallFrame>{
 public:
-	uint64_t m_DoubleFloatRegister[4];
-	uint64_t m_IntegerRegister[4];
+	uint64_t m_Registers[4+4];
+	
+	uint64_t* m_DoubleFloatRegister;
+	uint64_t* m_IntegerRegister;
 
     std::vector<uint8_t> m_Buffer;
 
 private:
 	int m_Position = 0;
-	const int c_MaxPosition = (sizeof(m_DoubleFloatRegister) / sizeof(m_DoubleFloatRegister[0])) - 1;
+	const int c_MaxPosition = (sizeof(m_Registers) / sizeof(m_Registers[0]) / 2) - 1;
   
     template<typename T>
 	void insert(T val){
@@ -118,6 +120,8 @@ private:
 public:
 	CallFrame();
 	~CallFrame(void);
+
+	size_t Call(FARPROC fn);
 
     HRESULT STDMETHODCALLTYPE pushByte(VARIANT value);
         

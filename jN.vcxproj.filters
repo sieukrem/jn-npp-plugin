@@ -112,6 +112,9 @@
     <ClCompile Include="common\CallBack.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="common\BlindTypeLib.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="jN.ico">
@@ -236,6 +239,9 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="common\CallBack.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\BlindTypeLib.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

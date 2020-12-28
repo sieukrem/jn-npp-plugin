@@ -2,7 +2,7 @@
 
 #include <DispEx.h>
 #include "combase.h"
-#include "Interfaces.h"
+#include "../Interfaces.h"
 
 class CallBack :public CComDispatch<ICallBack> 
 {

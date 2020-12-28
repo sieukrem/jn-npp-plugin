@@ -26,17 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "CallFrame.h"
 
 
-#ifdef _M_X64
-extern "C" size_t STDMETHODCALLTYPE nativecall(uint64_t i1, uint64_t f2, FARPROC proc, void* stack, uint64_t stackSize);
-#endif
-
-
-size_t STDMETHODCALLTYPE nativecall2(float f1, double d2, int i1, int i2){
-	double t = f1 + d2;
-	return i1 + i2;
-}
-
-
 Library::Library(BSTR* path):CComDispatch()
 {
 	m_Handle = LoadLibrary(*path);
@@ -171,16 +160,10 @@ HRESULT STDMETHODCALLTYPE Library::callWithFrame(BSTR functionName, IDispatch* p
 	*result = v_res;
 #else
 
-	size_t res2 = nativecall2(1.1, 2.3, 3, 4);
+	// size_t res2 = nativecall2(1.1, 2.3, 3, 4);
 
 	CallFrame* callFrame = static_cast<CallFrame*>(params);
-	auto res = nativecall(
-		(uint64_t)callFrame->m_IntegerRegister,
-		(uint64_t)callFrame->m_DoubleFloatRegister,
-		proc,
-		callFrame->m_Buffer.size()==0? 0 : &callFrame->m_Buffer[0],
-		callFrame->m_Buffer.size()
-		);
+	auto res = callFrame->Call(proc);
 
 #endif
 

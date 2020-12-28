@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Statics.h"
 #include "LastError.h"
+#include "BlindTypeLib.h"
 
 
 Statics::Statics(){
@@ -33,12 +34,14 @@ ITypeLib* Statics::GetTypeLib(){
 	HRESULT hr = LoadTypeLib(dllpath, &result);
 
 	if (!SUCCEEDED(hr)){
-		LastError err;
-		throw err.staticmessage();
+		static LocRef<BlindTypeLib, false>  blindTypeLib(new BlindTypeLib());
+		blindTypeLib->AddRef();
+		result = blindTypeLib.m_Reference;
 	}
 
 	return result;
 }
+
 
 Statics& Statics::instance(){
 	static Statics s_instance;

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="../common/**/*.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="**/*.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{b6ea7bd8-17f7-4f1e-9f19-cadd62215743}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="../common\x64Dispatcher.asm">
+      <Filter>src</Filter>
+    </MASM>
+  </ItemGroup>
+</Project>

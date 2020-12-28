@@ -11,3 +11,5 @@ Release
 /.vs
 /*.opensdf
 /jN.vcxproj.user
+packages
+

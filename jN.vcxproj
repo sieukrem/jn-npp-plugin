@@ -211,10 +211,14 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="common\AcceleratorHook.cpp" />
     <ClCompile Include="common\ActiveScriptSiteDebug.cpp" />
+    <ClCompile Include="common\BlindTypeLib.cpp" />
     <ClCompile Include="common\CallBack.cpp" />
     <ClCompile Include="common\CallFrame.cpp" />
     <ClCompile Include="common\Dialog\Dialog.cpp" />
@@ -254,6 +258,7 @@
     <ClInclude Include="common\AcceleratorHook.h" />
     <ClInclude Include="common\AcceleratorTable.h" />
     <ClInclude Include="common\ActiveScriptSiteDebug.h" />
+    <ClInclude Include="common\BlindTypeLib.h" />
     <ClInclude Include="common\CallBack.h" />
     <ClInclude Include="common\CallFrame.h" />
     <ClInclude Include="common\ComBase.h" />
