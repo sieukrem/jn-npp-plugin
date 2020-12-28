@@ -122,50 +122,8 @@ HRESULT STDMETHODCALLTYPE Library::callWithFrame(BSTR functionName, IDispatch* p
 		return E_FAIL;
 	}
 
-#ifndef _M_X64
-
-	return E_FAIL;
-
-	int paramlen = SysStringByteLen(params);
-	
-	/*
-		copy params to stack
-	*/
-
-	char* buf;		// pointer to the buffer on stack
-	void* v_esp;	// old stack pointer
-	DWORD v_res;
-
-	// reserve memory on stack
-	__asm {
-		mov v_esp, esp
-		mov eax, paramlen
-		sub esp, eax
-		mov buf, esp
-	}
-
-	memcpy(buf, params, paramlen);
-
-	/*
-		make a call to the function
-	*/
-
-    __asm {
-        call    proc
-		mov v_res, eax
-        mov eax, paramlen
-        mov esp, v_esp
-    }
- 
-	*result = v_res;
-#else
-
-	// size_t res2 = nativecall2(1.1, 2.3, 3, 4);
-
 	CallFrame* callFrame = static_cast<CallFrame*>(params);
 	auto res = callFrame->Call(proc);
-
-#endif
 
 	return S_OK;
 }

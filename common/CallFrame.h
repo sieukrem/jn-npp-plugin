@@ -28,41 +28,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "CallBack.h"
 
 class CallFrame:  public CComDispatch<ICallFrame>{
-public:
-	uint64_t m_Registers[4+4];
-	
-	uint64_t* m_DoubleFloatRegister;
-	uint64_t* m_IntegerRegister;
-
-    std::vector<uint8_t> m_Buffer;
 
 private:
-	int m_Position = 0;
-	const int c_MaxPosition = (sizeof(m_Registers) / sizeof(m_Registers[0]) / 2) - 1;
-  
+    std::vector<uint8_t> m_Buffer;
+ 
     template<typename T>
 	void insert(T val){
-		if (m_Position > c_MaxPosition){
-			m_Buffer.insert(m_Buffer.end(), (uint8_t*)&val, (uint8_t*)&val+sizeof(T));
-		}else{
-			insertRegister(val);
-			m_Position++;
-		}
-	}
-
-	template<typename T>
-	void insertRegister(T val){
-		m_IntegerRegister[m_Position] = (uint64_t)(UINT64_MAX & val);
-	}
-
-	template<>
-	void insertRegister(double val){
-		m_DoubleFloatRegister[m_Position] = (uint64_t)val;
-	}
-
-	template<>
-	void insertRegister(float val){
-		m_DoubleFloatRegister[m_Position] = (uint64_t)val;
+		m_Buffer.insert(m_Buffer.end(), (uint8_t*)&val, (uint8_t*)&val+sizeof(T));
+	
+		if (m_Buffer.size() % sizeof(size_t) > 0)
+			m_Buffer.resize(m_Buffer.size() + (sizeof(size_t) - m_Buffer.size() % sizeof(size_t))); // ensure alignment
 	}
 
     template<typename T>
@@ -75,8 +50,8 @@ private:
 			case VT_I4:     insert<T>((T)*(unsigned long*)&value.lVal); break;
 			case VT_I8:     insert<T>((T)*(unsigned long long*)&value.llVal); break;
 			case VT_INT:    insert<T>((T)*(unsigned int*)&value.intVal);  break; 
-			case VT_R4:     insert<T>((T)*(uint32_t*)&value.fltVal);  break; 
-			case VT_R8:     insert<T>((T)*(uint64_t*)&value.dblVal);  break; 
+			case VT_R4:     insert<uint32_t>(*(uint32_t*)&value.fltVal);  break; 
+			case VT_R8:     insert<uint64_t>(*(uint64_t*)&value.dblVal);  break; 
 			case VT_BSTR:  
 			case VT_DISPATCH:
 				return E_FAIL;

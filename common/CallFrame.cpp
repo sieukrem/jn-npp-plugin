@@ -2,27 +2,59 @@
 
 
 #ifdef _M_X64
-extern "C" size_t STDMETHODCALLTYPE nativecall(uint64_t r, FARPROC proc, void* stack, uint64_t stackSize);
+extern "C" size_t STDMETHODCALLTYPE nativecall(uint8_t* r, FARPROC proc, uint64_t stackSize);
+#else
+size_t STDMETHODCALLTYPE nativecall(uint8_t* r, FARPROC proc, size_t stackSize){
+	
+	/*
+		copy params to stack
+	*/
+
+	char* buf;		// pointer to the buffer on stack
+	void* v_esp;	// old stack pointer
+	DWORD v_res;
+
+	// reserve memory on stack
+	__asm {
+		mov v_esp, esp
+		mov eax, stackSize
+		sub esp, eax
+		mov buf, esp
+	}
+
+	memcpy(buf, r, stackSize);
+
+	/*
+		make a call to the function
+	*/
+
+    __asm {
+        call    proc
+		mov v_res, eax
+        mov eax, stackSize
+        mov esp, v_esp
+    }
+ 
+	return v_res;
+
+}
 #endif
 
-CallFrame::CallFrame():m_DoubleFloatRegister(&m_Registers[0]), m_IntegerRegister(&m_Registers[4]){
+CallFrame::CallFrame(){
+	m_Buffer.reserve(4 * sizeof(size_t));
 }
+
 CallFrame::~CallFrame(void) {
 }
 
 size_t CallFrame::Call(FARPROC fn)
 {
-	if (m_Buffer.size() % sizeof(size_t) > 0)
-		m_Buffer.resize(m_Buffer.size() + (sizeof(size_t) - m_Buffer.size() % sizeof(size_t))); // ensure alignment
-
 	auto result = nativecall(
-		(uint64_t)m_Registers, 
+		m_Buffer.begin()._Ptr, 
 		fn, 
-		m_Buffer.size() == 0? NULL: &m_Buffer[0],
 		m_Buffer.size()
 	);
 
-	m_Position = 0;
 	m_Buffer.resize(0);
 
 	return result;
