@@ -4,7 +4,8 @@
     <ClCompile Include="../common/**/*.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="**/*.*" />
+    <ClCompile Include="CallFrameTests.cpp" />
+    <ClCompile Include="CallBackTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
