@@ -145,7 +145,7 @@ public:
 
  HRESULT STDMETHODCALLTYPE close();
 
- HRESULT STDMETHODCALLTYPE get_handle(void* *result);
+ HRESULT STDMETHODCALLTYPE get_handle(unsigned __int3264*result);
 
  HRESULT STDMETHODCALLTYPE foreground();
 

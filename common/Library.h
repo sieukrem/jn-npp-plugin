@@ -39,7 +39,7 @@ public:
 
 	HRESULT STDMETHODCALLTYPE call(BSTR functionName, BSTR params, int* result);
 
-	HRESULT STDMETHODCALLTYPE callWithFrame(BSTR functionName, IDispatch* params, int* result);
+	HRESULT STDMETHODCALLTYPE callWithFrame(BSTR functionName, IDispatch* params, unsigned __int3264* result);
 
     HRESULT STDMETHODCALLTYPE writeByte(BSTR dest,unsigned int pos,VARIANT value);
     

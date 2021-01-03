@@ -132,45 +132,53 @@ var hk = addSystemHotKey({
 });
 */
 HRESULT STDMETHODCALLTYPE System::addSystemHotKey(IDispatch* cfg){
-	if (cfg != NULL){
-		ScriptObj* cfgEx = MyActiveSite::getInstance()->WrapScriptObj(cfg);
-		if (cfgEx){
-			int modifier = 0;
+	if (cfg == NULL)
+		return S_OK;
 
-			WORD keyCode = getKeyCode(cfgEx);
+	ScriptObj* cfgEx = MyActiveSite::getInstance()->WrapScriptObj(cfg);
+	if (cfgEx == NULL)
+		return S_OK;
 
-			if (keyCode == 0)
-				return S_OK;
+	if (MAXINT == m_SystemHotKeysHandler.size()){
+		MyActiveSite::Throw(L"Max count of possible system hot keys exceeded", __uuidof(ISystem));
+		return S_OK;
+	}
 
-			VARIANT* modifierBOOL = cfgEx->getProperty(TEXT("shift"), VT_BOOL);
-			if (modifierBOOL != NULL){
-				modifier = modifier | (modifierBOOL->boolVal? MOD_SHIFT : 0);
-				VariantClear(modifierBOOL);
-				delete modifierBOOL;
-			}
+	int modifier = 0;
 
-			modifierBOOL = cfgEx->getProperty(TEXT("alt"), VT_BOOL);
-			if (modifierBOOL != NULL){
-				modifier = modifier | ((modifierBOOL->boolVal)? MOD_ALT : 0);
-				VariantClear(modifierBOOL);
-				delete modifierBOOL;
-			}
+	WORD keyCode = getKeyCode(cfgEx);
 
-			modifierBOOL = cfgEx->getProperty(TEXT("ctrl"), VT_BOOL);
-			if (modifierBOOL != NULL){
-				modifier = modifier | ((modifierBOOL->boolVal)? MOD_CONTROL : 0);
-				VariantClear(modifierBOOL);
-				delete modifierBOOL;
-			}
+	if (keyCode == 0)
+		return S_OK;
 
-			BOOL res = RegisterHotKey(handle(), m_SystemHotKeysHandler.size(), modifier,keyCode);
-			if (res){
-				m_SystemHotKeysHandler.push_back(cfgEx);
-			}else{
-				LastError err;
-				MyActiveSite::Throw(err.message(), __uuidof(ISystem)); 
-			}
-		}
+	VARIANT* modifierBOOL = cfgEx->getProperty(TEXT("shift"), VT_BOOL);
+	if (modifierBOOL != NULL){
+		modifier = modifier | (modifierBOOL->boolVal? MOD_SHIFT : 0);
+		VariantClear(modifierBOOL);
+		delete modifierBOOL;
+	}
+
+	modifierBOOL = cfgEx->getProperty(TEXT("alt"), VT_BOOL);
+	if (modifierBOOL != NULL){
+		modifier = modifier | ((modifierBOOL->boolVal)? MOD_ALT : 0);
+		VariantClear(modifierBOOL);
+		delete modifierBOOL;
+	}
+
+	modifierBOOL = cfgEx->getProperty(TEXT("ctrl"), VT_BOOL);
+	if (modifierBOOL != NULL){
+		modifier = modifier | ((modifierBOOL->boolVal)? MOD_CONTROL : 0);
+		VariantClear(modifierBOOL);
+		delete modifierBOOL;
+	}
+
+	BOOL res = RegisterHotKey(handle(), (int)m_SystemHotKeysHandler.size(), modifier,keyCode);
+
+	if (res){
+		m_SystemHotKeysHandler.push_back(cfgEx);
+	}else{
+		LastError err;
+		MyActiveSite::Throw(err.message(), __uuidof(ISystem)); 
 	}
 
 	return S_OK;

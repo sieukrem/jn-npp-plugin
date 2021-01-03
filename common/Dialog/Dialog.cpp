@@ -458,8 +458,8 @@ HRESULT STDMETHODCALLTYPE Dialog::close(){
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE Dialog::get_handle(void* *result){
-	*result = hwnd();
+HRESULT STDMETHODCALLTYPE Dialog::get_handle(unsigned __int3264* result){
+	*result = (unsigned __int3264)hwnd();
 	return S_OK;
 }
 

@@ -125,7 +125,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					HRESULT close();
 
 		[propget, helpstring("Window handle of dialog.")]
-					HRESULT handle([out,retval] void** result);
+					HRESULT handle([out,retval] unsigned __int3264* result);
 
 		[helpstring("Sets window into the foreground and activates it.")]
 					HRESULT foreground();
@@ -179,7 +179,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					HRESULT call([in]BSTR functionName,[in]BSTR params, [out, retval]int* result);
 
 		[helpstring("Calls specified function.")]
-					HRESULT callWithFrame([in]BSTR functionName,[in]IDispatch* params, [out, retval]int* result);
+					HRESULT callWithFrame([in]BSTR functionName,[in]IDispatch* params, [out, retval]unsigned __int3264* result);
 
 		[helpstring("Writes BYTE from value to dest beginning at pos.")]
 					HRESULT writeByte([in]BSTR dest, [in]unsigned int pos, [in]VARIANT value);

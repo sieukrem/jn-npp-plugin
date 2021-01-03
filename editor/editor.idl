@@ -139,7 +139,7 @@ library jN
 		[propput]	HRESULT navBarIndicatorMask([in] dword  value);
 
 		[propget, helpstring("Window handle of view.")]
-					HRESULT handle([out,retval] void* * result);
+					HRESULT handle([out,retval] unsigned __int3264* result);
 
 	}; 
 
@@ -207,7 +207,7 @@ library jN
 					HRESULT createDockable([in]IDispatch* cfg, [out, retval]IDialog** result);
 
 		[propget, helpstring("Window handle of Editor.")]
-					HRESULT handle([out,retval] void* * result);
+					HRESULT handle([out,retval] unsigned __int3264* result);
 
 		[helpstring("Adds new application wide hot key combination. For cfg see addSystemHotKey method.")]
 					HRESULT addHotKey([in]IDispatch* cfg);

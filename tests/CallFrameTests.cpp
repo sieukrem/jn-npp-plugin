@@ -4,7 +4,7 @@
 #include "windows.h"
 
 #include "../common/CallFrame.h"
-
+#include "../common/LastError.h"
 
 int parameterlessfuncValue = 0;
 
@@ -130,4 +130,31 @@ TEST(CallFrameTests, Resets_after_first_call) {
   callFrame.Call((FARPROC)ParameterTestStruct<float>::parameterFunc);
 
   EXPECT_EQ(ParameterTestStruct<float>::Value, value.fltVal);
+}
+
+TEST(CallFrameTests, Call_winapi_works) {
+  CallFrame callFrame;
+  
+  VARIANT value;
+  value.llVal = 0;
+  value.vt = VT_I8;
+  
+  callFrame.pushLWORD(value);
+
+  wchar_t buffer[1024];
+
+  value.bstrVal = buffer;
+  value.vt = VT_BSTR;
+  callFrame.pushPtr(value);
+  
+
+  value.lVal = sizeof(buffer);
+  value.vt = VT_I4;
+  callFrame.pushDWORD(value);
+
+  auto res = callFrame.Call((FARPROC)GetModuleFileNameW);
+  LastError error;
+
+  EXPECT_NE(0, res);
+
 }

@@ -333,8 +333,8 @@ HRESULT STDMETHODCALLTYPE CEditorView::put_navBarIndicatorMask( DWORD value){
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE CEditorView::get_handle(void* *result){
-	*result = m_Handle;
+HRESULT STDMETHODCALLTYPE CEditorView::get_handle(unsigned __int3264* result){
+	*result = (unsigned __int3264)m_Handle;
 	return S_OK;
 }
 

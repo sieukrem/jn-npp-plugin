@@ -498,8 +498,8 @@ HRESULT STDMETHODCALLTYPE CEditor::createDockable(IDispatch* cfg, IDialog** resu
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE CEditor::get_handle(void* *result){
-	*result = m_NppHandle;
+HRESULT STDMETHODCALLTYPE CEditor::get_handle(unsigned __int3264* result){
+	*result = (unsigned __int3264)m_NppHandle;
 	return S_OK;
 }
 

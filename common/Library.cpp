@@ -55,6 +55,7 @@ FARPROC Library::GetProc(BSTR functionName) const {
 	_functionName[res] = 0;
 
 	FARPROC proc = GetProcAddress(m_Handle, (LPCSTR)_functionName);
+	delete[] _functionName;
 
 	return proc;
 }
@@ -112,7 +113,7 @@ HRESULT STDMETHODCALLTYPE Library::call(BSTR functionName, BSTR params, int* res
 }
 
 
-HRESULT STDMETHODCALLTYPE Library::callWithFrame(BSTR functionName, IDispatch* params, int* result){
+HRESULT STDMETHODCALLTYPE Library::callWithFrame(BSTR functionName, IDispatch* params, unsigned __int3264* result){
 	FARPROC proc = GetProc(functionName);
 
 	if (proc == NULL){
@@ -123,7 +124,7 @@ HRESULT STDMETHODCALLTYPE Library::callWithFrame(BSTR functionName, IDispatch* p
 	}
 
 	CallFrame* callFrame = static_cast<CallFrame*>(params);
-	auto res = callFrame->Call(proc);
+	*result = callFrame->Call(proc);
 
 	return S_OK;
 }

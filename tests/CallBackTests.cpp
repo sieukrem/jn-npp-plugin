@@ -9,8 +9,8 @@ namespace CallBackTests{
 class TestCfg : public IDispatchEx{
 public:
     BSTR Stack = NULL;
-    DWORD Result = 0;
-    TestCfg(DWORD result = 0){
+    size_t Result = 0;
+    TestCfg(size_t result = 0){
         Result = result;
     }
     ~TestCfg(){

@@ -25,8 +25,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClCompile Include="CallBackTests.cpp" />
-    <ClCompile Include="CallFrameTests.cpp" />
+    <ClCompile Include="*Tests.cpp" />
     <ClCompile Include="../common/**/*.cpp" />
     <MASM Include="../common\x64Dispatcher.asm">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
