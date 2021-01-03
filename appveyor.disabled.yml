@@ -5,8 +5,8 @@ image: Visual Studio 2017
 environment:
   matrix:
   - PlatformToolset: v140_xp
-  - PlatformToolset: v141_xp
-
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    PlatformToolset: v142
 platform:
     - x64
     - Win32
@@ -23,11 +23,13 @@ install:
     - if "%platform%"=="Win32" set platform_input=x86
 
     - if "%PlatformToolset%"=="v140_xp" call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %archi%
-    - if "%PlatformToolset%"=="v141_xp" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %archi%
+    - if "%PlatformToolset%"=="v142" call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" %archi%
 
 build_script:
     - cd "%APPVEYOR_BUILD_FOLDER%"
     - msbuild jN.vcxproj /p:configuration="%configuration%" /p:platform="%platform_input%" /p:PlatformToolset="%PlatformToolset%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+    - nuget restore tests/packages.config -PackagesDirectory packages
+    - msbuild tests/tests.vcxproj /p:configuration="%configuration%" /p:platform="%platform_input%" /p:PlatformToolset="%PlatformToolset%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 after_build:
     - cd "%APPVEYOR_BUILD_FOLDER%"
@@ -64,6 +66,18 @@ after_build:
 artifacts:
   - path: jN_*.zip
     name: releases
+
+test_script:
+    - cd "%APPVEYOR_BUILD_FOLDER%"
+    - ps: >-
+
+        if ($env:PLATFORM_INPUT -eq "x64") {
+            & ".\$env:PLATFORM\$env:CONFIGURATION\tests.exe"
+        }
+
+        if ($env:PLATFORM_INPUT -eq "x86" ) {
+            & ".\$env:CONFIGURATION\tests.exe"
+        }
 
 deploy:
     provider: GitHub
