@@ -11,6 +11,9 @@ nativecall proc  ;  fReg:qword rcx, callee:qword rdx, stackSize:qword r8
 	push r13 ; 
 	mov r13, rsp 
 
+	shr rsp, 4 ; ensure 16 bytes alignment
+	shl rsp, 4 ;
+
 	mov r10, rcx
 
 	sub rsp, r8
