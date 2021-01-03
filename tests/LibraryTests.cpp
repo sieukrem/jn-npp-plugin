@@ -6,6 +6,12 @@
 #include "../common/Library.h"
 #include "../common/CallFrame.h"
 
+#ifdef _M_X64
+#define isx64 1
+#else
+#define isx64 0
+#endif
+
 TEST(LibraryTests, Call_winapi_from_library_works) {
   BSTR module = SysAllocString(TEXT("Kernel32.dll"));
 
@@ -14,9 +20,12 @@ TEST(LibraryTests, Call_winapi_from_library_works) {
   
   VARIANT value;
   value.llVal = 0;
-  value.vt = VT_I8;
+  value.vt = isx64? VT_I8 : VT_I4;
   
-  callFrame.pushLWORD(value);
+  if(isx64)
+    callFrame.pushLWORD(value);
+  else
+    callFrame.pushDWORD(value);
 
   wchar_t buffer[1024];
 
