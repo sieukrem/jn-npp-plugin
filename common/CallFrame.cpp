@@ -82,7 +82,7 @@ HRESULT STDMETHODCALLTYPE CallFrame::pushLWORD(
 HRESULT STDMETHODCALLTYPE CallFrame::pushPtr(
 	VARIANT value) {
 	
-	return writePtr<uint64_t>(value);	
+	return writePtr<size_t>(value);	
 }
 
 HRESULT STDMETHODCALLTYPE CallFrame::pushFloat(
