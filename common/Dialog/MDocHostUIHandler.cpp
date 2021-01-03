@@ -18,7 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Dialog.h"
 
-ULONG STDMETHODCALLTYPE MDocHostUIHandler::AddRef(){ 
+MDocHostUIHandler::MDocHostUIHandler(Dialog* dialog):CComBase(), m_Dialog(dialog)
+{
+}
+
+ULONG STDMETHODCALLTYPE MDocHostUIHandler::AddRef(){
 	return m_Dialog->AddRef();
 }
 

@@ -18,6 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MOleClientSite.h"
 #include "Dialog.h"
 
+MOleClientSite::MOleClientSite(Dialog* dialog):CComBase(), m_Dialog(dialog)
+{
+}
+
 ULONG STDMETHODCALLTYPE MOleClientSite::AddRef(){
 	return m_Dialog->AddRef();
 }

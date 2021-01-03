@@ -50,7 +50,7 @@ FARPROC Library::GetProc(BSTR functionName) const {
 	char* _functionName;
 
 	int newlen = WideCharToMultiByte(CP_ACP, 0, (LPCWSTR)functionName, SysStringLen(functionName), NULL,0, NULL, NULL);
-	_functionName = new char[newlen+1];
+	_functionName = new char[(size_t)newlen+1];
 	int res = WideCharToMultiByte(CP_ACP, 0, (LPCWSTR)functionName, SysStringLen(functionName), _functionName, newlen+1, NULL,NULL);
 	_functionName[res] = 0;
 

@@ -24,6 +24,8 @@ class MOleClientSite : public CComBase<IOleClientSite>{
 public:
 	Dialog* m_Dialog;
 
+	MOleClientSite(Dialog* dialog=NULL);
+
 	virtual ULONG STDMETHODCALLTYPE AddRef();
 
 	virtual ULONG STDMETHODCALLTYPE Release();

@@ -53,7 +53,7 @@ public:
 		BOOL* pfCallOnScriptErrorWhenContinuing);
 	#pragma endregion
 
-	DWORD AddScript(BSTR script, BSTR name);
+	DWORD_PTR AddScript(BSTR script, BSTR name);
 
 	IDebugDocumentHelper* GetDocumentFromContext(DWORD_PTR dwSourceContext);
 

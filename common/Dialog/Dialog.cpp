@@ -18,17 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Dialog.h"
 
 
-Dialog::Dialog(ScriptObj* cfg, HWND parent):CComDispatch(),m_ActiveObject(NULL),m_BrowserObject(NULL), m_WebBrowser2(NULL){
-
-
-	m_OleInPlaceFrame.m_Dialog	= this;
-
-	m_OleInPlaceSite.m_Dialog	= this;
-
-	m_OleClientSite.m_Dialog	= this;
-
-	m_DocHostUIHandler.m_Dialog = this;
-
+Dialog::Dialog(ScriptObj* cfg, HWND parent):
+	CComDispatch(),m_ActiveObject(NULL),m_BrowserObject(NULL), m_WebBrowser2(NULL), m_ExStyle(0), m_Hwnd(0), m_Style(0),
+	m_OleInPlaceFrame(this), m_OleInPlaceSite(this), m_OleClientSite(this), m_DocHostUIHandler(this)
+{
 	m_Cfg = cfg;
 
 	if (parent == 0)

@@ -24,6 +24,9 @@ class Dialog;
 class MOleInPlaceFrame: public CComBase<IOleInPlaceFrame>{
 public:
 	Dialog* m_Dialog;
+
+	MOleInPlaceFrame(Dialog* dialog=NULL);
+
 	virtual ULONG STDMETHODCALLTYPE AddRef();
 
 	virtual ULONG STDMETHODCALLTYPE Release();

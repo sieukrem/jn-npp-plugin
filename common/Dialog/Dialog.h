@@ -164,27 +164,27 @@ long EmbedBrowserObject(HWND hwnd)
 	RECT				rect;
 
 	pClassFactory = 0;
-	if (!CoGetClassObject(CLSID_WebBrowser, CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER, NULL, IID_IClassFactory, (void **)&pClassFactory) && pClassFactory)
+	if (SUCCEEDED(CoGetClassObject(CLSID_WebBrowser, CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER, NULL, IID_IClassFactory, (void **)&pClassFactory)) && pClassFactory)
 	{
 		// Call the IClassFactory's CreateInstance() to create a browser object
-		if (!pClassFactory->CreateInstance(0, IID_IOleObject,(void **) &m_BrowserObject))
+		if (SUCCEEDED(pClassFactory->CreateInstance(0, IID_IOleObject,(void **) &m_BrowserObject)))
 		{
 			// Free the IClassFactory. We need it only to create a browser object instance
 			pClassFactory->Release();
 
 			// Give the browser a pointer to my IOleClientSite object
-			if (!m_BrowserObject->SetClientSite((IOleClientSite *)&m_OleClientSite))
+			if (SUCCEEDED(m_BrowserObject->SetClientSite((IOleClientSite *)&m_OleClientSite)))
 			{
 				m_BrowserObject->SetHostNames(L"HTML Based Dialog", 0);
 
 				::GetClientRect(m_Hwnd, &rect);
 
 				// Let browser object know that it is embedded in an OLE container.
-				if (!OleSetContainedObject((struct IUnknown *)m_BrowserObject, TRUE) &&
+				if (SUCCEEDED(OleSetContainedObject((struct IUnknown *)m_BrowserObject, TRUE)) &&
 
 					// Set the display area of our browser control the same as our window's size
 					// and actually put the browser object into our window.
-					!m_BrowserObject->DoVerb(OLEIVERB_SHOW, NULL, (IOleClientSite *)&m_OleClientSite, -1, m_Hwnd, &rect) &&
+					SUCCEEDED(m_BrowserObject->DoVerb(OLEIVERB_SHOW, NULL, (IOleClientSite *)&m_OleClientSite, -1, m_Hwnd, &rect)) &&
 
 					// Ok, now things may seem to get even trickier, One of those function pointers in the browser's VTable is
 					// to the QueryInterface() function. What does this function do? It lets us grab the base address of any
@@ -195,7 +195,7 @@ long EmbedBrowserObject(HWND hwnd)
 					// object, so we can call some of the functions in the former's table. For example, one IWebBrowser2 function
 					// we intend to call below will be Navigate2(). So we call the browser object's QueryInterface to get our
 					// pointer to the IWebBrowser2 object.
-					!m_BrowserObject->QueryInterface(IID_IWebBrowser2, (void**)&m_WebBrowser2))
+					SUCCEEDED(m_BrowserObject->QueryInterface(IID_IWebBrowser2, (void**)&m_WebBrowser2)))
 				{
 					// Ok, now the pointer to our IWebBrowser2 object is in 'webBrowser2', and so its VTable is
 					// webBrowser2->lpVtbl.

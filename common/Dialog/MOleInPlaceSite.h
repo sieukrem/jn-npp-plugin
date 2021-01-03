@@ -23,6 +23,9 @@ class Dialog;
 class MOleInPlaceSite : public CComBase<IOleInPlaceSite>{
 public:
 	Dialog* m_Dialog;
+
+	MOleInPlaceSite(Dialog* dialog=NULL);
+
 	virtual ULONG STDMETHODCALLTYPE AddRef();
 
 	virtual ULONG STDMETHODCALLTYPE Release();

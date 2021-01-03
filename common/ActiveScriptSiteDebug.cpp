@@ -108,7 +108,7 @@ ActiveScriptSiteDebug::~ActiveScriptSiteDebug(){
 
 }
 
-DWORD ActiveScriptSiteDebug::AddScript(BSTR script, BSTR name){
+DWORD_PTR ActiveScriptSiteDebug::AddScript(BSTR script, BSTR name){
 	IDebugDocumentHelper* doc;
 	m_Pdm->CreateDebugDocumentHelper(NULL, &doc);
 

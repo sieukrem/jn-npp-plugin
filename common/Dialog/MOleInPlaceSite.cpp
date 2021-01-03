@@ -19,6 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Dialog.h"
 
 
+MOleInPlaceSite::MOleInPlaceSite(Dialog* dialog):CComBase(),m_Dialog(dialog)
+{
+}
+
 ULONG STDMETHODCALLTYPE MOleInPlaceSite::AddRef(){
 	return m_Dialog->AddRef();
 }
@@ -101,7 +105,7 @@ HRESULT STDMETHODCALLTYPE MOleInPlaceSite::OnPosRectChange( LPCRECT lprcPosRect)
 
 	// We need to get the browser's IOleInPlaceObject object so we can call its SetObjectRects
 	// function.
-	if (!m_Dialog->m_BrowserObject->QueryInterface(IID_IOleInPlaceObject, (void**)&inplace))
+	if (SUCCEEDED(m_Dialog->m_BrowserObject->QueryInterface(IID_IOleInPlaceObject, (void**)&inplace)))
 	{
 		// Give the browser the dimensions of where it can draw.
 		inplace->SetObjectRects(lprcPosRect, lprcPosRect);

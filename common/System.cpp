@@ -50,7 +50,7 @@ public:
 		delete this;
 	}
 };
-System::System(TCHAR* scriptFullName, MyActiveSite& activeSite):CComDispatch(), m_ScriptFullName(scriptFullName), m_ActiveSite(activeSite)
+System::System(TCHAR* scriptFullName, MyActiveSite& activeSite):CComDispatch(), m_ScriptFullName(scriptFullName), m_ActiveSite(activeSite), m_SystemHotKeysCount(0)
 {
 }
 
@@ -91,7 +91,7 @@ HRESULT STDMETHODCALLTYPE System::decodeFrom(
 		char* buf;
 		
 		int newlen = WideCharToMultiByte(0, 0, (LPCWSTR)*value, SysStringLen(*value), NULL,0, NULL, NULL);
-		buf = new char[newlen+1];
+		buf = new char[(size_t)newlen+1];
 		int res = WideCharToMultiByte(0,0, (LPCWSTR)*value, SysStringLen(*value), buf, newlen, NULL,NULL);
 		buf[res] = 0;
 	
@@ -378,7 +378,7 @@ int System::getAcceleratorModifier(ScriptObj* cfgEx){
 
 	VARIANT* modifierBOOL = cfgEx->getProperty(TEXT("shift"), VT_BOOL);
 	if (modifierBOOL != NULL){
-		modifier = modifier | (modifierBOOL->boolVal)? FSHIFT : 0;
+		modifier = modifier | ((modifierBOOL->boolVal)? FSHIFT : 0);
 		VariantClear(modifierBOOL);
 		delete modifierBOOL;
 	}

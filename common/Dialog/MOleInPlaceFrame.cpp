@@ -18,6 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MOleInPlaceFrame.h"
 #include "Dialog.h"
 
+MOleInPlaceFrame::MOleInPlaceFrame(Dialog* dialog):CComBase(), m_Dialog(dialog)
+{
+}
+
 ULONG STDMETHODCALLTYPE MOleInPlaceFrame::AddRef(){
 	return m_Dialog->AddRef();
 }

@@ -20,6 +20,9 @@ class Dialog;
 class MDocHostUIHandler: public  CComBase<IDocHostUIHandler>{
 public:
 	Dialog* m_Dialog;
+
+	MDocHostUIHandler(Dialog* dialog = NULL);
+
 	virtual ULONG STDMETHODCALLTYPE AddRef();
 
 	virtual ULONG STDMETHODCALLTYPE Release();

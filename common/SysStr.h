@@ -57,7 +57,7 @@ public:
 
 		SysReAllocStringLen(&m_Str, m_Str, newLen);
 
-		StringCchCat(m_Str, newLen+1, value);
+		StringCchCat(m_Str, (size_t)newLen+1, value);
 		
 		return *this;
 	}
