@@ -54,8 +54,11 @@ public:
     virtual HRESULT __stdcall InvokeEx(DISPID id, LCID lcid, WORD wFlags, DISPPARAMS* pdp, VARIANT* pvarRes, EXCEPINFO* pei, IServiceProvider* pspCaller) override
     {
         Stack = pdp->rgvarg[1].bstrVal;
-        pvarRes->uintVal = Result;
 
+       
+        pvarRes->vt = VT_UI4;
+        pvarRes->lVal = Result;
+       
         return S_OK;
     }
     virtual HRESULT __stdcall DeleteMemberByName(BSTR bstrName, DWORD grfdex) override
@@ -106,7 +109,10 @@ TEST(CallBackTests, With_parameter_has_corresponding_stack_len_and_result) {
 
   EXPECT_EQ(SysStringByteLen(cfg.Stack), 2*(sizeof(size_t)));
   EXPECT_EQ(result, cfg.Result);
-  EXPECT_EQ((int)(((size_t*)cfg.Stack)[0]), 123);
-  EXPECT_EQ((int)(((size_t*)cfg.Stack)[1]), 456);
+  
+  auto stack = (size_t*)cfg.Stack;
+
+  EXPECT_EQ(*(int*)stack, 123);
+  EXPECT_EQ(*(int*)(stack+1), 456);
 }
 }

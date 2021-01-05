@@ -28,7 +28,7 @@ public:
 	CBP* Proc();
 
 	template<int NUM>
-	static size_t WINAPI CallBackProc(size_t r1, size_t r2,size_t r3,size_t r4,size_t stack1){
+	static size_t WINAPI CallBackProc(size_t r1, ...){
 #ifndef _M_X64
 		void* v_ebp = &r1;	// base pointer, points to actual parameters of called callback function
 
@@ -56,6 +56,9 @@ public:
 
 		return 0;
 #else
+		va_list vars;		// enforce the compiler to store
+		va_start(vars, r1); // integer registers on stack
+
 		void* v_ebp = &r1;	// base pointer, points to actual parameters of called callback function
 
 		CallBack* cb = *GetCallBack(NUM);

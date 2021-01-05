@@ -20,13 +20,10 @@ size_t CallBack::Call(void* params){
 
 	SysFreeString(var[0].bstrVal);
 
-	VARTYPE type = VT_UI4;
+	VARTYPE type = (sizeof(size_t) > sizeof(DWORD))? VT_UI8 : VT_UI4;
 	HRESULT hr = VariantChangeType(&result, &result, 0, type);
 	
-	DWORD dwResult = 0;
-	dwResult = result.uintVal;
-
-	return dwResult;
+	return (sizeof(size_t) > sizeof(DWORD)) ? result.llVal : result.lVal;
 }
 
 CallBack::~CallBack(){
