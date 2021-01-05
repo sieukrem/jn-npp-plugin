@@ -100,44 +100,6 @@ int CEditor::GetMenuItemPosition(HANDLE hMenu, TCHAR* text)
 	return result;
 }
 
-int CEditor::GetMenuItemPosition(HANDLE hMenu, TCHAR* text)
-{
-	int count = GetMenuItemCount(m_mainMenu);
-	int result = count -1;
-
-	MENUITEMINFO mii;
-	mii.cbSize = sizeof(mii);
-	mii.fMask = MIIM_STRING;
-	mii.fType = MFT_STRING;
-
-	size_t len;
-	if (FAILED(StringCchLength(text, 100, &len)))
-		return result;
-
-	size_t bufferSize = len + 1 + 1; // one character more + one for \0
-	mii.dwTypeData = new TCHAR[bufferSize];
-
-	for (int i = 0; i < count; i++) {
-		mii.cch = bufferSize;
-
-		BOOL res = GetMenuItemInfo(
-			m_mainMenu,
-			(UINT)i,
-			TRUE,
-			&mii
-		);
-
-		if (StrCmp(mii.dwTypeData, text) == 0) {
-			result = i;
-			break;
-		}
-	}
-
-	delete mii.dwTypeData;
-
-	return result;
-}
-
 // 1.) NPP uses IDs for  menu items but does not offer API
 // to get new IDs for our dynamic menu items. Due to solve 
 // this problem switch menu message handling from WM_COMMAND to WM_MENUCOMMAND
