@@ -160,7 +160,7 @@ HRESULT STDMETHODCALLTYPE CEditorView::get_files( long *value){
 HRESULT STDMETHODCALLTYPE CEditorView::get_selection( BSTR *value){
 
 	LRESULT len = sci(SCI_GETSELTEXT, 0, 0);
-	char* buf = new char[len];
+	char* buf = new char[len + 1];
 
 	sci(SCI_GETSELTEXT, len, (LPARAM)buf);
 
