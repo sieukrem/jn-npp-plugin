@@ -62,6 +62,44 @@ int CEditor::GetCurrentView(){
 	return currentEdit;
 }
 
+int CEditor::GetMenuItemPosition(HANDLE hMenu, TCHAR* text)
+{
+	int count = GetMenuItemCount(m_mainMenu);
+	int result = count -1;
+
+	MENUITEMINFO mii;
+	mii.cbSize = sizeof(mii);
+	mii.fMask = MIIM_STRING;
+	mii.fType = MFT_STRING;
+
+	size_t len;
+	if (FAILED(StringCchLength(text, 100, &len)))
+		return result;
+
+	size_t bufferSize = len + 1 + 1; // one character more + one for \0
+	mii.dwTypeData = new TCHAR[bufferSize];
+
+	for (int i = 0; i < count; i++) {
+		mii.cch = bufferSize;
+
+		BOOL res = GetMenuItemInfo(
+			m_mainMenu,
+			(UINT)i,
+			TRUE,
+			&mii
+		);
+
+		if (StrCmp(mii.dwTypeData, text) == 0) {
+			result = i;
+			break;
+		}
+	}
+
+	delete mii.dwTypeData;
+
+	return result;
+}
+
 // 1.) because NPP use lets IDs for  menu items 
 // and we can not get new IDs for our dynamic menu items. To solve 
 // this problem we switch menu message handling from WM_COMMAND to WM_MENUCOMMAND
@@ -369,10 +407,10 @@ HRESULT STDMETHODCALLTYPE CEditor::open( BSTR *value){
 HRESULT STDMETHODCALLTYPE CEditor::addMenu(  VARIANT cfg, IMenu **result){
 	if (cfg.vt != VT_EMPTY){
 
-		int count = GetMenuItemCount(m_mainMenu);
+		int pos = GetMenuItemPosition(m_mainMenu, TEXT("&?"));
 
 		// -2 for [?] and [x] Buttons
-		CMenu* m = new CMenu(m_mainMenu, count-2, cfg, nppData._nppHandle); 
+		CMenu* m = new CMenu(m_mainMenu, pos, cfg, nppData._nppHandle); 
 		//m->put_text(text);
 		*result = m;
 		m->AddRef();
