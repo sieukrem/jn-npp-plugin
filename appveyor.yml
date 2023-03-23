@@ -35,10 +35,12 @@ after_build:
 
         if ($env:PLATFORM_INPUT -eq "x64") {
             Push-AppveyorArtifact "$env:PLATFORM\$env:CONFIGURATION\jN.dll" -FileName jN.dll
+            Push-AppveyorArtifact "$env:PLATFORM\$env:CONFIGURATION\jN.pdb" -FileName jN.pdb
         }
 
         if ($env:PLATFORM_INPUT -eq "x86" ) {
             Push-AppveyorArtifact "$env:CONFIGURATION\jN.dll" -FileName jN.dll
+            Push-AppveyorArtifact "$env:CONFIGURATION\jN.pdb" -FileName jN.pdb
         }
 
         if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v140_xp") {
