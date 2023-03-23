@@ -39,8 +39,6 @@ class IndicatorPanel
 
 	SCIView* m_View;
 
-	const static int m_PanelWidth = 8;
-
 	void ClearIndicators(int begin, int end);
 
 public:
