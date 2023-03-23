@@ -161,13 +161,13 @@ void IndicatorPanel::GetIndicatorLines(int begin, int end){
 	DWORD	mask = 0;
 
 	int line = m_View->sci(SCI_LINEFROMPOSITION, begin, 0);
-	int lineende = m_View->sci(SCI_GETLINEENDPOSITION, line, 0);;
+	int lineEnd = m_View->sci(SCI_GETLINEENDPOSITION, line, 0);
 
 	for (int p=begin; p < end; p++){
 
 		// move indicator mask for line into the list of masks
 		// if end of line or end of file
-		if (lineende <= p || p == end-1){ // new line
+		if (lineEnd <= p || p == end-1){ // new line
 
 			// dont save empty masks
 			if (mask){ // save mask from last line
@@ -181,7 +181,7 @@ void IndicatorPanel::GetIndicatorLines(int begin, int end){
 			}
 
 			line++;
-			lineende = m_View->sci(SCI_GETLINEENDPOSITION, line, 0);
+			lineEnd = m_View->sci(SCI_GETLINEENDPOSITION, line, 0);
 
 			mask = 0;
 		}
@@ -194,6 +194,8 @@ void IndicatorPanel::GetIndicatorLines(int begin, int end){
 void IndicatorPanel::GetIndicatorPixels(){
 	m_PixelIndicatorsLen = (m_PanelRect.bottom - m_PanelRect.top);
 
+	int indicatorThickness = ((m_PanelRect.right - m_PanelRect.left) + 1)/ 2;
+
 	if (pixelIndicators){
 		delete[] pixelIndicators;
 		pixelIndicators = NULL;
@@ -205,74 +207,65 @@ void IndicatorPanel::GetIndicatorPixels(){
 	if (hasStyle(m_View->m_Handle, WS_HSCROLL))
 		m_PixelIndicatorsLen -= scrollHHeight;
 
-	if (m_PixelIndicatorsLen > 0){
+	if (m_PixelIndicatorsLen <= 0)
+		return; // not sufficient place
 
-		int lines = m_View->sci(SCI_GETLINECOUNT, 0,0);
+	int lines = m_View->sci(SCI_GETLINECOUNT, 0,0);
 
-		int lineHeight = m_View->sci(SCI_TEXTHEIGHT, 0, 0);
+	int lineHeight = m_View->sci(SCI_TEXTHEIGHT, 0, 0);
 
-		if (lineHeight && lines){ // avoid division by NULL
+	if (!(lineHeight && lines))
+		return; // avoid division by 0
+	
+	int visibleLines = m_View->sci(SCI_VISIBLEFROMDOCLINE, lines-1, 0)+1;
+	int linesOnPage = (m_PixelIndicatorsLen) / lineHeight;
 
-			int visibleLines = m_View->sci(SCI_VISIBLEFROMDOCLINE, lines-1, 0)+1;
-			int linesOnPage = (m_PanelRect.bottom - m_PanelRect.top) / lineHeight;
+	// maximum pixel per line on panel line height
+	float pixelPerLineOnPanel = (linesOnPage > visibleLines)? lineHeight : (float)(m_PixelIndicatorsLen - indicatorThickness)/ visibleLines; 
 
-			// maximum pixel per line on panel line height
-			float pixelPerLineOnPanel = (linesOnPage > visibleLines)? lineHeight : (float)m_PixelIndicatorsLen / visibleLines; 
+	pixelIndicators = new DWORD[m_PixelIndicatorsLen];
 
-			float pixelPerPageOnPanel = ((linesOnPage > visibleLines)?  visibleLines : (float)linesOnPage) * pixelPerLineOnPanel; 
+	memset(pixelIndicators, 0, sizeof(DWORD) * m_PixelIndicatorsLen);
 
-
-			pixelIndicators = new DWORD[m_PixelIndicatorsLen];
-
-			memset(pixelIndicators, 0, sizeof(DWORD) * m_PixelIndicatorsLen);
-
-			// setup mask
-			for(int l=0, c=m_Indicators.size(); l < c; l++){
-				LineMask& lm = m_Indicators[l];
-				int y = (int)(pixelPerLineOnPanel * (float)(lm.line));
+	// setup mask
+	for(int l=0, c=m_Indicators.size(); l < c; l++){
+		LineMask& lm = m_Indicators[l];
+		int y = (int)(pixelPerLineOnPanel * (float)(lm.line));
 				
-				if (y >= m_PixelIndicatorsLen){ 
-					// error! view go to switch current buffer
-					// we can break here, it will be updated after switching
-					break;
-				}
-
-				pixelIndicators[y] |= lm.mask;
-			}
-
-			// distribute mask to other pixels if possible
-			for(int l=0; l < m_PixelIndicatorsLen; l++){
-				DWORD pi = pixelIndicators[l];
-				
-				int next = l+1;
-				DWORD indicator = 0x1;
-				// if pi contains bits and next pixel does not have bits
-				while(pi && next < m_PixelIndicatorsLen && !pixelIndicators[next]){
-					
-					// seek to next present indicator
-					while(!(pi & indicator)){
-						indicator = indicator << 1;
-					}
-
-					// substract indicator from pi
-					pi = pi & ~indicator;
-					
-					// set indicator at the current position and 
-					// move other indicators to the next pixel
-					pixelIndicators[l] = indicator;
-					pixelIndicators[next] = pi;
-
-					l++;
-					next++;
-
-					// seek indicator
-					indicator = indicator << 1;
-				}
-			}
-
-
+		for (int t = y; t < (y + indicatorThickness) && t < m_PixelIndicatorsLen; t++) {
+			pixelIndicators[t] |= lm.mask;
 		}
 	}
+
+	//// distribute mask to other pixels if possible
+	//for(int l=0; l < m_PixelIndicatorsLen; l++){
+	//	DWORD pi = pixelIndicators[l];
+	//			
+	//	int next = l + indicatorThickness;
+	//	DWORD indicator = 0x1;
+	//	// if pi contains bits and next pixel does not have bits
+	//	while(pi && next < m_PixelIndicatorsLen && !pixelIndicators[next]){
+	//				
+	//		// seek to next present indicator
+	//		while(!(pi & indicator)){
+	//			indicator = indicator << 1;
+	//		}
+
+	//		// substract indicator from pi
+	//		pi = pi & ~indicator;
+	//				
+	//		// set indicator at the current position and 
+	//		// move other indicators to the next pixel
+	//		pixelIndicators[l] = indicator;
+	//		pixelIndicators[next] = pi;
+
+	//		l += 1;
+	//		next += 1;
+
+	//		// seek indicator
+	//		indicator = indicator << 1;
+	//	}
+	//}
 }
 
 
