@@ -54,7 +54,7 @@ LRESULT IndicatorPanel::OnNCCalcSize(HWND hwnd, UINT message, WPARAM wParam, LPA
 		int borderWidth = GetSystemMetrics(SM_CXEDGE);
 		int hScrollHeight = GetSystemMetrics(SM_CYVTHUMB);
 		int vScrollWidth = GetSystemMetrics(SM_CXHTHUMB);
-
+		int panelWidth = (vScrollWidth + 1) / 2;
 
 
 		m_PanelRect = ncp->rgrc[0];
@@ -63,9 +63,9 @@ LRESULT IndicatorPanel::OnNCCalcSize(HWND hwnd, UINT message, WPARAM wParam, LPA
 		m_PanelRect.top = borderWidth;
 
 		m_PanelRect.right -= (m_PanelRect.left + borderWidth); 
-		m_PanelRect.left = m_PanelRect.right - m_PanelWidth - borderWidth;
+		m_PanelRect.left = m_PanelRect.right - panelWidth - borderWidth;
 
-		ncp->rgrc[0].right -= (m_PanelWidth + borderWidth);
+		ncp->rgrc[0].right -= (panelWidth + borderWidth);
 
 		m_UnderScroll.bottom	= m_PanelRect.bottom;
 		m_UnderScroll.right		= m_PanelRect.left;
@@ -292,37 +292,30 @@ void IndicatorPanel::paintIndicators(HDC hdc){
 	bool vscroll = hasStyle(m_View->m_Handle, WS_VSCROLL);
 	int scrollHHeight	= GetSystemMetrics(SM_CXHSCROLL);
 	HBRUSH hbr3DFace = (HBRUSH)GetSysColorBrush(COLOR_3DFACE); 
-
-	HPEN hpen, oldPen;
-	//hpen = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
-
-	// Select the new pen and brush, and then draw.
-	//oldPen = (HPEN)SelectObject(hdc, hpen);
-
+	
 	int topOffset = vscroll ? m_PanelRect.top + scrollHHeight : m_PanelRect.top;
 
-	BOOL res;
+	BOOL res = FillRect(hdc, &m_PanelRect, hbr3DFace);
 
-	res = FillRect(hdc, &m_PanelRect, hbr3DFace);
+	int indicatorPadding = (m_PanelRect.right - m_PanelRect.left) / 4;
+	int indicatorLeftPos = m_PanelRect.left + indicatorPadding;
+	int indicatorRightPos = m_PanelRect.right - indicatorPadding;
 
 	for (int i=0; i<m_PixelIndicatorsLen; i++){
 		DWORD mask = pixelIndicators[i];
 		DWORD maskToPaint = m_IndicatorMask & mask;
 		if (maskToPaint){
 			COLORREF color = getColorForMask(maskToPaint);		
-			hpen = CreatePen(PS_SOLID, 1, color);
-			oldPen = (HPEN)SelectObject(hdc, hpen);
+			HPEN hpen = CreatePen(PS_SOLID, 1, color);
+			HPEN oldPen = (HPEN)SelectObject(hdc, hpen);
 			int curOffset = i + topOffset;
-			res = MoveToEx(hdc, m_PanelRect.left + 2, curOffset, NULL);
-			res = LineTo(hdc, m_PanelRect.right - 2, curOffset);
+			res = MoveToEx(hdc, indicatorLeftPos, curOffset, NULL);
+			res = LineTo(hdc, indicatorRightPos, curOffset);
 			SelectObject(hdc, oldPen);
 			DeleteObject(hpen);
 		}
 	}
-
 }
-
-
 
 bool IndicatorPanel::hasStyle(HWND hwnd, int style) {
 	return (GetWindowLongPtr(hwnd, GWL_STYLE) & style) != 0;
