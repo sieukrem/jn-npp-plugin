@@ -21,9 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #pragma region CMenuItem
-CMenuItem::CMenuItem(HMENU h, WORD id, ScriptObj* config):CAbstractMenuItem(){
+CMenuItem::CMenuItem(HMENU h, ScriptObj* config):CAbstractMenuItem(){
 	m_ParentMenuHandle = h;
-	m_Id_Handle =(HMENU)id;
 
 	m_Config = config;
 
@@ -98,7 +97,7 @@ CMenuItem* CMenuItem::GetInstance(HMENU hmenu, UINT itemPos){
 
 #pragma region CMenu
 
-CMenu::CMenu(HMENU parent, HWND hwnd):CAbstractMenuItem(){
+CMenu::CMenu(HMENU parent, HWND hwnd):CAbstractMenuItem(), m_Config(NULL){
 	createMenu(parent, -1, TEXT("text"), hwnd);
 }
 
@@ -121,21 +120,19 @@ CMenu::CMenu(HMENU parent, int position, VARIANT cfg, HWND hwnd):CAbstractMenuIt
 }
 
 HMENU CMenu::getHandle(){
-	return m_Id_Handle;
+	return m_MenuHandle;
 }
 
 void CMenu::createMenu(HMENU parent, int position, TCHAR* text, HWND menuBarWindow){
 	m_Hwnd = menuBarWindow;
-	m_Config = NULL;
-	m_Items = 0;
 	m_ParentMenuHandle = parent;
-	m_Id_Handle = ::CreatePopupMenu();
+	m_MenuHandle = ::CreatePopupMenu();
 
 	BOOL res;
 	if (position==-1)
-		res = ::AppendMenu(m_ParentMenuHandle,  MF_POPUP, (UINT_PTR )m_Id_Handle, text);
+		res = ::AppendMenu(m_ParentMenuHandle,  MF_POPUP, (UINT_PTR )m_MenuHandle, text);
 	else
-		res = ::InsertMenu(m_ParentMenuHandle, position, MF_BYPOSITION | MF_POPUP, (UINT_PTR )m_Id_Handle, text);
+		res = ::InsertMenu(m_ParentMenuHandle, position, MF_BYPOSITION | MF_POPUP, (UINT_PTR )m_MenuHandle, text);
 
 	MENUINFO mi;
 	memset(&mi, 0, sizeof(mi));
@@ -146,7 +143,7 @@ void CMenu::createMenu(HMENU parent, int position, TCHAR* text, HWND menuBarWind
 	this->AddRef();
 
 	res = SetMenuInfo(          
-		m_Id_Handle,
+		m_MenuHandle,
 		&mi
 	);
 
@@ -158,7 +155,7 @@ void CMenu::createMenu(HMENU parent, int position, TCHAR* text, HWND menuBarWind
 
 	res = SetMenuItemInfo(
 		m_ParentMenuHandle,
-		(UINT)m_Id_Handle,
+		(UINT)m_MenuHandle,
 		FALSE,
 		&mii
 	);
@@ -189,7 +186,7 @@ void CMenu::oninitpopup(){
 }
 
 CMenu::~CMenu(void){
-	int r = DestroyMenu(m_Id_Handle);
+	int r = DestroyMenu(m_MenuHandle);
 }
 
 HRESULT STDMETHODCALLTYPE CMenu::addMenu( VARIANT cfg, IMenu **result){
@@ -201,7 +198,7 @@ HRESULT STDMETHODCALLTYPE CMenu::addMenu( VARIANT cfg, IMenu **result){
 		if (!var)
 			return S_OK;
 
-		CMenu* menu = new CMenu(m_Id_Handle); 
+		CMenu* menu = new CMenu(m_MenuHandle); 
 		menu->m_Config = dispCfg;
 		*result = menu;
 
@@ -212,12 +209,11 @@ HRESULT STDMETHODCALLTYPE CMenu::addMenu( VARIANT cfg, IMenu **result){
 		VariantClear(var);
 		delete var;
 	} else if (cfg.vt == VT_BSTR){
-		*result = new CMenu(m_Id_Handle); 
+		*result = new CMenu(m_MenuHandle); 
 		(*result)->put_text(&cfg.bstrVal);
 		(*result)->AddRef();
 	}
 
-	m_Items++;
 
 	return S_OK;
 }
@@ -226,9 +222,8 @@ HRESULT STDMETHODCALLTYPE CMenu::addItem(IDispatch *config, IMenuItem **result){
 	CHECK_AND_FAIL;	// menu item is removed!
 
 	if (config!=NULL){
-		*result = new CMenuItem(m_Id_Handle, m_Items, MyActiveSite::getInstance()->WrapScriptObj(config));
+		*result = new CMenuItem(m_MenuHandle, MyActiveSite::getInstance()->WrapScriptObj(config));
 		(*result)->AddRef();
-		m_Items++;
 	}
 	return S_OK;
 }
@@ -236,8 +231,7 @@ HRESULT STDMETHODCALLTYPE CMenu::addItem(IDispatch *config, IMenuItem **result){
 HRESULT STDMETHODCALLTYPE CMenu::addSeparator( void){
 	CHECK_AND_FAIL;	// menu item is removed!
 
-	::AppendMenu(m_Id_Handle, MF_SEPARATOR, m_Items, NULL);
-	m_Items++;
+	::AppendMenu(m_MenuHandle, MF_SEPARATOR, GetMenuItemCount(m_MenuHandle), NULL);
 
 	return S_OK;
 }
