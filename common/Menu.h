@@ -29,7 +29,6 @@ template<class Interface>
 class CAbstractMenuItem : public CComDispatch<Interface>{
 protected:
 	BOOL m_Removed;
-	HMENU m_Id_Handle;
 	HMENU m_ParentMenuHandle;
 
 	UINT getOwnPosition() {
@@ -226,7 +225,7 @@ private:
 public:
 	static CMenuItem* GetInstance(HMENU hmenu, UINT itemPos);
 
-	CMenuItem(HMENU h, WORD id, ScriptObj* config);
+	CMenuItem(HMENU h, ScriptObj* config);
 
 	~CMenuItem();
 
@@ -239,8 +238,8 @@ protected:
 	ScriptObj* m_Config;
 
 private:
-	WORD  m_Items;
 	HWND m_Hwnd;
+	HMENU m_MenuHandle;
 
 public:
 	static CMenu* GetInstance(HMENU hmenu);
