@@ -42,9 +42,8 @@ CMenuItem::CMenuItem(HMENU h, WORD id, ScriptObj* config):CAbstractMenuItem(){
 	MENUITEMINFO mii;
 	memset(&mii,0,sizeof(mii));
 	mii.cbSize = sizeof(mii);
-	mii.fMask = MIIM_DATA | MIIM_STRING | MIIM_ID;
+	mii.fMask = MIIM_DATA | MIIM_STRING;
 	mii.fType = MFT_STRING;
-	mii.wID = (UINT)m_Id_Handle;
 	mii.cch = SysStringLen(text);
 	mii.dwTypeData = text;
 
@@ -57,7 +56,6 @@ CMenuItem::CMenuItem(HMENU h, WORD id, ScriptObj* config):CAbstractMenuItem(){
 		TRUE,
 		&mii
 	);
-
 
 	SysFreeString(text);
 }
@@ -150,6 +148,19 @@ void CMenu::createMenu(HMENU parent, int position, TCHAR* text, HWND menuBarWind
 	res = SetMenuInfo(          
 		m_Id_Handle,
 		&mi
+	);
+
+
+	MENUITEMINFO mii;
+	mii.cbSize = sizeof(mii);
+	mii.fMask = MIIM_DATA;
+	mii.dwItemData = (ULONG_PTR)this;
+
+	res = SetMenuItemInfo(
+		m_ParentMenuHandle,
+		(UINT)m_Id_Handle,
+		FALSE,
+		&mii
 	);
 
 }

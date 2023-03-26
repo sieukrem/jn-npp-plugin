@@ -32,6 +32,31 @@ protected:
 	HMENU m_Id_Handle;
 	HMENU m_ParentMenuHandle;
 
+	UINT getOwnPosition() {
+		int count = GetMenuItemCount(m_ParentMenuHandle);
+		int result = count - 1;
+
+		MENUITEMINFO mii;
+		mii.cbSize = sizeof(mii);
+		mii.fMask = MIIM_DATA;
+
+		for (int i = 0; i < count; i++) {
+
+			BOOL res = GetMenuItemInfo(
+				m_ParentMenuHandle,
+				(UINT)i,
+				TRUE,
+				&mii
+			);
+
+			if (mii.dwItemData == (ULONG_PTR)this) {
+				return i;
+			}
+		}
+
+		throw "Menu item not found";
+	}
+
 	UINT  getMenuItemState(){
 		MENUITEMINFO mii;
 		mii.cbSize = sizeof(mii);
@@ -39,8 +64,8 @@ protected:
 
 		BOOL res = GetMenuItemInfo(
 			m_ParentMenuHandle,
-			(UINT)m_Id_Handle,
-			FALSE,
+			getOwnPosition(),
+			TRUE,
 			&mii
 		);
 		if (!res){
@@ -79,8 +104,8 @@ public:
 		// get menu item length
 		BOOL res=GetMenuItemInfo(
 			m_ParentMenuHandle,
-			(UINT)m_Id_Handle,
-			FALSE,
+			getOwnPosition(),
+			TRUE,
 			&mii
 		);
 
@@ -93,8 +118,8 @@ public:
 		// get menu item
 		res = GetMenuItemInfo(
 			m_ParentMenuHandle,
-			(UINT)m_Id_Handle,
-			FALSE,
+			getOwnPosition(),
+			TRUE,
 			&mii
 		);
 
@@ -115,8 +140,8 @@ public:
 
 		BOOL res = SetMenuItemInfo(
 			m_ParentMenuHandle,
-			(UINT)m_Id_Handle,
-			FALSE,
+			getOwnPosition(),
+			TRUE,
 			&mii
 		);
 
@@ -144,8 +169,8 @@ public:
 
 		BOOL res = SetMenuItemInfo(
 			m_ParentMenuHandle,
-			(UINT)m_Id_Handle,
-			FALSE,
+			getOwnPosition(),
+			TRUE,
 			&mii
 		);
 
@@ -172,8 +197,8 @@ public:
 
 		BOOL res = SetMenuItemInfo(
 			m_ParentMenuHandle,
-			(UINT)m_Id_Handle,
-			FALSE,
+			getOwnPosition(),
+			TRUE,
 			&mii
 		);
 		
@@ -183,7 +208,7 @@ public:
 	virtual HRESULT STDMETHODCALLTYPE remove(){
 		CHECK_AND_FAIL;	// menu item is removed!
 
-		BOOL res = DeleteMenu(m_ParentMenuHandle,(UINT)m_Id_Handle, MF_BYCOMMAND);
+		BOOL res = DeleteMenu(m_ParentMenuHandle, getOwnPosition(), MF_BYPOSITION);
 		if (res){
 			m_Removed = TRUE;
 			Release(); // delete self reference
