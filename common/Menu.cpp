@@ -205,6 +205,9 @@ HRESULT STDMETHODCALLTYPE CMenu::addMenu( VARIANT cfg, IMenu **result){
 		(*result)->put_text(&cfg.bstrVal);
 		(*result)->AddRef();
 	}
+
+	m_Items++;
+
 	return S_OK;
 }
 
