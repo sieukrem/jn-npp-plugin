@@ -98,7 +98,7 @@ void CEditorView::setIndicatorLinesUpdater(int begin, int end){
 	if (m_IndPanel.m_IndicLinesUp.m_Begin > begin || (m_IndPanel.m_IndicLinesUp.m_End == 0 /* first time */))
 		m_IndPanel.m_IndicLinesUp.m_Begin = begin;
 
-	if (end == -1 || m_IndPanel.m_IndicLinesUp.m_End < end )
+	if (m_IndPanel.m_IndicLinesUp.m_End != -1 && (end == -1 || m_IndPanel.m_IndicLinesUp.m_End < end))
 		m_IndPanel.m_IndicLinesUp.m_End = end;
 
 	ForegroundIdleHook::getInstance()->add(&m_IndPanel.m_IndicLinesUp);
