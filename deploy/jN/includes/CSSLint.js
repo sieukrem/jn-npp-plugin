@@ -1,26 +1,11 @@
+
 (function(){
 
 function getCSSLint(){
 	if (typeof(CSSLint) != "undefined")
 		return CSSLint;
 	
-	var fso = new ActiveXObject("Scripting.FileSystemObject");
-	
-	var fn = Editor.nppDir + "\\plugins\\jN\\jN\\includes\\csslint\\csslint.js";
-	if (fso.FileExists(fn)){
-		var f = fso.OpenTextFile(fn,1, false,0);
-		var scr = decodeFrom(65001,f.ReadAll());
-		if (scr && scr.length>0){
-			try{
-				addScript(scr);
-			}catch(e){
-				alert(e.message);
-			}
-		}
-		f.Close();
-	}else{
-		alert("csslint not found");
-	}
+	require("includes/csslint/csslint.js");
 	
 	return CSSLint;
 }
@@ -118,8 +103,8 @@ CSSLintMenu.addItem({
 		this.showDialog(rows);	
 	},
 	getCells:function(rule){
-		var checked = settings[rule.id] != 1 ? ' checked="checked"' : ''; // negative logic, if exists then not selected
-		return ['<input type="checkbox"' + checked + ' name="' + rule.id + '">', rule.name, rule.desc];
+		var checked = settings[rule.id] != 1?"checked=''":""; // negative logic, if exists then not selected
+		return ["<input type='checkbox' "+checked+" name='"+rule.id+"'>",rule.name,rule.desc];
 	},
 
 	showDialog:function(rules){
