@@ -16,12 +16,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef VERSION_MA
 #define VERSION_MA 2
-#define VERSION_MI 2 
+#endif
 
-// increment revision in case of modification
-#define REVISION 185 
- #define xstr(s) str(s)
- #define str(s) #s
-#define _VERSION_STR VERSION_MA ## . ## REVISION
+#ifndef VERSION_MI
+#define VERSION_MI 2
+#endif
+
+#ifndef BUILD_NUMBER
+// increment BUILD_NUMBER in case of modification
+#define BUILD_NUMBER 185
+#endif
+
+#ifndef VERSION_REVISION
+#define VERSION_REVISION 0
+#endif
+
+#define xstr(s) str(s)
+#define str(s) #s
+#define _VERSION_STR VERSION_MA ## . ## VERSION_MI ## . ## BUILD_NUMBER  ## . ## VERSION_REVISION
 

@@ -1,0 +1,106 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        platform: [x86, x64]
+        configuration: [Release]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.2.0
+      with:
+        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+
+    - uses: dotnet/nbgv@master
+      id: nbgv
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build with MSBuild
+      run: |
+        msbuild jN.vcxproj /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /p:VersionMajor=${{steps.nbgv.outputs.VersionMajor}} /p:VersionMinor=${{steps.nbgv.outputs.VersionMinor}} /p:BuildNumber=${{steps.nbgv.outputs.BuildNumber}} /p:VersionRevision=${{steps.nbgv.outputs.VersionRevision}}
+    
+    - name: Create zip file
+      run: |
+        if ("${{ matrix.platform }}" -eq "x64"){
+          Copy-Item ${{ matrix.platform}}/${{ matrix.configuration }}/*.dll ./deploy/
+        } else {
+          Copy-Item ${{ matrix.configuration }}/*.dll ./deploy/
+        }
+
+        cd ./deploy
+        7z a ../jN_${{ steps.nbgv.outputs.SemVer2 }}_${{ matrix.platform }}.zip *
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4.4.0
+      with:
+        name: Build artifacts
+        path: |
+          jN_*.zip
+          ${{ matrix.configuration }}/*.dll
+          ${{ matrix.configuration }}/*.pdb
+          ${{ matrix.platform }}/${{ matrix.configuration }}/*.dll
+          ${{ matrix.platform }}/${{ matrix.configuration }}/*.pdb
+
+        retention-days: 3 
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.0
+        with:
+          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+
+      - uses: dotnet/nbgv@master
+        id: nbgv
+
+      - name: Create Tag
+        run: git tag ${{ steps.nbgv.outputs.SemVer2 }}
+
+      - name: Push Tag
+        run: git push origin ${{ steps.nbgv.outputs.SemVer2 }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.nbgv.outputs.SemVer2 }}
+          release_name: ${{ steps.nbgv.outputs.SemVer2 }}
+          draft: true
+          prerelease: false
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Build artifacts
+
+      - name: Upload x64
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: jN_${{ steps.nbgv.outputs.SemVer2 }}_x64.zip
+          asset_name: jN_${{ steps.nbgv.outputs.SemVer2 }}_x64.zip
+          asset_content_type: application/zip
+
+      - name: Upload x86
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: jN_${{ steps.nbgv.outputs.SemVer2 }}_x86.zip
+          asset_name: jN_${{ steps.nbgv.outputs.SemVer2 }}_x86.zip
+          asset_content_type: application/zip
