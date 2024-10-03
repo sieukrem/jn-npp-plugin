@@ -1,1 +1,0 @@
-******** Rebuild entire solution after every *.idl modifying!!!

@@ -22,6 +22,10 @@
     <ProjectGuid>{1590D7CD-7D3A-4AB7-A355-EE02F7FB987D}</ProjectGuid>
     <RootNamespace>NppPluginTemplate</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <VersionMajor>0</VersionMajor>
+    <VersionMinor>0</VersionMinor>
+    <BuildNumber>0</BuildNumber>
+    <VersionRevision>0</VersionRevision>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
@@ -238,7 +242,9 @@
     <Image Include="jN.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="res.rc" />
+    <ResourceCompile Include="res.rc">
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);VERSION_MA=$(VersionMajor);VERSION_MI=$(VersionMinor);BUILD_NUMBER=$(BuildNumber);VERSION_REVISION=$(VersionRevision)</PreprocessorDefinitions>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\AcceleratorHook.h" />
