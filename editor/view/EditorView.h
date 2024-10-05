@@ -61,8 +61,6 @@ public:
 private:
 
 	LRESULT getBufferId();
-	void setIndicatorLinesUpdater(int begin, int end);
-
 #pragma endregion
 
 
