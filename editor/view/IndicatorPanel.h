@@ -18,52 +18,63 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <vector>
+#include <map>
 
 #include "common\ForegroundIdleHook.h"
 #include "SCIView.h"
 
 class IndicatorPanel
 {
-	struct LineMask{
-		DWORD line;
-		DWORD mask;
-	};
-	
-	typedef std::vector<LineMask> LineMasks;
+	typedef std::map<size_t, DWORD> LineToMaskMap;
+	LineToMaskMap m_Indicators;
 
-	LineMasks m_Indicators;
-	LineMasks m_PixelIndicators;
+	typedef void (IndicatorPanel::* UpdateFunction)(void);
+	class IndicatorUpdater : public ForegroundIdleHook::IdleHandler {
+		IndicatorPanel& m_IndPanel;
+		UpdateFunction m_UpdateFn;
+	public:
+		IndicatorUpdater(IndicatorPanel& indPanel, UpdateFunction fn) :m_IndPanel(indPanel), m_UpdateFn(fn) {
+		};
+
+		void execute() {
+			std::invoke(m_UpdateFn, &m_IndPanel);
+		}
+	};
+
+	IndicatorUpdater	m_PixelsUpdateAction;
+	IndicatorUpdater	m_LinesUpdateAction;
 
 	RECT	m_PanelRect;
 	RECT	m_UnderScroll;
 
-	SCIView* m_View;
+	SCIView& m_View;
 
-	void ClearIndicators(int begin, int end);
-
-public:
-	DWORD* pixelIndicators;
+	DWORD* m_PixelIndicators;
 	int  m_PixelIndicatorsLen;
 
-	void GetIndicatorLines(int begin, int end);
-
-	void GetIndicatorPixels();
-
-	void paintIndicators();
-
-	void paintIndicators(HDC hdc);
-	
-	COLORREF getColorForMask(DWORD mask);
-
 	static bool hasStyle(HWND hwnd, int style);
-
-	LRESULT OnNCCalcSize(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-	LRESULT OnNCPaint(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	DWORD m_IndicatorMask; 
 	bool  m_Disabled;
 
+	int m_Begin = 0;
+	int m_End = 0;
+
+	void OnUpdatePixels();
+	void OnUpdateLines();
+
+	void ClearIndicators(int begin, int end);
+	bool GetIndicatorLines();
+	void GetIndicatorPixels();
+
+	void paintIndicators();
+	void paintIndicators(HDC hdc);
+	COLORREF getColorForMask(DWORD mask);
+	void RedrawIndicatorPanel();
+
 public:
+	LRESULT OnNCCalcSize(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+	LRESULT OnNCPaint(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	DWORD GetIndicatorMask();
 	void SetIndicatorMask(DWORD value);
@@ -71,51 +82,9 @@ public:
 	void SetDisabled(bool value);
 	bool GetDisabled();
 
-	IndicatorPanel(SCIView* m_View);
+	IndicatorPanel(SCIView& m_View);
 	~IndicatorPanel(void);
-	
-	class IndicatorLinesUpdater : public ForegroundIdleHook::IdleHandler{
-	public:
-		IndicatorPanel* m_IndPanel;
-		IndicatorLinesUpdater(IndicatorPanel* indPanel){
-			m_IndPanel = indPanel;
-			m_Begin = 0;
-			m_End = 0;
-		};
 
-		int m_Begin;
-		int m_End;
-
-		void execute(){
-			if (m_IndPanel->m_Disabled)
-				return;
-
-			m_IndPanel->GetIndicatorLines(m_Begin, m_End);
-			ForegroundIdleHook::getInstance()->add( &m_IndPanel->m_IndicPixelsUp);
-
-			m_Begin = 0;
-			m_End = 0;
-		};
-	};
-
-	class IndicatorPixelsUpdater : public ForegroundIdleHook::IdleHandler{
-		public:
-		IndicatorPanel* m_IndPanel;
-		IndicatorPixelsUpdater(IndicatorPanel* indPanel){m_IndPanel = indPanel;};
-		void execute(){
-			if (m_IndPanel->m_Disabled)
-				return;
-
-			m_IndPanel->GetIndicatorPixels();
-			if (m_IndPanel->m_PixelIndicatorsLen > 0)
-				m_IndPanel->RedrawIndicatorPanel(); //m_View->paintIndicators();
-		};
-	};
-
-
-	IndicatorPixelsUpdater	m_IndicPixelsUp;
-	IndicatorLinesUpdater	m_IndicLinesUp;
-
-	void RedrawIndicatorPanel();
-
+	void updateLines(int begin, int end);
+	void updatePixels();
 };

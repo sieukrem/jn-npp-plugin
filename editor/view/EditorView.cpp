@@ -21,12 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "ViewLines.h"
 
 #pragma warning (disable : 4355)
-CEditorView::CEditorView(int id):CComDispatch(),m_IndPanel(this), SCIView((((id-1)==0)? nppData._scintillaMainHandle : nppData._scintillaSecondHandle)){
+CEditorView::CEditorView(int id):CComDispatch(),m_IndPanel(*this), SCIView((((id-1)==0)? nppData._scintillaMainHandle : nppData._scintillaSecondHandle)){
 	m_Id = id;
 
 	m_Listener = NULL;
 }
-
 
 LRESULT CEditorView::getBufferId(){
 	int curDoc =(int) NPPM(GETCURRENTDOCINDEX, 0, m_Id-1);
@@ -88,47 +87,32 @@ int CEditorView::bytePosToPos(int pos){
 	return result;
 }
 
-void CEditorView::setIndicatorLinesUpdater(int begin, int end){
-
-	ForegroundIdleHook::IdleHandler* indicatorPixelsUpdater = &m_IndPanel.m_IndicPixelsUp;
-
-	if (indicatorPixelsUpdater != NULL)
-		ForegroundIdleHook::getInstance()->remove(indicatorPixelsUpdater);
-
-	if (m_IndPanel.m_IndicLinesUp.m_Begin > begin || (m_IndPanel.m_IndicLinesUp.m_End == 0 /* first time */))
-		m_IndPanel.m_IndicLinesUp.m_Begin = begin;
-
-	if (m_IndPanel.m_IndicLinesUp.m_End != -1 && (end == -1 || m_IndPanel.m_IndicLinesUp.m_End < end))
-		m_IndPanel.m_IndicLinesUp.m_End = end;
-
-	ForegroundIdleHook::getInstance()->add(&m_IndPanel.m_IndicLinesUp);
-}
-
 void CEditorView::DoMessage(SCNotification* eventArgs){
 	switch(eventArgs->nmhdr.code){
 		case SCN_MODIFIED:
 			if (eventArgs->modificationType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)){
 				if (eventArgs->linesAdded != 0) // changes in more than one line
-					setIndicatorLinesUpdater(eventArgs->position,-1); // from position to bottom
+					m_IndPanel.updateLines(eventArgs->position,-1); // from position to bottom
 				else // changes in the single line, update only necessary positions
-					setIndicatorLinesUpdater(eventArgs->position, eventArgs->position + eventArgs->length);
+					m_IndPanel.updateLines(eventArgs->position, eventArgs->position + eventArgs->length);
 			} else if (eventArgs->modificationType & ( SC_MOD_CHANGEINDICATOR)){
-				// update only necessary positions
-				setIndicatorLinesUpdater(eventArgs->position, eventArgs->position  + eventArgs->length);
+				// update all, because Npp's recent optimizations
+				m_IndPanel.updateLines(-1, -1);
 			}
+
 			break;
 		case NPPN_BUFFERACTIVATED:
 			// update all lines
-			setIndicatorLinesUpdater(-1,-1);
+			m_IndPanel.updateLines(-1,-1);
 			break;
 		case SCN_ZOOM:{
 			// update only pixels
-			ForegroundIdleHook::getInstance()->add(&m_IndPanel.m_IndicPixelsUp);
+			m_IndPanel.updatePixels();
 			break;
 		}
 		case SCN_MARGINCLICK:
-			if (eventArgs->margin == 2){ // click above fold symbol
-				setIndicatorLinesUpdater(-1,-1);
+			if (eventArgs->margin == SC_MARGIN_FORE){ // click on fold symbol
+				m_IndPanel.updateLines(-1,-1);
 			}
 			break;
 	}
