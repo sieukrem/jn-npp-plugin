@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "..\Interfaces.h"
 
-#include "dialog\windowclass.h"
+#include "windowclass.h"
 #include "MessageOnlyWindow.h"
 #include "CallBack.h"
 

@@ -103,9 +103,6 @@
     <ClCompile Include="common\Dialog\MOleInPlaceSite.cpp">
       <Filter>Common\Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="common\Dialog\WindowClass.cpp">
-      <Filter>Common\Dialog</Filter>
-    </ClCompile>
     <ClCompile Include="common\CallFrame.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -113,6 +110,9 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="common\BlindTypeLib.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\WindowClass.cpp">
       <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
@@ -229,9 +229,6 @@
     <ClInclude Include="common\Dialog\MOleInPlaceSite.h">
       <Filter>Common\Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="common\Dialog\WindowClass.h">
-      <Filter>Common\Dialog</Filter>
-    </ClInclude>
     <ClInclude Include="Sci_Position.h">
       <Filter>Npp</Filter>
     </ClInclude>
@@ -242,6 +239,9 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="common\BlindTypeLib.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\WindowClass.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

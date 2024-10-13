@@ -23,25 +23,38 @@
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClCompile Include="*Tests.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <ClCompile Include="..\common\AcceleratorHook.cpp" />
+    <ClCompile Include="..\common\ActiveScriptSiteDebug.cpp" />
+    <ClCompile Include="..\common\BlindTypeLib.cpp" />
+    <ClCompile Include="..\common\CallBack.cpp" />
+    <ClCompile Include="..\common\CallFrame.cpp" />
+    <ClCompile Include="..\common\ForegroundIdleHook.cpp" />
+    <ClCompile Include="..\common\LastError.cpp" />
+    <ClCompile Include="..\common\Library.cpp" />
+    <ClCompile Include="..\common\Menu.cpp" />
+    <ClCompile Include="..\common\MyActiveSite.cpp" />
+    <ClCompile Include="..\common\ScriptedIdleHandler.cpp" />
+    <ClCompile Include="..\common\Statics.cpp" />
+    <ClCompile Include="..\common\Timer.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.3\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets" Condition="Exists('..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.3\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" />
+    <Import Project="..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets" Condition="Exists('..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" />
   </ImportGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -58,7 +71,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies Condition="'$(Platform)'=='Win32'">$(MSBuildProjectDirectory)\..\$(Configuration)\*.obj;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalDependencies Condition="'$(Platform)'=='x64'">$(MSBuildProjectDirectory)\..\x64\$(Configuration)\*.obj;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Platform)'=='x64'">shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <LinkTimeCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|x64'">UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
@@ -75,15 +88,46 @@
     <Link>
     </Link>
   </ItemDefinitionGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.3\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.3\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets'))" />
-  </Target>
   <ItemGroup>
     <Filter Include="src">
       <UniqueIdentifier>{b6ea7bd8-17f7-4f1e-9f19-cadd62215743}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\AcceleratorHook.h" />
+    <ClInclude Include="..\common\AcceleratorTable.h" />
+    <ClInclude Include="..\common\ActiveScriptSiteDebug.h" />
+    <ClInclude Include="..\common\BlindTypeLib.h" />
+    <ClInclude Include="..\common\CallBack.h" />
+    <ClInclude Include="..\common\CallFrame.h" />
+    <ClInclude Include="..\common\ComBase.h" />
+    <ClInclude Include="..\common\ForegroundIdleHook.h" />
+    <ClInclude Include="..\common\LastError.h" />
+    <ClInclude Include="..\common\Library.h" />
+    <ClInclude Include="..\common\Menu.h" />
+    <ClInclude Include="..\common\MessageOnlyWindow.h" />
+    <ClInclude Include="..\common\MyActiveSite.h" />
+    <ClInclude Include="..\common\ScriptedIdleHandler.h" />
+    <ClInclude Include="..\common\Statics.h" />
+    <ClInclude Include="..\common\SysStr.h" />
+    <ClInclude Include="..\common\Timer.h" />
+    <ClInclude Include="..\common\WindowClass.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\common\x64Dispatcher.asm">
+      <ExcludedFromBuild Condition="'$(Platform)'=='Win32'">true</ExcludedFromBuild>
+    </MASM>
+  </ItemGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets'))" />
+  </Target>
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
 </Project>

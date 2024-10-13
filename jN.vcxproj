@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -213,7 +213,6 @@
     <ClCompile Include="common\Dialog\MOleClientSite.cpp" />
     <ClCompile Include="common\Dialog\MOleInPlaceFrame.cpp" />
     <ClCompile Include="common\Dialog\MOleInPlaceSite.cpp" />
-    <ClCompile Include="common\Dialog\WindowClass.cpp" />
     <ClCompile Include="common\ForegroundIdleHook.cpp" />
     <ClCompile Include="common\LastError.cpp" />
     <ClCompile Include="common\Library.cpp" />
@@ -223,6 +222,7 @@
     <ClCompile Include="common\Statics.cpp" />
     <ClCompile Include="common\System.cpp" />
     <ClCompile Include="common\Timer.cpp" />
+    <ClCompile Include="common\WindowClass.cpp" />
     <ClCompile Include="editor\DockableDialog.cpp" />
     <ClCompile Include="editor\Editor.cpp" />
     <ClCompile Include="editor\view\EditorView.cpp" />
@@ -254,7 +254,6 @@
     <ClInclude Include="common\Dialog\MOleClientSite.h" />
     <ClInclude Include="common\Dialog\MOleInPlaceFrame.h" />
     <ClInclude Include="common\Dialog\MOleInPlaceSite.h" />
-    <ClInclude Include="common\Dialog\WindowClass.h" />
     <ClInclude Include="common\ForegroundIdleHook.h" />
     <ClInclude Include="common\LastError.h" />
     <ClInclude Include="common\Library.h" />
@@ -266,6 +265,7 @@
     <ClInclude Include="common\SysStr.h" />
     <ClInclude Include="common\System.h" />
     <ClInclude Include="common\Timer.h" />
+    <ClInclude Include="common\WindowClass.h" />
     <ClInclude Include="editor\DockableDialog.h" />
     <ClInclude Include="editor\Editor.h" />
     <ClInclude Include="editor\view\EditorView.h" />

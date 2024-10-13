@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "..\..\Interfaces.h"
 
-#include "WindowClass.h"
+#include "..\WindowClass.h"
 #include "..\SysStr.h"
 
 class Dialog : virtual public CComDispatch<IDialog>, public AcceleratorHook::AcceleratorHandler
